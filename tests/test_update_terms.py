@@ -199,7 +199,7 @@ class RepositoryIntegrationTests(unittest.TestCase):
         self.assertEqual(request.full_url, "https://generativelanguage.googleapis.com/v1beta/interactions")
         self.assertEqual(request.get_header("X-goog-api-key"), "test-secret")
         body = json.loads(request.data)
-        self.assertEqual(body["model"], "gemini-3.8-flash")
+        self.assertEqual(body["model"], "gemini-2.5-flash")
         self.assertFalse(body["store"])
         self.assertEqual(body["response_format"]["mime_type"], "application/json")
         self.assertIn("Nivå 1: du er ny med KI", body["input"])

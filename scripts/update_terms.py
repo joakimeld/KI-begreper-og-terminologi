@@ -23,7 +23,7 @@ ROOT = Path(__file__).resolve().parent.parent
 INDEX = ROOT / "index.html"
 STATE = ROOT / ".github" / "term-source-state.json"
 TERMS_FILE = ROOT / "auto-terms.js"
-MODEL = "gemini-3.8-flash"
+MODEL = "gemini-2.5-flash"
 MAX_SOURCES_PER_RUN = 8
 MAX_TERMS_PER_RUN = 20
 MAX_GEMINI_ATTEMPTS = 3
@@ -316,7 +316,7 @@ def generate_terms(
                 "mime_type": "application/json",
                 "schema": response_schema(),
             },
-            "generation_config": {"temperature": 0.1, "thinking_level": "low", "max_output_tokens": 4096},
+            "generation_config": {"temperature": 0.1, "max_output_tokens": 4096},
         },
         ensure_ascii=False,
     ).encode("utf-8")
