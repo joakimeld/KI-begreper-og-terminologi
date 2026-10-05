@@ -248,6 +248,7 @@ class RepositoryIntegrationTests(unittest.TestCase):
 
     def test_reads_text_from_interaction_model_output_steps(self):
         result = {
+            "output_text": "",
             "steps": [
                 {"type": "user_input", "content": []},
                 {

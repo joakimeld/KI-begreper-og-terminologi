@@ -254,7 +254,7 @@ def response_schema() -> dict:
 
 def _response_text(result: dict) -> str:
     direct = result.get("output_text")
-    if isinstance(direct, str):
+    if isinstance(direct, str) and direct:
         return direct
     steps = result.get("steps")
     if isinstance(steps, list):
