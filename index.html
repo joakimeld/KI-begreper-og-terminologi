@@ -1,0 +1,993 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KI-begreper og terminologi</title>
+<meta name="description" content="Nivå- og faginndelt oppslagsverk for KI-begreper og terminologi. Konsept/MVP.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+  :root{
+    --paper:#FAF7F0;
+    --surface:#FFFFFF;
+    --block:#F1EEE5;
+    --ink:#101014;
+    --ink-soft:#4F5158;
+    --line:#D9D3C4;
+    --control:#5C5F6B;
+    --navy:#11133C;
+    --navbar-bg:#11133C;
+    --navbar-fg:#FFFFFF;
+    --navbar-fg-dim:#C3C5DA;
+    --coral:#C75A22;
+    --focus:#11133C;
+
+    --lvl1-bg:#E6E6EF; --lvl1-fg:#11133C;
+    --lvl2-bg:#C3C6E0; --lvl2-fg:#11133C;
+    --lvl3-bg:#4B4E86; --lvl3-fg:#FFFFFF;
+    --lvl4-bg:#11133C; --lvl4-fg:#FFFFFF;
+
+    --sw1:#9BD9B4; --sw2:#E8C98F; --sw3:#9CC2E8; --sw4:#E0A0B2; --sw5:#E3B183;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#0F1116; --surface:#171A21; --block:#1E222B;
+      --ink:#EEF0F4; --ink-soft:#AAB1BD; --line:#2C313B; --control:#8A93A3;
+      --navy:#C6C9FF; --navbar-bg:#1C2039; --navbar-fg:#FFFFFF; --navbar-fg-dim:#B9BCD4;
+      --coral:#F0A06A; --focus:#FFFFFF;
+      --lvl1-bg:#252A3C; --lvl1-fg:#C6C9FF;
+      --lvl2-bg:#343A57; --lvl2-fg:#DDDEFF;
+      --lvl3-bg:#4B4E86; --lvl3-fg:#F2F3FF;
+      --lvl4-bg:#C6C9FF; --lvl4-fg:#11133C;
+      --sw1:#5FA87E; --sw2:#A8894F; --sw3:#5C82A8; --sw4:#A06072; --sw5:#A37143;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0F1116; --surface:#171A21; --block:#1E222B;
+    --ink:#EEF0F4; --ink-soft:#AAB1BD; --line:#2C313B; --control:#8A93A3;
+    --navy:#C6C9FF; --navbar-bg:#1C2039; --navbar-fg:#FFFFFF; --navbar-fg-dim:#B9BCD4;
+    --coral:#F0A06A; --focus:#FFFFFF;
+    --lvl1-bg:#252A3C; --lvl1-fg:#C6C9FF;
+    --lvl2-bg:#343A57; --lvl2-fg:#DDDEFF;
+    --lvl3-bg:#4B4E86; --lvl3-fg:#F2F3FF;
+    --lvl4-bg:#C6C9FF; --lvl4-fg:#11133C;
+    --sw1:#5FA87E; --sw2:#A8894F; --sw3:#5C82A8; --sw4:#A06072; --sw5:#A37143;
+  }
+
+  *{box-sizing:border-box; border-radius:0;}
+  [hidden]{display:none !important;}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:"Inter", system-ui, -apple-system, sans-serif;
+    font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{text-wrap:balance; margin:0;}
+  button{font:inherit; color:inherit;}
+  a{color:var(--ink); text-decoration:underline; text-underline-offset:2px;}
+  a:hover{text-decoration-thickness:2px;}
+  :focus-visible{outline:3px solid var(--focus); outline-offset:2px;}
+
+  .sr-only{
+    position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+    overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+  }
+  .skip{
+    position:absolute; left:-9999px; top:0; z-index:100;
+    background:var(--navbar-bg); color:var(--navbar-fg);
+    padding:14px 20px; text-decoration:underline; font-weight:600;
+  }
+  .skip:focus{left:0;}
+  .wrap{max-width:1200px; margin:0 auto; padding-inline:clamp(16px,4vw,40px);}
+
+  /* ---- Masthead ---- */
+  .masthead{background:var(--surface); border-bottom:1px solid var(--line);}
+  .masthead-top{display:flex; align-items:center; gap:20px; padding-block:18px 0;}
+  .logo{color:var(--ink); display:block;}
+  .logo svg{width:112px; height:auto; display:block;}
+  .masthead-main{
+    display:flex; flex-wrap:wrap; gap:24px 40px;
+    justify-content:space-between; align-items:flex-end; padding-block:26px 28px;
+  }
+  h1{font-size:clamp(1.6rem,3.4vw,2.5rem); font-weight:800; letter-spacing:-0.025em; line-height:1.1;}
+  .meta{margin:10px 0 0; color:var(--ink-soft); font-size:0.85rem; font-variant-numeric:tabular-nums;}
+  .search-block{flex:1 1 320px; max-width:430px;}
+  .search-block label{display:block; font-weight:600; font-size:0.8rem; margin-bottom:7px;}
+  .search-row{display:flex; border:1px solid var(--control); background:var(--surface);}
+  .search-row:focus-within{outline:3px solid var(--focus); outline-offset:1px;}
+  .search-icon{display:flex; align-items:center; padding-inline:12px 0; color:var(--coral);}
+  .search-icon svg{width:18px; height:18px;}
+  #search{
+    flex:1; border:none; background:transparent; color:var(--ink);
+    padding:13px 14px; font:inherit; font-size:0.97rem; min-width:0;
+  }
+  #search:focus{outline:none;}
+  #search::placeholder{color:var(--ink-soft);}
+
+  /* ---- Level bar ---- */
+  .levelbar{background:var(--navbar-bg); --focus:#FFFFFF;}
+  .levelbar fieldset{border:none; margin:0; padding:0;}
+  .level-list{display:flex; gap:0; overflow-x:auto;}
+  .level{
+    position:relative; display:flex; align-items:center; gap:9px; flex:none;
+    color:var(--navbar-fg-dim); padding:15px 18px; cursor:pointer;
+    border-bottom:3px solid transparent; min-height:44px; white-space:nowrap;
+  }
+  .level input{position:absolute; opacity:0; width:1px; height:1px; margin:0;}
+  .level:hover{color:var(--navbar-fg); background:rgba(255,255,255,0.07);}
+  .level.is-on, .level:has(input:checked){color:var(--navbar-fg); border-bottom-color:var(--coral); background:rgba(255,255,255,0.05);}
+  .level:focus-within{outline:3px solid #FFFFFF; outline-offset:-3px;}
+  .level .num{font-weight:800; font-size:1.05rem;}
+  .level .txt{font-size:0.9rem; font-weight:500;}
+  .level .cnt{font-size:0.78rem; color:var(--navbar-fg-dim); font-variant-numeric:tabular-nums;}
+  .level.is-on .cnt, .level:has(input:checked) .cnt{color:var(--navbar-fg);}
+  .level-desc{color:var(--ink-soft); font-size:0.87rem; padding-block:14px 0; margin:0;}
+
+  /* ---- Filters ---- */
+  .filters{padding-block:20px 0;}
+  .filters h2{font-size:0.78rem; text-transform:uppercase; letter-spacing:0.09em; color:var(--ink-soft); font-weight:700; margin-bottom:12px;}
+  .fgroup{border:1px solid var(--line); border-bottom:none; background:var(--surface);}
+  .fgroup:last-of-type{border-bottom:1px solid var(--line);}
+  .fgroup summary{
+    display:flex; align-items:center; gap:12px; padding:14px 16px;
+    cursor:pointer; font-weight:600; font-size:0.95rem; list-style:none; min-height:48px;
+  }
+  .fgroup summary::-webkit-details-marker{display:none;}
+  .fgroup summary:hover{background:var(--block);}
+  .fgroup summary .hint{font-weight:400; font-size:0.85rem; color:var(--ink-soft);}
+  .fgroup summary .state{margin-left:auto; font-size:0.85rem; color:var(--ink-soft); font-weight:500;}
+  .fgroup summary .mark{width:1.1em; text-align:center; color:var(--ink-soft); font-weight:700;}
+  .fgroup[open] summary{border-bottom:1px solid var(--line); background:var(--block);}
+  .fgroup fieldset{border:none; margin:0; padding:14px 16px 18px;}
+  .optgrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:2px 18px;}
+  .opt{display:flex; align-items:center; gap:10px; padding:8px 4px; cursor:pointer; min-height:36px; font-size:0.9rem;}
+  .opt:hover{background:var(--block);}
+  .opt input{width:18px; height:18px; margin:0; accent-color:var(--navy); flex:none;}
+  .opt .sw{width:10px; height:10px; flex:none;}
+  .opt .name{flex:1;}
+  .opt .cnt{color:var(--ink-soft); font-size:0.8rem; font-variant-numeric:tabular-nums;}
+
+  /* ---- Results ---- */
+  main{padding-block:26px 8px;}
+  .results-head{display:flex; flex-wrap:wrap; align-items:baseline; gap:10px 20px; margin-bottom:14px;}
+  .results-head h2{font-size:1.1rem; font-weight:700;}
+  #status{color:var(--ink-soft); font-size:0.88rem; font-variant-numeric:tabular-nums;}
+  .pills{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px;}
+  .pill{
+    display:inline-flex; align-items:center; gap:8px; min-height:34px;
+    padding:6px 12px; border:1px solid var(--control); background:var(--surface);
+    color:var(--ink); font-size:0.83rem; cursor:pointer;
+  }
+  .pill:hover{background:var(--block);}
+  .pill .x{font-weight:700; font-size:1rem; line-height:1; color:var(--coral);}
+  .pill-reset{border-style:dashed;}
+
+  .grid{
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr));
+    gap:1px; background:var(--line); border:1px solid var(--line);
+    list-style:none; margin:0; padding:0;
+  }
+  .card{background:var(--surface); padding:20px 20px 22px; display:flex; flex-direction:column; gap:10px;}
+  .lvl{
+    align-self:flex-start; font-size:0.68rem; font-weight:700; letter-spacing:0.06em;
+    text-transform:uppercase; padding:4px 9px; margin:0;
+  }
+  .lvl.l1{background:var(--lvl1-bg); color:var(--lvl1-fg);}
+  .lvl.l2{background:var(--lvl2-bg); color:var(--lvl2-fg);}
+  .lvl.l3{background:var(--lvl3-bg); color:var(--lvl3-fg);}
+  .lvl.l4{background:var(--lvl4-bg); color:var(--lvl4-fg);}
+  .card h3{font-size:1.04rem; font-weight:700; line-height:1.3;}
+  .tags{display:flex; flex-wrap:wrap; gap:6px; align-items:center;}
+  .new{font-size:0.68rem; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; padding:3px 8px; margin:0; border:1px solid var(--coral); color:var(--coral);}
+  .card .en{color:var(--ink-soft); font-size:0.82rem; font-weight:500; margin:-6px 0 0;}
+  .card .def{margin:0; font-size:0.9rem; line-height:1.55; color:var(--ink);}
+  .card .ex{margin:0; font-size:0.84rem; line-height:1.5; color:var(--ink-soft); border-left:2px solid var(--line); padding-left:10px;}
+  .card dl{
+    display:grid; grid-template-columns:auto 1fr; gap:5px 14px;
+    margin:6px 0 0; padding-top:12px; border-top:1px solid var(--line); font-size:0.78rem;
+  }
+  .card dt{font-size:0.66rem; text-transform:uppercase; letter-spacing:0.07em; color:var(--ink-soft); font-weight:700; padding-top:1px;}
+  .card dd{margin:0; color:var(--ink-soft);}
+  .card dd b{color:var(--ink); font-weight:600;}
+
+  .empty{border:1px solid var(--line); background:var(--surface); padding:48px 24px; text-align:center;}
+  .empty p{margin:0 0 16px;}
+
+  /* ---- Sources ---- */
+  .sources{border-top:1px solid var(--line); margin-top:44px; padding-block:36px 8px;}
+  .sources h2{font-size:1.35rem; font-weight:800; letter-spacing:-0.015em;}
+  .sources .lead{max-width:68ch; color:var(--ink-soft); font-size:0.92rem; margin:12px 0 0;}
+  .sources h3{font-size:0.76rem; text-transform:uppercase; letter-spacing:0.09em; color:var(--ink-soft); font-weight:700; margin:30px 0 10px;}
+  .srclist{list-style:none; margin:0; padding:0; border-top:1px solid var(--line);}
+  .srclist li{border-bottom:1px solid var(--line); padding:12px 0; display:grid; grid-template-columns:minmax(200px,1fr) 2fr; gap:4px 28px;}
+  .srclist .t{font-weight:600; font-size:0.9rem;}
+  .srclist .d{color:var(--ink-soft); font-size:0.86rem;}
+  .note{background:var(--block); padding:22px 24px; margin-top:34px; max-width:78ch;}
+  .note h3{margin-top:0;}
+  .note p{margin:8px 0 0; font-size:0.9rem; color:var(--ink); max-width:66ch;}
+  .note p:first-of-type{margin-top:0;}
+  footer.page-foot{border-top:1px solid var(--line); margin-top:40px; padding-block:22px 44px; color:var(--ink-soft); font-size:0.82rem;}
+
+  @media (max-width:640px){
+    .srclist li{grid-template-columns:1fr;}
+    .masthead-main{padding-block:20px 22px;}
+  }
+  @media (prefers-reduced-motion:no-preference){
+    .card, .pill, .opt{transition:background-color 0.12s ease;}
+  }
+  @media (prefers-contrast:more){
+    .card dd, #status, .srclist .d{color:var(--ink);}
+  }
+</style>
+</head>
+<body>
+<div lang="nb">
+  <a class="skip" href="#begreper">Hopp til begrepslisten</a>
+
+  <header class="masthead">
+    <div class="wrap masthead-top">
+      <span class="logo" role="img" aria-label="Bouvet">
+        <svg viewBox="0 0 3613.25 898.678" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+          <g transform="translate(-2027.54 -309.957)">
+            <path d="M4482.7,604.525l-174.68,448.105-176-448.105h-137.33L4239.314,1183.7h124.82l244.709-579.172Zm-691.492,0V910.28c0,109.846-53.646,173.534-147.275,173.534S3496.65,1020.126,3496.65,910.28V604.525H3374.3V915.3c0,172.3,103.592,280.826,269.639,280.826S3913.572,1087.6,3913.572,915.3V604.525ZM2993.58,590.784A301.014,301.014,0,0,0,2861.447,621a293.954,293.954,0,0,0-164.9,266.82c0,148.6,138.563,320.817,257.131,320.817a87.642,87.642,0,0,0,73.65-41.225c48.713-73.642,98.65-116.012,172.211-148.517,68.709-29.95,87.377-59.9,87.377-136.008.008-164.813-128.514-292.1-293.326-292.1Zm129.842,388.2c-49.945,31.183-76.1,57.434-96.1,98.571a47.638,47.638,0,0,1-43.693,26.25c-79.9,0-170.979-104.913-170.979-197.23,0-103.592,76.109-181.021,179.7-181.021a177.931,177.931,0,0,1,177.258,178.608c-.008.8-.018,1.6-.025,2.414,0,32.408-11.187,51.171-46.158,72.408Zm-791.359-388.2a264.573,264.573,0,0,0-184.721,72.408l-1.234-353.234H2027.541V1183.7H2149.9V1125.03a272.243,272.243,0,0,0,182.166,69.854c164.8,0,289.625-131.075,289.625-302.055S2496.867,590.784,2332.063,590.784Zm-9.955,491.8c-99.893,0-174.766-81.129-174.766-189.742S2222.215,703.1,2322.107,703.1s174.768,81.129,174.768,189.742-74.883,189.733-174.785,189.733ZM5640.791,604.525H5463.557l-1.32-294.567H5343.67V604.525h-81.482V710.583h81.482v473.123h121.121l-1.234-473.123h177.234Z" fill="currentColor"/>
+            <path d="M2892.8,680.084h-447.49c9.037,56.209,31.379,102.922,82.143,131.392a179.887,179.887,0,0,0,87.207,21.406c52.764.731,102.49-9.8,145.021-43.313a486.256,486.256,0,0,0,36.715-35.315l81.834,79.826a284.3,284.3,0,0,1-56.262,51.646c-67.5,47.18-143.029,64.534-224.053,60.032a280.677,280.677,0,0,1-177.48-71.431c-55.408-49.823-84.687-113.431-92.891-187.161A336.756,336.756,0,0,1,2355.668,500.9c42.811-89.41,114.727-139.479,211.025-154.313a287.969,287.969,0,0,1,175.064,24.2c76.189,37.6,120.393,101.257,141.551,182.519A364.8,364.8,0,0,1,2892.8,680.084Zm-445.033-98.113h320.379A155.593,155.593,0,0,0,2622.594,448.13C2529.422,442.783,2463.656,493.125,2447.764,581.971Z" transform="translate(2319.197 251.85)" fill="currentColor"/>
+          </g>
+        </svg>
+      </span>
+    </div>
+    <div class="wrap masthead-main">
+      <div>
+        <h1>KI-begreper og terminologi</h1>
+        <p class="meta" id="meta-line"></p>
+      </div>
+      <div class="search-block">
+        <label for="search">Søk i begrepene</label>
+        <div class="search-row">
+          <span class="search-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </span>
+          <input id="search" name="search" type="search" autocomplete="off" placeholder="For eksempel RAG, hallusinasjon eller jailbreak">
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="levelbar">
+    <div class="wrap">
+      <fieldset>
+        <legend class="sr-only">Velg nivå</legend>
+        <div class="level-list" id="level-list"></div>
+      </fieldset>
+    </div>
+  </div>
+  <div class="wrap"><p class="level-desc" id="level-desc"></p></div>
+
+  <section class="wrap filters" aria-labelledby="filter-heading">
+    <h2 id="filter-heading">Filtrer</h2>
+
+    <details class="fgroup" id="g-role">
+      <summary>
+        <span class="mark" aria-hidden="true">+</span>
+        <span>Rolle <span class="hint">– se begreper som er relevante for din rolle</span></span>
+        <span class="state" id="state-role">Alle</span>
+      </summary>
+      <fieldset>
+        <legend class="sr-only">Velg en eller flere roller</legend>
+        <div class="optgrid" id="opts-role"></div>
+      </fieldset>
+    </details>
+
+    <details class="fgroup" id="g-fag">
+      <summary>
+        <span class="mark" aria-hidden="true">+</span>
+        <span>Fagområde</span>
+        <span class="state" id="state-fag">Alle</span>
+      </summary>
+      <fieldset>
+        <legend class="sr-only">Velg ett eller flere fagområder</legend>
+        <div class="optgrid" id="opts-fag"></div>
+      </fieldset>
+    </details>
+
+    <details class="fgroup" id="g-tool">
+      <summary>
+        <span class="mark" aria-hidden="true">+</span>
+        <span>Verktøy</span>
+        <span class="state" id="state-tool">Alle</span>
+      </summary>
+      <fieldset>
+        <legend class="sr-only">Velg ett eller flere verktøy</legend>
+        <div class="optgrid" id="opts-tool"></div>
+      </fieldset>
+    </details>
+  </section>
+
+  <main class="wrap" id="begreper" tabindex="-1">
+    <div class="results-head">
+      <h2>Begreper</h2>
+      <p id="status" role="status"></p>
+    </div>
+    <div class="pills" id="pills"></div>
+    <ul class="grid" id="grid" role="list"></ul>
+    <div class="empty" id="empty" hidden>
+      <p>Ingen begreper matcher filtrene dine. Prøv å fjerne et filter eller søke på noe annet.</p>
+      <button type="button" class="pill pill-reset" id="empty-reset">Nullstill alle filtre</button>
+    </div>
+  </main>
+
+  <section class="wrap sources" aria-labelledby="kilder-heading">
+    <h2 id="kilder-heading">Kilder og metode</h2>
+    <p class="lead">Definisjonene er skrevet om til kort norsk for dette oppslagsverket, og er ikke direkte sitater. Kildene under er referansene definisjonene bygger på, og de er oppført på hvert begrep. Ved bruk i kundeleveranser: gå til primærkilden.</p>
+    <div id="source-groups"></div>
+
+    <div class="note">
+      <h3>Om modellnavn</h3>
+      <p>Modellnavn og rangeringer (GPT-5.x, Claude Opus, Gemini) er holdt utenfor med vilje. Begreper endrer seg over år, modellnavn over uker – blandet i samme oversikt vil «sist oppdatert» aldri være til å stole på. Oversikten forklarer derfor begrepene rundt modeller (grunnmodell, resonneringsmodell, modellruting, kontekstvindu, kvantisering), mens valg av konkret modell hører til verktøy- og modelloversikten.</p>
+      <p>Datagrunnlag som LLM Stats kan ikke bakes inn her: Community- og Builder-planene deres tillater ikke videredistribusjon av datasettet, API-et krever nøkkel som ikke kan ligge i en publisert side, og en publisert Artifact-side kan ikke kalle eksterne API-er. LLM Stats tilbyr derimot en MCP-server med OAuth – kobles den til som connector, kan en side hente tallene live med den enkelte brukerens egen tilgang.</p>
+    </div>
+  </section>
+
+  <footer class="wrap page-foot">
+    <p>Prototype for Bouvet. Begreper, roller, fagområder og kilder kan justeres. Siden er bygget for tastaturbruk og skjermleser: alle filtre er standard skjemakontroller, treffantallet annonseres, og fargene er kontrastsjekket i både lys og mørk visning.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- Taksonomier ---------- */
+  var FAGOMRADER = {
+    grunnleggende:"Grunnleggende KI", ml:"Maskinlæring", genai:"Generativ KI",
+    prompting:"Prompting og bruk", agentic:"KI-agenter", data:"Data og MLOps",
+    etikk:"Etikk, styring og regelverk", sikkerhet:"Sikkerhet og personvern", utvikling:"Utvikling og kode"
+  };
+  var VERKTOY = {
+    claude:"Claude", chatgpt:"ChatGPT", copilot:"GitHub Copilot", m365:"M365 Copilot",
+    figma:"Figma Make", lovable:"Lovable", generelt:"Verktøyuavhengig"
+  };
+  var ROLLER = {
+    ux:"UX-designer", tjeneste:"Tjenestedesigner", forrdesign:"Forretningsdesigner", grafisk:"Grafisk designer",
+    frontend:"Frontend-utvikler", backend:"Backend-utvikler", fullstack:"Fullstack-utvikler", dotnet:".NET-utvikler",
+    dataing:"Dataingeniør", datasci:"Dataforsker", sky:"Skyarkitekt", losning:"Løsningsarkitekt",
+    sikkerhetsradgiver:"Sikkerhetsrådgiver", pm:"Prosjektleder", forrradgiver:"Forretningsrådgiver", tester:"Tester / QA"
+  };
+  var ALL_ROLES = Object.keys(ROLLER);
+  var LEVELS = {1:"Nybegynner", 2:"Viderekommende", 3:"Avansert", 4:"Ekspert"};
+  var LEVEL_DESC = {
+    all:"Alle begrepene, fra grunnvokabular til forskningsfront.",
+    1:"Nivå 1: du er ny med KI og trenger vokabularet for å delta i samtalen.",
+    2:"Nivå 2: du bruker KI jevnlig og vil forstå hvordan løsningene settes sammen.",
+    3:"Nivå 3: du designer, bygger eller styrer KI-løsninger i leveranse.",
+    4:"Nivå 4: du går inn i modellenes indre virkemåte og forskningsfronten."
+  };
+  var ROLES_BY_FAG = {
+    grunnleggende: ALL_ROLES.slice(),
+    ml: ["datasci","dataing","backend","fullstack","dotnet","losning","sky"],
+    genai: ["ux","tjeneste","forrdesign","frontend","backend","fullstack","dotnet","datasci","forrradgiver","pm"],
+    prompting: ALL_ROLES.slice(),
+    agentic: ["backend","fullstack","dotnet","losning","sky","dataing","forrdesign","pm"],
+    data: ["dataing","datasci","backend","sky","losning"],
+    etikk: ["forrradgiver","forrdesign","sikkerhetsradgiver","pm","ux","tjeneste","losning"],
+    sikkerhet: ["sikkerhetsradgiver","losning","sky","backend","dotnet","fullstack","forrradgiver"],
+    utvikling: ["frontend","backend","fullstack","dotnet","losning","tester"]
+  };
+  var ROLE_OVERRIDES = {
+    "design-til-kode":["frontend","backend","fullstack","dotnet","losning","tester","ux","grafisk","tjeneste"],
+    "vibe-coding":["frontend","backend","fullstack","dotnet","losning","tester","ux"],
+    "kompetansetrapp":["pm","forrradgiver","forrdesign","losning","ux"],
+    "strukturkapital":["pm","forrradgiver","losning","dataing"],
+    "modellkort":["datasci","dataing","losning","pm","sikkerhetsradgiver","forrradgiver"],
+    "evaluering":["datasci","dataing","tester","backend","fullstack","dotnet","losning","ux"],
+    "stiloverforing":["ux","grafisk","tjeneste","forrdesign","frontend"],
+    "jobbskvip":ALL_ROLES.slice(),
+    "kognitiv-latskap":ALL_ROLES.slice(),
+    "smiskende-ki":ALL_ROLES.slice(),
+    "merking-ki-innhold":["ux","tjeneste","grafisk","forrdesign","frontend","pm","forrradgiver","sikkerhetsradgiver","losning"],
+    "agent-skill":["frontend","backend","fullstack","dotnet","losning","dataing","datasci","pm","ux","tester"]
+  };
+
+  /* ---------- Kilder ---------- */
+  var KILDER = {
+    teknologiradet:{s:"Teknologirådet", n:"Teknologirådet – Ordliste for kunstig intelligens", u:"https://teknologiradet.no/ordliste-for-kunstig-intelligens/", d:"Norsk ordliste på bokmål og nynorsk, gjennomgått av Språkrådet. Beste kilde for norske termvalg.", g:"norsk"},
+    kinorge:{s:"KI Norge", n:"KI Norge", u:"https://ki.norge.no", d:"Nasjonal inngang til offentlig KI-veiledning fra Digdir, Nkom og Datatilsynet. Åpnet 2026.", g:"norsk"},
+    datatilsynet:{s:"Datatilsynet", n:"Datatilsynet – anbefalinger for personvern i KI", u:"https://www.datatilsynet.no/regelverk-og-verktoy/rapporter-og-utredninger/kunstig-intelligens/anbefalinger/", d:"Normativ på personvern i KI. Står også bak den regulatoriske KI-sandkassa.", g:"norsk"},
+    teknologiradetny:{s:"Teknologirådet (nye ord)", n:"Teknologirådet – Ordliste for KI, nye ord og uttrykk", u:"https://teknologiradet.no/ordliste-for-kunstig-intelligens-nye-ord-og-uttrykk/", d:"Tillegg fra april 2026, oppdatert august 2026 og gjennomgått av Språkrådet. Kilde for nyere norske termer som vibbekoding, smiskende KI og KI-skvip.", g:"norsk"},
+    regjeringen:{s:"Regjeringen.no", n:"Regjeringen – status for norsk KI-lov", u:"https://www.regjeringen.no/no/aktuelt/tung-vil-sende-ki-loven-med-endringer-pa-horing/id3169693/", d:"Pressemelding 4. august 2026: endringene fra EUs forenklingspakke sendes på ny høring høsten 2026, med mål om lovproposisjon våren 2027.", g:"norsk"},
+    nsm:{s:"NSM", n:"NSM – Grunnprinsipper for IKT-sikkerhet 2.1", u:"https://nsm.no/regelverk-og-hjelp/rad-og-anbefalinger/ta-i-bruk-grunnprinsippene/", d:"Norsk sikkerhetsfaglig referanse. NSM har ingen egen normativ KI-veileder; KI dekkes i risikovurderingene.", g:"norsk"},
+
+    aiact:{s:"KI-forordningen", n:"EUs KI-forordning (EU) 2024/1689, artikkel 3", u:"https://eur-lex.europa.eu/eli/reg/2024/1689/oj", d:"Legaldefinisjonene i artikkel 3. Endret ved Digital Omnibus om KI, i kraft 27. juli 2026. Normativ for roller, risikoklasser og plikter.", g:"regel"},
+    iso22989:{s:"ISO/IEC 22989", n:"ISO/IEC 22989:2022 – KI-begreper og terminologi", u:"https://www.iso.org/standard/74296.html", d:"Standardisert terminologi. Termdelen kan leses gratis i ISO Online Browsing Platform, full standard er bak betalingsmur.", g:"regel"},
+    iso42001:{s:"ISO/IEC 42001", n:"ISO/IEC 42001:2023 – KI-styringssystem", u:"https://www.iso.org/standard/42001", d:"Krav til ledelsessystem for KI (AIMS). Bak betalingsmur, men rammeverket gjenfinnes i Bouvets ledelsessystem.", g:"regel"},
+    oecd:{s:"OECD", n:"OECD – definisjon av KI-system (revidert 2023)", u:"https://legalinstruments.oecd.org/en/instruments/oecd-legal-0449", d:"Definisjonen EUs KI-forordning bygger på. Internasjonalt omforent utgangspunkt.", g:"regel"},
+
+    nist:{s:"NIST AI RMF", n:"NIST AI Risk Management Framework og AI-glossar", u:"https://airc.nist.gov/glossary/", d:"Åpent engelsk glossar med rundt 500 termer, pluss rammeverk for KI-risikostyring og evaluering.", g:"risiko"},
+    owasp:{s:"OWASP GenAI", n:"OWASP GenAI Security Project – Top 10 for LLM Applications 2026", u:"https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/", d:"De-facto standard for sårbarheter i KI-løsninger. 2026-utgaven kom i august 2026 og erstatter 2025-utgaven.", g:"risiko"},
+    owaspagentic:{s:"OWASP Agentic Top 10", n:"OWASP Top 10 for Agentic Applications 2026", u:"https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/", d:"Egen risikoliste for KI-agenter (ASI01–ASI10), utgitt desember 2025. Kilde for agentrisikoene som målkapring, minneforgiftning og kaskadefeil.", g:"risiko"},
+
+    mcp:{s:"MCP-spesifikasjonen", n:"Model Context Protocol – spesifikasjon", u:"https://modelcontextprotocol.io/specification/2026-07-28", d:"Gjeldende versjon er 2026-07-28. Åpen protokoll, opprinnelig fra Anthropic, forvaltet av Agentic AI Foundation under Linux Foundation siden desember 2025.", g:"leverandor"},
+    anthropic:{s:"Anthropic", n:"Anthropic – dokumentasjon og Claude's Constitution", u:"https://www.anthropic.com/constitution", d:"Leverandørkilde. Ny utgave av Claude's Constitution kom i januar 2026. Primærkilde for Constitutional AI og Claude-spesifikke begreper.", g:"leverandor"},
+    agentskills:{s:"Agent Skills", n:"Agent Skills – åpen spesifikasjon", u:"https://agentskills.io", d:"Åpent format for ferdigheter til KI-agenter, opprinnelig fra Anthropic. Støttes blant annet av Claude, GitHub Copilot, VS Code, Cursor og Codex.", g:"leverandor"},
+    a2a:{s:"A2A-prosjektet", n:"Linux Foundation – Agent2Agent-protokollen (A2A)", u:"https://linuxfoundation.org/press/a2a-protocol-surpasses-150-organizations-lands-in-major-cloud-platforms-and-sees-enterprise-production-use-in-first-year", d:"Åpen protokoll for kommunikasjon mellom agenter. Versjon 1.0 i 2026, del av Agentic AI Foundation fra august 2026.", g:"leverandor"},
+    mslearn:{s:"Microsoft Learn", n:"Microsoft Learn – Copilot glossary", u:"https://learn.microsoft.com/en-us/copilot/glossary", d:"Leverandørkilde for Copilot-nære begreper som agent, grounding og arbeidsflate. Ordlisten er sist oppdatert i 2024 og delvis utdatert.", g:"leverandor"},
+
+    vaswani:{s:"Vaswani m.fl. (2017)", n:"Attention Is All You Need", u:"https://arxiv.org/abs/1706.03762", d:"Introduserte transformer-arkitekturen og attention-mekanismen.", g:"forskning"},
+    gpt3:{s:"Brown m.fl. (2020)", n:"Language Models are Few-Shot Learners", u:"https://arxiv.org/abs/2005.14165", d:"Viste at store språkmodeller løser oppgaver ut fra eksempler i prompten.", g:"forskning"},
+    ragpaper:{s:"Lewis m.fl. (2020)", n:"Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks", u:"https://arxiv.org/abs/2005.11401", d:"Originalartikkelen bak RAG.", g:"forskning"},
+    cot:{s:"Wei m.fl. (2022)", n:"Chain-of-Thought Prompting Elicits Reasoning in Large Language Models", u:"https://arxiv.org/abs/2201.11903", d:"Etablerte stegvis resonnering som prompteteknikk.", g:"forskning"},
+    instructgpt:{s:"Ouyang m.fl. (2022)", n:"Training Language Models to Follow Instructions with Human Feedback", u:"https://arxiv.org/abs/2203.02155", d:"Referansearbeidet for RLHF i praksis.", g:"forskning"},
+    cai:{s:"Bai m.fl. (2022)", n:"Constitutional AI: Harmlessness from AI Feedback", u:"https://arxiv.org/abs/2212.08073", d:"Metoden bak Constitutional AI og RLAIF.", g:"forskning"},
+    moe:{s:"Shazeer m.fl. (2017)", n:"Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts Layer", u:"https://arxiv.org/abs/1701.06538", d:"Grunnlaget for Mixture of Experts.", g:"forskning"},
+    lora:{s:"Hu m.fl. (2021)", n:"LoRA: Low-Rank Adaptation of Large Language Models", u:"https://arxiv.org/abs/2106.09685", d:"Effektiv finjustering med få tilleggsparametere.", g:"forskning"},
+    distill:{s:"Hinton m.fl. (2015)", n:"Distilling the Knowledge in a Neural Network", u:"https://arxiv.org/abs/1503.02531", d:"Originalarbeidet om modelldistillasjon.", g:"forskning"},
+    emergent:{s:"Wei m.fl. (2022b)", n:"Emergent Abilities of Large Language Models", u:"https://arxiv.org/abs/2206.07682", d:"Beskriver evner som først dukker opp ved stor skala.", g:"forskning"},
+    scaling:{s:"Kaplan m.fl. (2020)", n:"Scaling Laws for Neural Language Models", u:"https://arxiv.org/abs/2001.08361", d:"Sammenhengen mellom modellstørrelse, data, beregning og ytelse.", g:"forskning"},
+    specdec:{s:"Leviathan m.fl. (2022)", n:"Fast Inference from Transformers via Speculative Decoding", u:"https://arxiv.org/abs/2211.17192", d:"Teknikken bak speculative decoding.", g:"forskning"},
+    ewc:{s:"Kirkpatrick m.fl. (2017)", n:"Overcoming Catastrophic Forgetting in Neural Networks", u:"https://arxiv.org/abs/1612.00796", d:"Beskriver og motvirker katastrofal glemsel.", g:"forskning"},
+
+    bouvet:{s:"Bouvet (internt)", n:"Bouvet – intern praksis og ledelsessystem", u:null, d:"Retningslinjer for bruk av KI, AI Academy, AI playbook og ai.bouvet.no. Ikke offentlig tilgjengelig.", g:"internt"},
+    bransje:{s:"Bransjebruk", n:"Etablert bransjebruk", u:null, d:"Begrep i alminnelig bruk uten normativ kilde. Vær varsom med bruk i kontrakter og styringsdokumenter.", g:"internt"}
+  };
+  var KILDEGRUPPER = [
+    {id:"norsk", t:"Norske og offentlige kilder"},
+    {id:"regel", t:"Regelverk og standarder"},
+    {id:"risiko", t:"Rammeverk for risiko og sikkerhet"},
+    {id:"leverandor", t:"Leverandørdokumentasjon"},
+    {id:"forskning", t:"Forskningsartikler"},
+    {id:"internt", t:"Internt og bransjebruk"}
+  ];
+
+  /* ---------- Begreper ---------- */
+  var TERMS = [
+    /* --- Nivå 1 --- */
+    {id:"ki", t:"Kunstig intelligens (KI)", en:"artificial intelligence", l:1, f:["grunnleggende"], v:["generelt"], k:["teknologiradet","oecd"],
+      d:"Maskinbaserte systemer som utleder svar, anbefalinger eller handlinger ut fra data, for oppgaver som ellers krever menneskelig intelligens."},
+    {id:"maskinlaering", t:"Maskinlæring", en:"machine learning", l:1, f:["grunnleggende","ml"], v:["generelt"], k:["teknologiradet","iso22989"],
+      d:"Fagfelt innen KI der systemer lærer mønstre fra data i stedet for å bli programmert med eksplisitte regler."},
+    {id:"generativ-ki", t:"Generativ KI", en:"generative AI", l:1, f:["grunnleggende","genai"], v:["generelt"], k:["teknologiradet"],
+      d:"Modeller som lager nytt innhold – tekst, bilder, kode eller lyd – ut fra mønstre lært fra treningsdata."},
+    {id:"sprakmodell", t:"Språkmodell (LLM)", en:"large language model", l:1, f:["genai"], v:["generelt"], k:["teknologiradet"],
+      d:"Modell trent på store mengder tekst for å forstå og generere språk. Claude, GPT og Gemini er språkmodeller."},
+    {id:"ki-assistent", t:"KI-assistent", en:"AI assistant", l:1, f:["grunnleggende"], v:["generelt"], k:["mslearn","teknologiradet"],
+      d:"KI-drevet verktøy som hjelper med oppgaver som skriving, research eller koding gjennom dialog."},
+    {id:"chatbot", t:"Chatbot", en:"chatbot", l:1, f:["grunnleggende","prompting"], v:["chatgpt","claude"], k:["teknologiradet"],
+      d:"Program som fører samtale med brukeren, i dag oftest drevet av en språkmodell."},
+    {id:"prompt", t:"Prompt", en:"prompt", l:1, f:["prompting"], v:["generelt"], k:["teknologiradet"],
+      d:"Instruksjonen eller spørsmålet du gir modellen for å få et ønsket svar."},
+    {id:"modell", t:"Modell", en:"model", l:1, f:["grunnleggende","ml"], v:["generelt"], k:["iso22989","teknologiradet"],
+      d:"Det trente systemet som tar imot input og produserer output – selve motoren i en KI-løsning."},
+    {id:"treningsdata", t:"Treningsdata", en:"training data", l:1, f:["ml","data"], v:["generelt"], k:["teknologiradet","iso22989"],
+      d:"Datagrunnlaget modellen lærer fra. Kvaliteten på disse dataene setter taket for hva modellen kan gjøre."},
+    {id:"nevralt-nettverk", t:"Nevralt nettverk", en:"neural network", l:1, f:["ml"], v:["generelt"], k:["teknologiradet"],
+      d:"Modellarkitektur bygget av lag med enkle regneenheter som gradvis lærer mer sammensatte mønstre."},
+    {id:"token", t:"Token", en:"token", l:1, f:["genai"], v:["generelt"], k:["teknologiradet"],
+      d:"Den minste tekstbiten – ofte en orddel – som en språkmodell leser og genererer om gangen. Pris og kapasitet måles i tokens."},
+    {id:"hallusinasjon", t:"Hallusinasjon", en:"hallucination", l:1, f:["genai","etikk"], v:["generelt"], k:["teknologiradet","nist"],
+      d:"Når modellen presenterer feilaktig eller oppdiktet informasjon som om den var sann. Kan ikke fjernes helt, bare reduseres og kontrolleres."},
+    {id:"ansvarlig-ki", t:"Ansvarlig KI", en:"responsible AI", l:1, f:["etikk"], v:["generelt"], k:["nist","kinorge"],
+      d:"Prinsipper og praksis for å utvikle og bruke KI trygt, rettferdig og etterprøvbart gjennom hele livsløpet."},
+    {id:"ki-kompetanse", t:"KI-kompetanse", en:"AI literacy", l:1, f:["etikk","grunnleggende"], v:["generelt"], k:["aiact","kinorge"],
+      d:"Tilstrekkelig kunnskap til å bruke og vurdere KI-systemer forsvarlig. KI-forordningen gjør dette til en plikt for både leverandør og ibruktaker."},
+    {id:"menneskelig-kontroll", t:"Menneskelig kontroll", en:"human oversight", l:1, f:["etikk"], v:["generelt"], k:["aiact","iso22989"],
+      d:"At mennesker kan følge, gripe inn i og overstyre et KI-system i drift. Kravet er strengere jo høyere risiko systemet har."},
+    {id:"copilot-begrep", t:"Copilot", en:"Copilot", l:1, f:["grunnleggende","utvikling"], v:["m365","copilot"], k:["mslearn"],
+      d:"Microsofts fellesnavn på KI-assistenter integrert i blant annet Microsoft 365, Windows og utviklerverktøy."},
+    {id:"dypforfalskning", t:"Dypforfalskning (deepfake)", en:"deepfake", l:1, f:["etikk","sikkerhet","genai"], v:["generelt"], k:["aiact","teknologiradet"], nytt:true,
+      d:"KI-generert eller KI-manipulert bilde, lyd eller video som fremstår som ekte og kan forveksles med virkelige personer eller hendelser. KI-forordningen krever at slikt innhold merkes."},
+    {id:"ki-skvip", t:"KI-skvip", en:"AI slop", l:1, f:["genai","etikk"], v:["generelt"], k:["teknologiradetny"], nytt:true,
+      d:"KI-generert innhold av lav kvalitet som spres på nett. Omtales også som KI-søppel."},
+    {id:"jobbskvip", t:"KI-generert jobbskvip", en:"AI workslop", l:1, f:["prompting","etikk"], v:["generelt"], k:["teknologiradetny"], nytt:true,
+      d:"KI-generert arbeidsinnhold som ser profesjonelt ut, men holder lav kvalitet og flytter jobben over på mottakeren som må rette det opp."},
+    {id:"kognitiv-latskap", t:"Kognitiv latskap", en:"cognitive surrender", l:1, f:["grunnleggende","etikk"], v:["generelt"], k:["teknologiradetny"], nytt:true,
+      d:"Å overlate krevende tankearbeid til KI i stedet for å gjøre det selv. Gir raske svar, men kan svekke læring, forståelse og egen dømmekraft."},
+
+    /* --- Nivå 2 --- */
+    {id:"prompt-engineering", t:"Prompt engineering", en:"prompt engineering", l:2, f:["prompting"], v:["generelt"], k:["teknologiradet"],
+      d:"Å utforme og justere prompter systematisk for å få mer presise, relevante eller kreative svar."},
+    {id:"kontekstdesign", t:"Kontekstdesign", en:"context engineering", l:2, f:["prompting","agentic"], v:["claude","generelt"], k:["anthropic"],
+      d:"Å designe hvilken informasjon, verktøy og historikk modellen får i kontekstvinduet. Utvidelsen av prompt engineering når løsninger blir sammensatte."},
+    {id:"system-prompt", t:"System prompt", en:"system prompt", l:2, f:["prompting"], v:["claude","chatgpt"], k:["anthropic","mslearn"],
+      d:"Instruksjon lagt i forkant som styrer modellens rolle, tone og rammer gjennom hele samtalen, uten å vises for sluttbrukeren."},
+    {id:"context-window", t:"Kontekstvindu", en:"context window", l:2, f:["genai"], v:["generelt"], k:["teknologiradet","anthropic"],
+      d:"Hvor mye tekst, målt i tokens, modellen kan forholde seg til samtidig. Alt utenfor vinduet finnes ikke for modellen."},
+    {id:"few-shot", t:"Few-shot prompting", en:"few-shot prompting", l:2, f:["prompting","ml"], v:["generelt"], k:["teknologiradet","gpt3"],
+      d:"Å legge noen få eksempler i prompten for å vise ønsket format eller stil. Modellen lærer ikke av eksemplene – de gjelder bare i denne samtalen."},
+    {id:"grunnmodell", t:"Grunnmodell", en:"foundation model", l:2, f:["genai","ml"], v:["generelt"], k:["teknologiradet","aiact"],
+      d:"Stor, forhåndstrent modell som kan tilpasses mange ulike oppgaver, og som andre KI-tjenester bygges oppå."},
+    {id:"fine-tuning", t:"Finjustering", en:"fine-tuning", l:2, f:["ml"], v:["generelt"], k:["teknologiradet","nist"],
+      d:"Videretrening av en ferdig modell på et smalere datasett for å spesialisere den til en oppgave eller et domene."},
+    {id:"embeddings", t:"Embeddings", en:"embeddings", l:2, f:["ml","data"], v:["generelt"], k:["teknologiradet"],
+      d:"Numeriske representasjoner av innhold som fanger betydning, slik at likt innhold havner nær hverandre matematisk."},
+    {id:"vektordatabase", t:"Vektordatabase", en:"vector database", l:2, f:["data"], v:["generelt"], k:["bransje"],
+      d:"Database optimalisert for å lagre og søke i embeddings. Ryggraden i de fleste RAG-løsninger."},
+    {id:"rag", t:"RAG", en:"retrieval-augmented generation", l:2, f:["genai","data"], v:["generelt"], k:["teknologiradet","ragpaper"],
+      d:"Modellen henter relevant informasjon fra en ekstern kilde før den svarer. Gir ferskere og mer etterprøvbare svar enn modellen alene."},
+    {id:"temperature", t:"Temperatur", en:"temperature", l:2, f:["genai"], v:["generelt"], k:["anthropic"],
+      d:"Innstilling som styrer hvor forutsigbart modellen svarer. Lav verdi gir stabile svar, høy verdi gir mer variasjon."},
+    {id:"multimodal", t:"Multimodal", en:"multimodal", l:2, f:["genai"], v:["claude","chatgpt"], k:["teknologiradet"],
+      d:"Modell som forstår og kombinerer flere typer input, som tekst, bilder, lyd og video."},
+    {id:"api", t:"API", en:"API", l:2, f:["utvikling","data"], v:["copilot","generelt"], k:["mslearn"],
+      d:"Programmeringsgrensesnitt som lar egne systemer snakke direkte med en modell, uten å gå via en chatteflate."},
+    {id:"evaluering", t:"Evaluering", en:"evaluation, eval", l:2, f:["data","utvikling"], v:["generelt"], k:["nist"],
+      d:"Systematisk og gjentakbar måling av en KI-løsning mot definerte testsett og kriterier. Uten evaluering vet man ikke om endringer gjør løsningen bedre."},
+    {id:"modellkort", t:"Modellkort", en:"model card", l:2, f:["etikk","data"], v:["generelt"], k:["nist"],
+      d:"Strukturert dokumentasjon av en modells formål, datagrunnlag, begrensninger og målte ytelse."},
+    {id:"ki-klare-data", t:"KI-klare data", en:"AI-ready data", l:2, f:["data"], v:["generelt"], k:["kinorge"],
+      d:"Data med avklart eierskap, kvalitet, tilgang og dokumentasjon, slik at de faktisk kan brukes i KI-løsninger."},
+    {id:"syntetiske-data", t:"Syntetiske data", en:"synthetic data", l:2, f:["data","ml"], v:["generelt"], k:["teknologiradet"],
+      d:"Kunstig genererte data som etterligner mønstre i virkelige data. Brukes til trening og testing der ekte data er sensitive eller mangler."},
+    {id:"bias", t:"Skjevhet (bias)", en:"bias", l:2, f:["etikk","ml"], v:["generelt"], k:["teknologiradet","nist"],
+      d:"Systematisk skjevhet i modellens svar, ofte arvet fra skjevheter i treningsdataen eller i hvordan oppgaven er formulert."},
+    {id:"personvern-ki", t:"Personvern i KI", en:"privacy in AI", l:2, f:["sikkerhet","etikk"], v:["generelt"], k:["datatilsynet"],
+      d:"Hvordan persondata behandles, lagres og beskyttes ved bruk av KI. Krever behandlingsgrunnlag, ikke bare et godt formål."},
+    {id:"hoyrisiko", t:"Høyrisiko-KI-system", en:"high-risk AI system", l:2, f:["etikk","sikkerhet"], v:["generelt"], k:["aiact"],
+      d:"KI-system i bruksområder med betydelig risiko for helse, sikkerhet eller grunnleggende rettigheter. Utløser krav til risikostyring, datakvalitet og dokumentasjon.",
+      e:"Fristene er utsatt i EU: 2. desember 2027 for bruksområdene i vedlegg III (som rekruttering og kredittvurdering) og 2. august 2028 for produkter i vedlegg I."},
+    {id:"jailbreak", t:"Jailbreak", en:"jailbreak", l:2, f:["sikkerhet"], v:["generelt"], k:["owasp","teknologiradet"],
+      d:"Angrep som omgår modellens sikkerhetsbegrensninger for å få frem blokkert innhold eller atferd."},
+    {id:"agentisk-arbeidsflyt", t:"Agentisk arbeidsflyt", en:"agentic workflow", l:2, f:["agentic"], v:["claude","copilot","generelt"], k:["mcp","teknologiradet"],
+      d:"Arbeidsflyt der KI planlegger og utfører flere steg med verktøybruk, med mennesket i kontroll over rammene fremfor hvert steg."},
+    {id:"digital-arbeidsflate", t:"Digital arbeidsflate", en:"surface", l:2, f:["utvikling","agentic"], v:["m365","copilot"], k:["mslearn","bouvet"],
+      d:"Verktøyet eller miljøet der modellen faktisk brukes, for eksempel M365 Copilot-appen, VS Code eller en egen løsning."},
+    {id:"design-til-kode", t:"Design-til-kode", en:"design-to-code", l:2, f:["utvikling","genai"], v:["figma","lovable"], k:["bransje"],
+      d:"KI som omformer visuelle design eller prompter direkte til fungerende kode, som i Figma Make og Lovable."},
+    {id:"vibe-coding", t:"Vibbekoding", en:"vibe coding", l:2, f:["utvikling"], v:["lovable","copilot","claude"], k:["teknologiradetny"],
+      d:"Å bygge programvare gjennom dialog i naturlig språk, med rask iterasjon fremfor manuell koding linje for linje. Krever fortsatt gjennomgang av koden."},
+    {id:"smiskende-ki", t:"Smiskende KI", en:"sycophantic AI", l:2, f:["genai","etikk"], v:["generelt"], k:["teknologiradetny"], nytt:true,
+      d:"Når modellen tilpasser svaret til det brukeren vil høre, og bekrefter i stedet for å vurdere nøkternt. Viktig å kjenne til når KI brukes til å kvalitetssikre egne ideer."},
+    {id:"merking-ki-innhold", t:"Merking av KI-innhold", en:"AI content labelling", l:2, f:["etikk","genai"], v:["generelt"], k:["aiact","kinorge"], nytt:true,
+      d:"Krav om at KI-generert eller KI-manipulert innhold skal kunne gjenkjennes, for eksempel med vannmerker, metadata eller synlig merking.",
+      e:"Åpenhetspliktene i artikkel 50 gjelder i EU fra august 2026, med egen frist for maskinlesbar merking. En EU-praksiskodeks beskriver hvordan merkingen kan gjøres."},
+    {id:"agent-skill", t:"Ferdighet (agent skill)", en:"agent skill", l:2, f:["agentic","prompting"], v:["claude","copilot","chatgpt"], k:["agentskills"], nytt:true,
+      d:"En mappe med instruksjoner (SKILL.md), og eventuelt skript og maler, som en KI-agent laster inn bare når oppgaven krever det. Gjør faglig praksis gjenbrukbar på tvers av verktøy."},
+    {id:"noktern-ki", t:"Nøktern KI", en:"frugal AI", l:2, f:["etikk","ml"], v:["generelt"], k:["teknologiradetny"], nytt:true,
+      d:"Å utvikle og bruke KI med minst mulig energi, data og beregningskraft, uten å gå unødig på bekostning av ytelse. For eksempel å velge en mindre modell når den er god nok."},
+    {id:"stiloverforing", t:"Stiloverføring", en:"style transfer", l:2, f:["genai"], v:["generelt"], k:["teknologiradetny"], nytt:true,
+      d:"Å bruke generativ KI til å overføre stil eller uttrykk fra én kilde til annet innhold, som å gi et bilde preg av en kunstretning eller skrive om en tekst til en annen tone."},
+    {id:"superintelligens", t:"Superintelligens", en:"superintelligence", l:2, f:["grunnleggende","etikk"], v:["generelt"], k:["teknologiradetny"], nytt:true,
+      d:"Teoretisk idé om maskinintelligens som overgår mennesker på alle eller de fleste områder. Det er stor faglig uenighet om hva det innebærer, og om og når det kan oppstå."},
+
+    /* --- Nivå 3 --- */
+    {id:"ki-agent", t:"KI-agent", en:"AI agent", l:3, f:["agentic"], v:["claude","generelt"], k:["teknologiradetny","mcp"],
+      d:"System som selvstendig planlegger og utfører flere steg mot et mål, og bruker verktøy underveis."},
+    {id:"tool-use", t:"Verktøybruk", en:"tool use, function calling", l:3, f:["agentic","utvikling"], v:["claude","chatgpt"], k:["anthropic","mcp"],
+      d:"Modellens evne til å kalle funksjoner og tjenester – søk, beregning, kodekjøring – som del av å løse oppgaven."},
+    {id:"mcp", t:"MCP (Model Context Protocol)", en:"Model Context Protocol", l:3, f:["agentic","utvikling"], v:["claude"], k:["mcp"],
+      d:"Åpen protokoll for å koble KI-modeller til verktøy, data og tjenester på en enhetlig måte. Opprinnelig fra Anthropic, forvaltet av Agentic AI Foundation under Linux Foundation siden desember 2025.",
+      e:"Gjeldende spesifikasjon (2026-07-28) gjør protokollen tilstandsløs og flytter blant annet oppgaver (Tasks) ut i valgfrie utvidelser."},
+    {id:"orkestrering", t:"Orkestrering", en:"orchestration", l:3, f:["agentic","data"], v:["generelt"], k:["mslearn","bransje"],
+      d:"Koordinering av flere modeller, agenter eller verktøy som sammen løser en sammensatt oppgave."},
+    {id:"modellruting", t:"Modellruting", en:"model routing", l:3, f:["agentic","ml"], v:["m365","generelt"], k:["mslearn","bransje"],
+      d:"Å velge modell automatisk ut fra oppgavens kompleksitet, krav og kostnad.",
+      e:"Eksempel: M365 Copilot veksler mellom «Think deeper» og «Quick response» avhengig av oppgaven."},
+    {id:"resonneringsmodell", t:"Resonneringsmodell", en:"reasoning model", l:3, f:["genai","ml"], v:["chatgpt","claude","m365"], k:["anthropic","mslearn"],
+      d:"Modell som bruker ekstra beregning under svargenerering til å resonnere stegvis. Gir bedre svar på sammensatte oppgaver, men koster mer tid og penger."},
+    {id:"chain-of-thought", t:"Chain-of-thought", en:"chain-of-thought", l:3, f:["genai","ml"], v:["generelt"], k:["cot"],
+      d:"Teknikk der modellen resonnerer i flere steg før endelig svar. Gir ofte mer korrekte resultater på komplekse oppgaver."},
+    {id:"grounding", t:"Grounding", en:"grounding", l:3, f:["genai","data"], v:["generelt"], k:["mslearn","nist"],
+      d:"Å forankre svaret i konkrete, verifiserbare kilder eller data i stedet for modellens eget minne."},
+    {id:"llm-dommer", t:"LLM som dommer", en:"LLM-as-a-judge", l:3, f:["data","utvikling"], v:["generelt"], k:["nist"],
+      d:"Å bruke en språkmodell til å score andre modellers svar i automatisert evaluering. Raskt og skalerbart, men arver dommermodellens skjevheter."},
+    {id:"forklarbarhet", t:"Forklarbarhet (XAI)", en:"explainability", l:3, f:["etikk","ml"], v:["generelt"], k:["nist","iso22989"],
+      d:"I hvilken grad mennesker kan forstå og etterprøve hvordan modellen kom fram til et svar."},
+    {id:"gpai", t:"KI-modell med generelt formål (GPAI)", en:"general-purpose AI model", l:3, f:["etikk","genai"], v:["generelt"], k:["aiact"],
+      d:"Modell trent på store datamengder som kan utføre et bredt spekter av oppgaver. Egen reguleringskategori med egne plikter i KI-forordningen."},
+    {id:"roller-aiact", t:"Leverandør og ibruktaker", en:"provider and deployer", l:3, f:["etikk"], v:["generelt"], k:["aiact"],
+      d:"De to hovedrollene KI-forordningen legger plikter på: den som utvikler og tilbyr systemet, og den som tar det i bruk i egen virksomhet. Bouvet kan være begge i samme leveranse."},
+    {id:"ai-act", t:"KI-forordningen (EU AI Act)", en:"EU AI Act", l:3, f:["etikk","sikkerhet"], v:["generelt"], k:["aiact","regjeringen"],
+      d:"EUs regelverk som klassifiserer KI-systemer etter risiko og stiller krav til blant annet risikostyring, dokumentasjon og transparens.",
+      e:"Status per oktober 2026: Digital Omnibus om KI trådte i kraft i EU 27. juli 2026 og utsatte høyrisikokravene til desember 2027 og august 2028. Åpenhetspliktene i artikkel 50 gjelder i EU fra august 2026. Forordningen er ennå ikke innlemmet i EØS-avtalen. Regjeringen sender endringene på ny høring høsten 2026 og tar sikte på lovproposisjon våren 2027. Den gjelder likevel norske virksomheter som tilbyr KI i EU-markedet."},
+    {id:"ki-styringssystem", t:"KI-styringssystem (AIMS)", en:"AI management system", l:3, f:["etikk"], v:["generelt"], k:["iso42001"],
+      d:"Ledelsessystem for ansvarlig utvikling og bruk av KI, med roller, risikostyring og kontinuerlig forbedring. Sertifiserbart etter ISO/IEC 42001."},
+    {id:"digital-suverenitet", t:"Digital suverenitet", en:"digital sovereignty", l:3, f:["sikkerhet","etikk"], v:["generelt"], k:["bouvet","nsm"],
+      d:"I hvilken grad virksomheten har reell kontroll over egne data, systemer og leverandøravhengigheter i KI-løsninger."},
+    {id:"prompt-injection", t:"Prompt injection", en:"prompt injection", l:3, f:["sikkerhet","agentic"], v:["generelt"], k:["owasp"],
+      d:"Angrep der skjulte instruksjoner i innhold modellen leser, kaprer eller vrir oppførselen. Den mest undervurderte risikoen i agentløsninger."},
+    {id:"guardrails", t:"Sperrer (guardrails)", en:"guardrails", l:3, f:["sikkerhet","etikk"], v:["generelt"], k:["owasp","nist"],
+      d:"Tekniske og prosessuelle sperrer som hindrer modellen i å gi skadelig, feil eller uønsket output."},
+    {id:"dataforgiftning", t:"Dataforgiftning", en:"data poisoning", l:3, f:["sikkerhet","data","ml"], v:["generelt"], k:["owasp","teknologiradetny"],
+      d:"Manipulering av trenings- eller kunnskapsdata slik at modellen lærer feil eller får innebygde sårbarheter."},
+    {id:"utdata-handtering", t:"Usikker håndtering av utdata", en:"improper output handling", l:3, f:["sikkerhet","utvikling"], v:["generelt"], k:["owasp"],
+      d:"Å sende modellens output videre uten validering, slik at den kan utføre kode, spørringer eller kommandoer nedstrøms."},
+    {id:"overdrevet-handlingsrom", t:"Overdrevet handlingsrom", en:"excessive agency", l:3, f:["sikkerhet","agentic"], v:["generelt"], k:["owasp"],
+      d:"En agent får flere rettigheter eller verktøy enn oppgaven krever, og kan dermed gjøre skade utilsiktet."},
+    {id:"ubegrenset-ressursbruk", t:"Ubegrenset ressursbruk", en:"unbounded consumption", l:3, f:["sikkerhet","data"], v:["generelt"], k:["owasp"],
+      d:"Manglende tak på kall og forbruk, som gir kostnadssprekk eller tjenestenekt."},
+    {id:"ki-leverandorkjede", t:"KI-leverandørkjede", en:"AI supply chain", l:3, f:["sikkerhet","data"], v:["generelt"], k:["owasp","nsm"],
+      d:"Risiko knyttet til tredjeparts modeller, modellvekter, datasett og MCP-servere som inngår i løsningen."},
+    {id:"kompetansetrapp", t:"Kompetansetrapp for KI", en:"AI capability ladder", l:3, f:["grunnleggende","etikk"], v:["generelt"], k:["bouvet"],
+      d:"Modell for å beskrive og utvikle KI-modenhet, fra grunnleggende bruk til strategisk og systemisk mestring."},
+    {id:"strukturkapital", t:"Strukturkapital", en:"structural capital", l:3, f:["grunnleggende","data"], v:["generelt"], k:["bouvet"],
+      d:"Metoder, maler og ressurser virksomheten bygger opp for å gjenbruke og skalere KI-kompetanse."},
+    {id:"a2a", t:"A2A (Agent2Agent)", en:"Agent2Agent protocol", l:3, f:["agentic","utvikling"], v:["generelt"], k:["a2a"], nytt:true,
+      d:"Åpen protokoll som lar KI-agenter fra ulike leverandører finne hverandre, utveksle oppgaver og samarbeide. Utfyller MCP, som kobler en agent til verktøy og data."},
+    {id:"ki-svermer", t:"KI-svermer", en:"AI swarms", l:3, f:["agentic","sikkerhet"], v:["generelt"], k:["teknologiradetny"], nytt:true,
+      d:"Nettverk av KI-agenter som koordinerer seg og opptrer samlet mot et felles mål. Forbindes ofte med avanserte cyberangrep og påvirkningsoperasjoner."},
+    {id:"malkapring", t:"Målkapring for agenter", en:"agent goal hijack", l:3, f:["sikkerhet","agentic"], v:["generelt"], k:["owaspagentic"], nytt:true,
+      d:"Angrep der skjulte instruksjoner i innhold agenten leser, endrer hva agenten prøver å oppnå. Øverst på OWASPs risikoliste for agenter (ASI01)."},
+    {id:"minneforgiftning", t:"Minneforgiftning", en:"memory poisoning", l:3, f:["sikkerhet","agentic"], v:["generelt"], k:["owaspagentic"], nytt:true,
+      d:"Manipulering av agentens lagrede minne eller kontekst, slik at senere beslutninger bygger på falsk informasjon (ASI06)."},
+    {id:"kaskadefeil", t:"Kaskadefeil", en:"cascading failures", l:3, f:["sikkerhet","agentic"], v:["generelt"], k:["owaspagentic"], nytt:true,
+      d:"Når en feil hos én agent eller i ett steg forplanter seg videre gjennom sammenkoblede agenter og systemer, og forsterkes underveis (ASI08)."},
+
+    /* --- Nivå 4 --- */
+    {id:"transformer", t:"Transformer-arkitektur", en:"transformer", l:4, f:["ml","genai"], v:["generelt"], k:["vaswani"],
+      d:"Arkitekturen moderne språkmodeller bygger på, der attention veier sammenhengen mellom alle deler av inndataen samtidig."},
+    {id:"attention", t:"Attention-mekanisme", en:"attention", l:4, f:["ml"], v:["generelt"], k:["vaswani"],
+      d:"Beregningen som avgjør hvor mye vekt hver del av inndataen får når modellen genererer neste token."},
+    {id:"rlhf", t:"RLHF", en:"reinforcement learning from human feedback", l:4, f:["ml","etikk"], v:["generelt"], k:["instructgpt","nist"],
+      d:"Trening der menneskelige preferanser mellom modellsvar brukes til å forsterke ønsket atferd og dempe uønsket."},
+    {id:"constitutional-ai", t:"Constitutional AI", en:"constitutional AI", l:4, f:["etikk","ml"], v:["claude"], k:["anthropic","cai"],
+      d:"Metode i to faser: modellen kritiserer og reviderer egne svar mot skrevne prinsipper, og trenes deretter på KI-genererte preferanser (RLAIF) i stedet for menneskelige vurderinger."},
+    {id:"alignment", t:"Alignment", en:"alignment", l:4, f:["etikk","ml"], v:["generelt"], k:["nist","anthropic"],
+      d:"Fagfeltet som arbeider for at en modells mål og atferd samsvarer med menneskelige verdier og intensjoner."},
+    {id:"moe", t:"Mixture of Experts (MoE)", en:"mixture of experts", l:4, f:["ml"], v:["generelt"], k:["moe"],
+      d:"Arkitektur der bare et utvalg spesialiserte deler av modellen aktiveres per forespørsel, for bedre ytelse til lavere beregningskostnad."},
+    {id:"lora-peft", t:"LoRA og PEFT", en:"LoRA, parameter-efficient fine-tuning", l:4, f:["ml","utvikling"], v:["generelt"], k:["lora"],
+      d:"Finjustering der bare et lite sett tilleggsparametere trenes, i stedet for hele modellen."},
+    {id:"kvantisering", t:"Kvantisering", en:"quantization", l:4, f:["ml","utvikling"], v:["generelt"], k:["bransje"],
+      d:"Å redusere presisjonen på modellens tallverdier for å gjøre den mindre og raskere, mot et lite tap i nøyaktighet."},
+    {id:"distillasjon", t:"Modelldistillasjon", en:"model distillation", l:4, f:["ml"], v:["generelt"], k:["distill"],
+      d:"Å trene en liten studentmodell til å etterligne en større lærermodell, for raskere og billigere drift."},
+    {id:"speculative-decoding", t:"Speculative decoding", en:"speculative decoding", l:4, f:["ml","utvikling"], v:["generelt"], k:["specdec"],
+      d:"En liten, rask modell foreslår tekst som en større modell verifiserer, for høyere hastighet uten tap av kvalitet."},
+    {id:"emergente-evner", t:"Emergente evner", en:"emergent abilities", l:4, f:["ml","genai"], v:["generelt"], k:["emergent"],
+      d:"Evner som først dukker opp ved stor skala, uten å være trent inn eksplisitt, og som mangler i mindre versjoner av samme modell."},
+    {id:"skaleringslov", t:"Skaleringslov", en:"scaling law", l:4, f:["ml"], v:["generelt"], k:["scaling"],
+      d:"Empirisk sammenheng mellom modellstørrelse, datamengde, beregningskraft og ytelse."},
+    {id:"katastrofal-glemsel", t:"Katastrofal glemsel", en:"catastrophic forgetting", l:4, f:["ml"], v:["generelt"], k:["ewc"],
+      d:"Når en modell mister tidligere lært kunnskap som følge av videre trening på nye data."},
+    {id:"red-teaming", t:"Red teaming", en:"red teaming", l:4, f:["sikkerhet"], v:["generelt"], k:["owasp","nist"],
+      d:"Systematisk angrepstesting av en KI-løsning for å avdekke sårbarheter, skjevheter og misbruksmuligheter før den settes i drift."},
+    {id:"fria", t:"Konsekvensvurdering for grunnleggende rettigheter (FRIA)", en:"fundamental rights impact assessment", l:4, f:["etikk"], v:["generelt"], k:["aiact"],
+      d:"Vurdering av hvordan et høyrisikosystem påvirker grunnleggende rettigheter, gjennomført før systemet tas i bruk."},
+    {id:"sandbagging", t:"Strategisk underprestasjon", en:"sandbagging", l:4, f:["etikk","ml"], v:["generelt"], k:["teknologiradetny"], nytt:true,
+      d:"Når et KI-system presterer dårligere enn det kan under testing og evaluering, og dermed skjuler egne evner. Utfordrer påliteligheten i sikkerhetsevalueringer."},
+    {id:"ki-bloff", t:"KI-bløff", en:"AI bluffing", l:4, f:["etikk","ml"], v:["generelt"], k:["teknologiradetny"], nytt:true,
+      d:"Når et KI-system fremstiller egne evner som bedre enn de er. Det motsatte av strategisk underprestasjon."}
+  ];
+
+  TERMS.forEach(function(term){
+    var set = new Set();
+    term.f.forEach(function(fag){ (ROLES_BY_FAG[fag]||[]).forEach(function(r){ set.add(r); }); });
+    if(ROLE_OVERRIDES[term.id]) set = new Set(ROLE_OVERRIDES[term.id]);
+    term.r = ALL_ROLES.filter(function(r){ return set.has(r); });
+  });
+
+  /* ---------- Tilstand ---------- */
+  var state = {query:"", level:"all", fag:new Set(), tool:new Set(), role:new Set()};
+  var sets = {fag:state.fag, tool:state.tool, role:state.role};
+  var dims = {
+    role:{dict:ROLLER, field:"r", label:"Rolle", swatch:true},
+    fag:{dict:FAGOMRADER, field:"f", label:"Fagområde", swatch:false},
+    tool:{dict:VERKTOY, field:"v", label:"Verktøy", swatch:false}
+  };
+  var refs = {role:{}, fag:{}, tool:{}, level:{}};
+  var searchTimer = null;
+
+  function norm(s){ return (s||"").toLowerCase(); }
+
+  function matchesQuery(term, q){
+    if(!q) return true;
+    var hay = [term.t, term.en||"", term.d, term.e||"", term.nytt ? "nytt" : ""]
+      .concat(term.f.map(function(k){return FAGOMRADER[k];}))
+      .concat(term.v.map(function(k){return VERKTOY[k];}))
+      .concat(term.r.map(function(k){return ROLLER[k];}))
+      .concat(term.k.map(function(k){return KILDER[k] ? KILDER[k].s : "";}))
+      .join(" ");
+    return norm(hay).indexOf(norm(q)) !== -1;
+  }
+
+  function matchTerm(term, ignore){
+    if(ignore!=="level" && state.level!=="all" && term.l !== Number(state.level)) return false;
+    if(ignore!=="fag" && state.fag.size>0 && !term.f.some(function(k){return state.fag.has(k);})) return false;
+    if(ignore!=="tool" && state.tool.size>0 && !term.v.some(function(k){return state.tool.has(k);})) return false;
+    if(ignore!=="role" && state.role.size>0 && !term.r.some(function(k){return state.role.has(k);})) return false;
+    if(ignore!=="query" && !matchesQuery(term, state.query)) return false;
+    return true;
+  }
+
+  /* ---------- Bygg kontroller (én gang) ---------- */
+  function buildLevels(){
+    var list = document.getElementById("level-list");
+    var opts = [{v:"all", txt:"Alle nivåer"}, {v:"1"}, {v:"2"}, {v:"3"}, {v:"4"}];
+    opts.forEach(function(o){
+      var label = document.createElement("label");
+      label.className = "level";
+      var input = document.createElement("input");
+      input.type = "radio"; input.name = "niva"; input.value = o.v;
+      input.id = "niva-" + o.v;
+      if(o.v === "all") input.checked = true;
+      label.appendChild(input);
+      if(o.v === "all"){
+        var t0 = document.createElement("span");
+        t0.className = "txt"; t0.textContent = o.txt;
+        label.appendChild(t0);
+      } else {
+        var num = document.createElement("span");
+        num.className = "num"; num.textContent = o.v;
+        var sr = document.createElement("span");
+        sr.className = "sr-only"; sr.textContent = "Nivå " + o.v + ", ";
+        var txt = document.createElement("span");
+        txt.className = "txt"; txt.textContent = LEVELS[o.v];
+        label.appendChild(num); label.appendChild(sr); label.appendChild(txt);
+      }
+      var cnt = document.createElement("span");
+      cnt.className = "cnt";
+      var cntNum = document.createElement("span");
+      var cntSr = document.createElement("span");
+      cntSr.className = "sr-only"; cntSr.textContent = " begreper";
+      cnt.appendChild(cntNum); cnt.appendChild(cntSr);
+      label.appendChild(cnt);
+      list.appendChild(label);
+      refs.level[o.v] = {input:input, cnt:cntNum, label:label};
+      input.addEventListener("change", function(){
+        if(input.checked){ state.level = o.v; update(); }
+      });
+    });
+  }
+
+  function buildOptions(dim){
+    var cfg = dims[dim];
+    var host = document.getElementById("opts-" + dim);
+    var pastels = ["var(--sw1)","var(--sw2)","var(--sw3)","var(--sw4)","var(--sw5)"];
+    Object.keys(cfg.dict).forEach(function(key, idx){
+      var label = document.createElement("label");
+      label.className = "opt";
+      label.htmlFor = dim + "-" + key;
+      var input = document.createElement("input");
+      input.type = "checkbox"; input.id = dim + "-" + key; input.value = key;
+      label.appendChild(input);
+      if(cfg.swatch){
+        var sw = document.createElement("span");
+        sw.className = "sw"; sw.setAttribute("aria-hidden","true");
+        sw.style.background = pastels[idx % pastels.length];
+        label.appendChild(sw);
+      }
+      var name = document.createElement("span");
+      name.className = "name"; name.textContent = cfg.dict[key];
+      label.appendChild(name);
+      var cnt = document.createElement("span");
+      cnt.className = "cnt";
+      var cntNum = document.createElement("span");
+      var cntSr = document.createElement("span");
+      cntSr.className = "sr-only"; cntSr.textContent = " begreper";
+      cnt.appendChild(cntNum); cnt.appendChild(cntSr);
+      label.appendChild(cnt);
+      host.appendChild(label);
+      refs[dim][key] = {input:input, cnt:cntNum};
+      input.addEventListener("change", function(){
+        if(input.checked) sets[dim].add(key); else sets[dim].delete(key);
+        update();
+      });
+    });
+  }
+
+  function buildSources(){
+    var host = document.getElementById("source-groups");
+    KILDEGRUPPER.forEach(function(grp){
+      var keys = Object.keys(KILDER).filter(function(k){ return KILDER[k].g === grp.id; });
+      if(!keys.length) return;
+      var h3 = document.createElement("h3");
+      h3.textContent = grp.t;
+      host.appendChild(h3);
+      var ul = document.createElement("ul");
+      ul.className = "srclist";
+      keys.forEach(function(k){
+        var src = KILDER[k];
+        var li = document.createElement("li");
+        var t = document.createElement("span");
+        t.className = "t";
+        if(src.u){
+          var a = document.createElement("a");
+          a.href = src.u; a.target = "_blank"; a.rel = "noopener noreferrer";
+          a.textContent = src.n;
+          var sr = document.createElement("span");
+          sr.className = "sr-only";
+          sr.textContent = " (åpnes i ny fane)";
+          a.appendChild(sr);
+          t.appendChild(a);
+        } else {
+          t.textContent = src.n;
+        }
+        var d = document.createElement("span");
+        d.className = "d"; d.textContent = src.d;
+        li.appendChild(t); li.appendChild(d);
+        ul.appendChild(li);
+      });
+      host.appendChild(ul);
+    });
+  }
+
+  /* ---------- Oppdater ---------- */
+  function updateCounts(){
+    Object.keys(refs.level).forEach(function(key){
+      refs.level[key].label.classList.toggle("is-on", refs.level[key].input.checked);
+    });
+    var allCount = TERMS.filter(function(t){ return matchTerm(t, "level"); }).length;
+    refs.level.all.cnt.textContent = allCount;
+    [1,2,3,4].forEach(function(lv){
+      refs.level[String(lv)].cnt.textContent =
+        TERMS.filter(function(t){ return t.l === lv && matchTerm(t, "level"); }).length;
+    });
+    Object.keys(dims).forEach(function(dim){
+      var field = dims[dim].field;
+      Object.keys(dims[dim].dict).forEach(function(key){
+        refs[dim][key].cnt.textContent = TERMS.filter(function(t){
+          return t[field].indexOf(key) !== -1 && matchTerm(t, dim);
+        }).length;
+      });
+      var n = sets[dim].size;
+      document.getElementById("state-" + dim).textContent = n === 0 ? "Alle" : n + " valgt";
+    });
+    document.getElementById("level-desc").textContent = LEVEL_DESC[state.level];
+  }
+
+  function makePill(text, srPrefix, onRemove){
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "pill";
+    var sr = document.createElement("span");
+    sr.className = "sr-only";
+    sr.textContent = "Fjern filter: " + srPrefix + " ";
+    var t = document.createElement("span");
+    t.textContent = text;
+    var x = document.createElement("span");
+    x.className = "x"; x.setAttribute("aria-hidden","true"); x.textContent = "×";
+    b.appendChild(sr); b.appendChild(t); b.appendChild(x);
+    b.addEventListener("click", function(){ onRemove(); update(); focusAfterPill(); });
+    return b;
+  }
+
+  function focusAfterPill(){
+    var first = document.querySelector("#pills .pill");
+    if(first) first.focus();
+    else document.getElementById("search").focus();
+  }
+
+  function updatePills(){
+    var host = document.getElementById("pills");
+    host.innerHTML = "";
+    var any = false;
+
+    if(state.level !== "all"){
+      any = true;
+      host.appendChild(makePill("Nivå " + state.level + ": " + LEVELS[state.level], "nivå", function(){
+        state.level = "all";
+        refs.level.all.input.checked = true;
+      }));
+    }
+    ["role","fag","tool"].forEach(function(dim){
+      sets[dim].forEach(function(key){
+        any = true;
+        host.appendChild(makePill(dims[dim].dict[key], dims[dim].label, function(){
+          sets[dim].delete(key);
+          refs[dim][key].input.checked = false;
+        }));
+      });
+    });
+    if(state.query){
+      any = true;
+      host.appendChild(makePill("Søk: " + state.query, "søk", function(){
+        state.query = "";
+        document.getElementById("search").value = "";
+      }));
+    }
+    if(any){
+      var reset = document.createElement("button");
+      reset.type = "button";
+      reset.className = "pill pill-reset";
+      reset.textContent = "Nullstill alle filtre";
+      reset.addEventListener("click", resetAll);
+      host.appendChild(reset);
+    }
+  }
+
+  function roleValue(term){
+    if(state.role.size > 0){
+      var hit = term.r.filter(function(k){ return state.role.has(k); }).map(function(k){ return ROLLER[k]; });
+      return "<b>" + hit.join(", ") + "</b>";
+    }
+    if(term.r.length === ALL_ROLES.length) return "Alle roller";
+    return term.r.map(function(k){ return ROLLER[k]; }).join(", ");
+  }
+
+  function sourceValue(term){
+    return term.k.map(function(k){
+      var src = KILDER[k];
+      return src ? src.s : k;
+    }).join(" · ");
+  }
+
+  function renderGrid(){
+    var list = TERMS.filter(function(t){ return matchTerm(t, null); });
+    list.sort(function(a,b){
+      if(a.l !== b.l) return a.l - b.l;
+      return a.t.localeCompare(b.t, "nb");
+    });
+
+    document.getElementById("status").textContent =
+      "Viser " + list.length + " av " + TERMS.length + " begreper";
+
+    var grid = document.getElementById("grid");
+    var empty = document.getElementById("empty");
+
+    if(!list.length){
+      grid.innerHTML = "";
+      grid.hidden = true;
+      empty.hidden = false;
+      return;
+    }
+    grid.hidden = false;
+    empty.hidden = true;
+
+    grid.innerHTML = list.map(function(t){
+      return '<li class="card">' +
+        '<div class="tags"><p class="lvl l' + t.l + '"><span class="sr-only">Nivå: </span>Nivå ' + t.l + ' – ' + LEVELS[t.l] + '</p>' +
+        (t.nytt ? '<p class="new">Nytt</p>' : '') + '</div>' +
+        '<h3>' + t.t + '</h3>' +
+        (t.en ? '<p class="en" lang="en">' + t.en + '</p>' : '') +
+        '<p class="def">' + t.d + '</p>' +
+        (t.e ? '<p class="ex">' + t.e + '</p>' : '') +
+        '<dl>' +
+          '<dt>Relevant for</dt><dd>' + roleValue(t) + '</dd>' +
+          '<dt>Fagområde</dt><dd>' + t.f.map(function(k){return FAGOMRADER[k];}).join(", ") + '</dd>' +
+          '<dt>Verktøy</dt><dd>' + t.v.map(function(k){return VERKTOY[k];}).join(", ") + '</dd>' +
+          '<dt>Kilde</dt><dd>' + sourceValue(t) + '</dd>' +
+        '</dl>' +
+      '</li>';
+    }).join("");
+  }
+
+  function update(){
+    updateCounts();
+    updatePills();
+    renderGrid();
+  }
+
+  function resetAll(){
+    state.level = "all";
+    state.query = "";
+    ["role","fag","tool"].forEach(function(dim){
+      sets[dim].forEach(function(key){ refs[dim][key].input.checked = false; });
+      sets[dim].clear();
+    });
+    refs.level.all.input.checked = true;
+    document.getElementById("search").value = "";
+    update();
+    document.getElementById("search").focus();
+  }
+
+  /* ---------- Hendelser ---------- */
+  var search = document.getElementById("search");
+  search.addEventListener("input", function(){
+    if(searchTimer) clearTimeout(searchTimer);
+    searchTimer = setTimeout(function(){
+      state.query = search.value.trim();
+      update();
+    }, 220);
+  });
+  search.addEventListener("keydown", function(e){
+    if(e.key === "Escape" && search.value){
+      search.value = ""; state.query = ""; update();
+    }
+  });
+  document.getElementById("empty-reset").addEventListener("click", resetAll);
+
+  document.querySelectorAll(".fgroup").forEach(function(d){
+    var mark = d.querySelector(".mark");
+    d.addEventListener("toggle", function(){ mark.textContent = d.open ? "−" : "+"; });
+  });
+
+  /* ---------- Start ---------- */
+  buildLevels();
+  buildOptions("role");
+  buildOptions("fag");
+  buildOptions("tool");
+  buildSources();
+  document.getElementById("meta-line").textContent =
+    TERMS.length + " begreper · " + Object.keys(KILDER).length + " kilder · sist oppdatert 5. oktober 2026";
+  update();
+})();
+</script>
+</body>
+</html>
