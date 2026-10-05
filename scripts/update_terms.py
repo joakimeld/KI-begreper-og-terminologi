@@ -343,6 +343,16 @@ def normalize_generated_terms(value: object) -> object:
     return normalized
 
 
+def limit_generated_terms(value: object) -> object:
+    if isinstance(value, list) and len(value) > MAX_TERMS_PER_RUN:
+        print(
+            f"::warning::Gemini returned {len(value)} terms; limiting publication to "
+            f"the first {MAX_TERMS_PER_RUN}."
+        )
+        return value[:MAX_TERMS_PER_RUN]
+    return value
+
+
 def generate_terms(
     changed_sources: list[dict[str, str]], published_ids: set[str] | None = None
 ) -> list[dict]:
@@ -451,6 +461,7 @@ def generate_terms(
     generated = normalize_generated_terms(
         answer.get("terms") if isinstance(answer, dict) else None
     )
+    generated = limit_generated_terms(generated)
     terms = validate_terms(
         generated,
         existing_ids,

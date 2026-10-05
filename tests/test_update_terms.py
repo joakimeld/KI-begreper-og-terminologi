@@ -82,6 +82,12 @@ class TermValidationTests(unittest.TestCase):
                 [self.term] * 21, set(), self.sources, self.subjects, self.tools
             )
 
+    def test_limits_published_terms_to_twenty(self):
+        terms = [{"id": f"term-{number}"} for number in range(25)]
+        limited = update_terms.limit_generated_terms(terms)
+        self.assertEqual(len(limited), 20)
+        self.assertEqual(limited, terms[:20])
+
 
 class RepositoryIntegrationTests(unittest.TestCase):
     def test_discovers_documented_sources_and_taxonomies(self):
