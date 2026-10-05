@@ -178,7 +178,14 @@ class RepositoryIntegrationTests(unittest.TestCase):
             "k": ["teknologiradet"],
             "d": "En kort forklaring.",
         }
-        api_response = {"output": [{"type": "text", "text": json.dumps({"terms": [returned_term]})}]}
+        api_response = {
+            "output": [
+                {
+                    "type": "text",
+                    "text": f"```json\n{json.dumps({'terms': [returned_term]})}\n```",
+                }
+            ]
+        }
         response = MagicMock()
         response.__enter__.return_value = response
         response.read.return_value = json.dumps(api_response).encode("utf-8")
@@ -203,6 +210,8 @@ class RepositoryIntegrationTests(unittest.TestCase):
         self.assertFalse(body["store"])
         self.assertEqual(body["response_format"]["mime_type"], "application/json")
         self.assertIn("Nivå 1: du er ny med KI", body["input"])
+        self.assertEqual(body["generation_config"]["thinking_level"], "low")
+        self.assertEqual(body["generation_config"]["max_output_tokens"], 8192)
         self.assertEqual(terms[0]["id"], "nytt-begrep")
 
     def test_gemini_retries_transient_server_errors(self):

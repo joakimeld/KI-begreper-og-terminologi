@@ -342,7 +342,11 @@ def generate_terms(
                 "mime_type": "application/json",
                 "schema": response_schema(),
             },
-            "generation_config": {"temperature": 0.1, "max_output_tokens": 4096},
+            "generation_config": {
+                "temperature": 0.1,
+                "thinking_level": "low",
+                "max_output_tokens": 8192,
+            },
         },
         ensure_ascii=False,
     ).encode("utf-8")
@@ -373,6 +377,13 @@ def generate_terms(
             )
             time.sleep(delay)
     response_text = _response_text(result)
+    if response_text.startswith("```") and response_text.rstrip().endswith("```"):
+        response_text = re.sub(
+            r"^```(?:json)?\s*(.*?)\s*```$",
+            r"\1",
+            response_text.strip(),
+            flags=re.S,
+        )
     try:
         answer = json.loads(response_text)
     except json.JSONDecodeError as exc:
