@@ -270,8 +270,9 @@ def _response_text(result: dict) -> str:
                     if isinstance(item, dict)
                     and item.get("type") == "text"
                     and isinstance(item.get("text"), str)
+                    and item["text"]
                 )
-        if text:
+        if text and "".join(text).strip():
             return "".join(text)
     output = result.get("output")
     if isinstance(output, list):
@@ -280,9 +281,17 @@ def _response_text(result: dict) -> str:
             for item in output
             if isinstance(item, dict) and item.get("type") == "text" and isinstance(item.get("text"), str)
         ]
-        if text:
+        if text and "".join(text).strip():
             return "".join(text)
-    raise ValueError("Gemini response did not include text output")
+    step_types = [
+        step.get("type")
+        for step in result.get("steps", [])
+        if isinstance(step, dict)
+    ] if isinstance(result.get("steps"), list) else []
+    raise ValueError(
+        f"Gemini response did not include text output "
+        f"(status={result.get('status')!r}, step_types={step_types!r})"
+    )
 
 
 def generate_terms(
@@ -363,10 +372,17 @@ def generate_terms(
                 f"({attempt + 2}/{MAX_GEMINI_ATTEMPTS})."
             )
             time.sleep(delay)
+    response_text = _response_text(result)
     try:
-        answer = json.loads(_response_text(result))
-    except (TypeError, json.JSONDecodeError) as exc:
-        raise ValueError("Gemini returned an invalid JSON response") from exc
+        answer = json.loads(response_text)
+    except json.JSONDecodeError as exc:
+        first_character = response_text.lstrip()[:1]
+        raise ValueError(
+            "Gemini returned invalid JSON "
+            f"(status={result.get('status')!r}, length={len(response_text)}, "
+            f"first_non_whitespace={first_character!r}, {exc.msg} at "
+            f"line {exc.lineno} column {exc.colno})"
+        ) from exc
 
     known_ids = {source["id"] for source in known_sources}
     terms = validate_terms(
