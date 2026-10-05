@@ -175,7 +175,10 @@ def validate_terms(
         required = {"id", "t", "en", "l", "f", "v", "k", "d"}
         allowed = required | {"e"} | ({"nytt"} if allow_published else set())
         if required - term.keys():
-            raise ValueError(f"Term is missing fields: {sorted(required - term.keys())}")
+            raise ValueError(
+                f"Term is missing fields: {sorted(required - term.keys())}; "
+                f"received keys: {sorted(term.keys())}"
+            )
         if term.keys() - allowed:
             raise ValueError(f"Term contains unsupported fields: {sorted(term.keys() - allowed)}")
         if "nytt" in term and term["nytt"] is not True:
