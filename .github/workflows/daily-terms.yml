@@ -59,13 +59,16 @@ jobs:
       - name: Configure GitHub Pages
         if: steps.publish.outputs.changed == 'true'
         uses: actions/configure-pages@v5
+      - name: Prepare site artifact
+        if: steps.publish.outputs.changed == 'true'
+        run: |
+          mkdir -p _site
+          cp index.html auto-terms.js _site/
       - name: Upload site artifact
         if: steps.publish.outputs.changed == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
-          path: |
-            index.html
-            auto-terms.js
+          path: _site
       - name: Deploy GitHub Pages
         if: steps.publish.outputs.changed == 'true'
         id: deployment
