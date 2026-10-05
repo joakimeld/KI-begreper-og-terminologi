@@ -1,10 +1,12 @@
 import importlib.util
+import io
 import json
 import os
 import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import MagicMock, patch
+from urllib.error import HTTPError
 
 
 SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "update_terms.py"
@@ -202,6 +204,47 @@ class RepositoryIntegrationTests(unittest.TestCase):
         self.assertEqual(body["response_format"]["mime_type"], "application/json")
         self.assertIn("Nivå 1: du er ny med KI", body["input"])
         self.assertEqual(terms[0]["id"], "nytt-begrep")
+
+    def test_gemini_retries_transient_server_errors(self):
+        returned_term = {
+            "id": "nytt-begrep",
+            "t": "Nytt begrep",
+            "en": "new term",
+            "l": 2,
+            "f": ["genai"],
+            "v": ["generelt"],
+            "k": ["teknologiradet"],
+            "d": "En kort forklaring.",
+        }
+        response = MagicMock()
+        response.__enter__.return_value = response
+        response.read.return_value = json.dumps(
+            {"output": [{"type": "text", "text": json.dumps({"terms": [returned_term]})}]}
+        ).encode("utf-8")
+        unavailable = HTTPError(
+            "https://generativelanguage.googleapis.com/v1beta/interactions",
+            503,
+            "Service Unavailable",
+            {},
+            io.BytesIO(b'{"error":{"code":"service_unavailable"}}'),
+        )
+        changed_sources = [
+            {
+                "id": "teknologiradet",
+                "name": "Teknologirådet",
+                "url": "https://teknologiradet.no/ordliste-for-kunstig-intelligens/",
+                "text": "Public source text.",
+            }
+        ]
+        with (
+            patch.dict(os.environ, {"GEMINI_API_KEY": "test-secret"}),
+            patch.object(update_terms, "urlopen", side_effect=[unavailable, response]) as call,
+            patch.object(update_terms.time, "sleep") as sleep,
+        ):
+            terms = update_terms.generate_terms(changed_sources)
+        self.assertEqual(len(terms), 1)
+        self.assertEqual(call.call_count, 2)
+        sleep.assert_called_once_with(1)
 
 
 if __name__ == "__main__":

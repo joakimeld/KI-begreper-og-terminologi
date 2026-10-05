@@ -26,6 +26,7 @@ TERMS_FILE = ROOT / "auto-terms.js"
 MODEL = "gemini-3.8-flash"
 MAX_SOURCES_PER_RUN = 8
 MAX_TERMS_PER_RUN = 20
+MAX_GEMINI_ATTEMPTS = 3
 MAX_SOURCE_TEXT = 8_000
 USER_AGENT = "KI-begreper-source-check/1.0 (GitHub Actions)"
 LEVEL_IDS = {1, 2, 3, 4}
@@ -325,12 +326,26 @@ def generate_terms(
         headers={"x-goog-api-key": api_key, "Content-Type": "application/json"},
         method="POST",
     )
-    try:
-        with urlopen(request, timeout=90) as response:
-            result = json.loads(response.read().decode("utf-8"))
-    except HTTPError as error:
-        details = error.read(2_000).decode("utf-8", errors="replace")
-        raise RuntimeError(f"Gemini API HTTP {error.code}: {details}") from error
+    for attempt in range(MAX_GEMINI_ATTEMPTS):
+        try:
+            with urlopen(request, timeout=90) as response:
+                result = json.loads(response.read().decode("utf-8"))
+            break
+        except HTTPError as error:
+            details = error.read(2_000).decode("utf-8", errors="replace")
+            retryable = error.code in {429, 500, 502, 503, 504}
+            if not retryable or attempt + 1 == MAX_GEMINI_ATTEMPTS:
+                raise RuntimeError(f"Gemini API HTTP {error.code}: {details}") from error
+            retry_after = error.headers.get("Retry-After")
+            try:
+                delay = min(10, max(1, int(retry_after))) if retry_after else 2**attempt
+            except ValueError:
+                delay = 2**attempt
+            print(
+                f"::warning::Gemini API HTTP {error.code}; retrying in {delay}s "
+                f"({attempt + 2}/{MAX_GEMINI_ATTEMPTS})."
+            )
+            time.sleep(delay)
     try:
         answer = json.loads(_response_text(result))
     except (TypeError, json.JSONDecodeError) as exc:
