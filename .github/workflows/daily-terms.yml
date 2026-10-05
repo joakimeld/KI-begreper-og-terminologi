@@ -1,6 +1,12 @@
 name: Daily term update
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - index.html
+      - auto-terms.js
   schedule:
     - cron: "0 6 * * *"
   workflow_dispatch:
@@ -57,19 +63,19 @@ jobs:
           git push origin HEAD:main
           echo "changed=true" >> "$GITHUB_OUTPUT"
       - name: Configure GitHub Pages
-        if: steps.publish.outputs.changed == 'true'
+        if: steps.publish.outputs.changed == 'true' || github.event_name == 'push'
         uses: actions/configure-pages@v5
       - name: Prepare site artifact
-        if: steps.publish.outputs.changed == 'true'
+        if: steps.publish.outputs.changed == 'true' || github.event_name == 'push'
         run: |
           mkdir -p _site
           cp index.html auto-terms.js _site/
       - name: Upload site artifact
-        if: steps.publish.outputs.changed == 'true'
+        if: steps.publish.outputs.changed == 'true' || github.event_name == 'push'
         uses: actions/upload-pages-artifact@v3
         with:
           path: _site
       - name: Deploy GitHub Pages
-        if: steps.publish.outputs.changed == 'true'
+        if: steps.publish.outputs.changed == 'true' || github.event_name == 'push'
         id: deployment
         uses: actions/deploy-pages@v4
