@@ -1,0 +1,72 @@
+name: Daily term update
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: daily-term-update
+  cancel-in-progress: false
+
+jobs:
+  update-terms:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Require Gemini API key
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          if [ -z "$GEMINI_API_KEY" ]; then
+            echo "::error::Configure the GEMINI_API_KEY repository secret before running this workflow."
+            exit 1
+          fi
+      - name: Check sources and update terms
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python scripts/update_terms.py
+      - name: Publish changes to main
+        id: publish
+        run: |
+          if git diff --quiet; then
+            echo "No source or term changes to publish."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/term-source-state.json auto-terms.js
+          git commit -m "Update AI terms from source changes"
+          git push origin HEAD:main
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+      - name: Configure GitHub Pages
+        if: steps.publish.outputs.changed == 'true'
+        uses: actions/configure-pages@v5
+      - name: Upload site artifact
+        if: steps.publish.outputs.changed == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: |
+            index.html
+            auto-terms.js
+      - name: Deploy GitHub Pages
+        if: steps.publish.outputs.changed == 'true'
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -331,6 +331,7 @@
   </footer>
 </div>
 
+<script src="auto-terms.js"></script>
 <script>
 (function(){
   "use strict";
@@ -645,6 +646,7 @@
     {id:"ki-bloff", t:"KI-bløff", en:"AI bluffing", l:4, f:["etikk","ml"], v:["generelt"], k:["teknologiradetny"], nytt:true,
       d:"Når et KI-system fremstiller egne evner som bedre enn de er. Det motsatte av strategisk underprestasjon."}
   ];
+  TERMS = TERMS.concat(window.AUTO_TERMS || []);
 
   TERMS.forEach(function(term){
     var set = new Set();
@@ -985,7 +987,9 @@
   buildOptions("tool");
   buildSources();
   document.getElementById("meta-line").textContent =
-    TERMS.length + " begreper · " + Object.keys(KILDER).length + " kilder · sist oppdatert 5. oktober 2026";
+    TERMS.length + " begreper · " + Object.keys(KILDER).length + " kilder · sist oppdatert " +
+    new Intl.DateTimeFormat("nb-NO", {day:"numeric", month:"long", year:"numeric", timeZone:"UTC"})
+      .format(new Date(window.AUTO_TERMS_UPDATED || "2026-10-05T12:00:00Z"));
   update();
 })();
 </script>

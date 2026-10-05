@@ -18,24 +18,36 @@ Definisjonene er kortet ned og skrevet om på egne ord. De er ikke direkte sitat
 
 - 97 begreper fordelt på fire nivåer og ni fagområder
 - 33 kilder, gruppert i kildelisten nederst på siden
-- Sist oppdatert 5. oktober 2026
+- Sist oppdatert: datoen vises automatisk og endres når nye begreper publiseres
 
 ## Kjør lokalt
 
-Siden er én HTML-fil uten byggesteg eller avhengigheter. Åpne `index.html` i en nettleser.
+Siden er statisk og har ingen byggesteg eller avhengigheter. Åpne `index.html` i en nettleser. De daglig oppdagede begrepene ligger i `auto-terms.js`.
 
-For å publisere med GitHub Pages: gå til *Settings → Pages*, velg branchen `main` og rotmappen `/`.
+For GitHub Pages: gå til *Settings → Pages* og velg **GitHub Actions** som build and deployment source. Den daglige workflowen publiserer `index.html` og `auto-terms.js` direkte med Pages-deployhandlingen.
 
-## Oppdatere begreper
+## Automatisk oppdatering med Gemini API
 
-Alle begreper, roller, fagområder og kilder ligger i `<script>`-blokken i `index.html`:
+GitHub Actions kjører daglig og henter de offentlige HTTPS-kildene som er registrert i `KILDER` i `index.html`. Når synlig kildetekst endres, ber workflowen `gemini-3.8-flash` via Googles dokumenterte Interactions API om forslag. Modellen får sidens fire nivåer, fagområder, verktøy og kilde-ID-er; bare nye, validerte begreper med kildehenvisning til en endret kilde blir lagt til i `auto-terms.js` og committet til `main`. Interne kilder uten URL hentes ikke.
+
+**Oppsett:** Opprett/velg Gemini API-nøkkel i [Google AI Studio](https://aistudio.google.com/apikey), og lagre den i repoet under *Settings → Secrets and variables → Actions* med navnet `GEMINI_API_KEY`. Workflowen stopper før den henter kilder hvis nøkkelen mangler. API-nøkkelen skal aldri legges i filer eller commits. Google AI Pro-abonnementet er ikke i seg selv Gemini API-nøkkel eller API-kvote; API-tilgang og gratis kvote er egne innstillinger i AI Studio/Cloud-prosjektet.
+
+Google dokumenterer gratis input/output for utvalgte modeller, inkludert den valgte Flash-modellen, men gratisnivået har begrensede RPM/TPM/RPD-kvoter, som kan endres eller bli utilgjengelige for prosjektet. For å unngå kostnader må API-nøkkelen tilhøre et prosjekt uten aktiv Cloud Billing; ikke aktiver fakturering for prosjektet. Workflowen gjør maksimalt én modellforespørsel per kjøring for inntil åtte endrede kilder og kan publisere høyst 20 begreper per kjøring. Den stopper med synlig feil ved kvote- eller API-feil (ingen betalt fallback). Første kjøring behandler kildene i puljer på opptil åtte. Bare offentlige kildetekster sendes til modellen; ikke send personopplysninger eller konfidensielt materiale. Forespørselen bruker `store: false`, men Googles gratisvilkår kan fortsatt tillate bruk av innhold til produktforbedring og menneskelig gjennomgang. Siden nettstedet er offentlig og drives fra Norge/EØS, vurder også vilkårenes begrensning på gratis API-klienter som tilbys brukere i EØS, Storbritannia og Sveits; avklar med Google før bruk hvis denne statiske publiseringsflyten omfattes. Les [priser og kvoter](https://ai.google.dev/gemini-api/docs/pricing), [API-nøkler](https://ai.google.dev/gemini-api/docs/api-key) og [Gemini API-vilkårene](https://ai.google.dev/gemini-api/terms).
+
+Workflowen trenger `contents: write`, `pages: write` og `id-token: write`, at repositoryets regler tillater GitHub Actions å oppdatere `main`, og at Pages-kilden er satt til **GitHub Actions**. Den committer kildehashene og eventuelle nye begreper direkte til `main`, og deployer deretter nettstedet med GitHub Pages Actions. Dette eksplisitte deploysteget er nødvendig fordi commits laget med `GITHUB_TOKEN` ikke starter et Pages-build automatisk. Kildeendringer uten nye begreper oppdaterer bare kildehashene og nettstedet deployeres bare når det finnes endringer. Feil med en kilde logges som advarsel og prøves på nytt neste dag; API- eller valideringsfeil stopper kjøringen uten å publisere ugyldige begreper.
+
+Kildeinnhold behandles som ubetrodd data. Kildene uten offentlig URL (interne eller bransjebruk) polleres ikke.
+
+## Manuell oppdatering
+
+Eksisterende begreper, roller, fagområder og kilder ligger i `<script>`-blokken i `index.html`:
 
 - `TERMS`: begrepene (navn, engelsk term, nivå, fagområder, verktøy, kilder og definisjon)
 - `KILDER`: kildelisten
 - `ROLLER`, `FAGOMRADER`, `VERKTOY`: filterverdiene
+- `auto-terms.js`: nye, automatisk oppdagede begreper (genereres av GitHub Actions)
 
 ## Videre ideer
 
-- Automatisk oppdatering av begreper via API eller KI
 - Flere roller og fagområder
 - Eksport til opplæringsmateriell
