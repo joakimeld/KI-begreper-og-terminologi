@@ -37,6 +37,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Require Gemini API key
+        if: github.event_name != 'push'
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
@@ -45,10 +46,12 @@ jobs:
             exit 1
           fi
       - name: Check sources and update terms
+        if: github.event_name != 'push'
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python scripts/update_terms.py
       - name: Publish changes to main
+        if: github.event_name != 'push'
         id: publish
         run: |
           if git diff --quiet; then
