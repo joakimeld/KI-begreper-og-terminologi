@@ -246,6 +246,21 @@ class RepositoryIntegrationTests(unittest.TestCase):
         self.assertEqual(call.call_count, 2)
         sleep.assert_called_once_with(1)
 
+    def test_reads_text_from_interaction_model_output_steps(self):
+        result = {
+            "steps": [
+                {"type": "user_input", "content": []},
+                {
+                    "type": "model_output",
+                    "content": [
+                        {"type": "text", "text": '{"terms":'},
+                        {"type": "text", "text": ' []}'},
+                    ],
+                },
+            ]
+        }
+        self.assertEqual(update_terms._response_text(result), '{"terms": []}')
+
 
 if __name__ == "__main__":
     unittest.main()

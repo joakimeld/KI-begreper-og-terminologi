@@ -256,6 +256,23 @@ def _response_text(result: dict) -> str:
     direct = result.get("output_text")
     if isinstance(direct, str):
         return direct
+    steps = result.get("steps")
+    if isinstance(steps, list):
+        text = []
+        for step in steps:
+            if not isinstance(step, dict) or step.get("type") != "model_output":
+                continue
+            content = step.get("content")
+            if isinstance(content, list):
+                text.extend(
+                    item["text"]
+                    for item in content
+                    if isinstance(item, dict)
+                    and item.get("type") == "text"
+                    and isinstance(item.get("text"), str)
+                )
+        if text:
+            return "".join(text)
     output = result.get("output")
     if isinstance(output, list):
         text = [
