@@ -364,7 +364,7 @@ def generate_terms(
                 raise RuntimeError(f"Gemini API HTTP {error.code}: {details}") from error
             retry_after = error.headers.get("Retry-After")
             try:
-                delay = min(10, max(1, int(retry_after))) if retry_after else 2**attempt
+                delay = min(60, max(1, int(retry_after))) if retry_after else 2**attempt
             except ValueError:
                 delay = 2**attempt
             print(
