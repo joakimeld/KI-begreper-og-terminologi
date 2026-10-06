@@ -2,7 +2,7 @@ window.AUTO_TERMS_UPDATED = "2026-10-06";
 window.AUTO_TERMS = [
   {
     "id": "digital-forestillingsevne",
-    "t": "digital forestillingsevne",
+    "t": "Digital forestillingsevne",
     "en": "digital imagination",
     "l": 2,
     "f": [
@@ -21,7 +21,7 @@ window.AUTO_TERMS = [
   },
   {
     "id": "direkte-instrukser",
-    "t": "direkte instrukser",
+    "t": "Direkte instrukser",
     "en": "zero-shot prompting",
     "l": 2,
     "f": [
@@ -38,7 +38,7 @@ window.AUTO_TERMS = [
   },
   {
     "id": "drittifisering",
-    "t": "drittifisering",
+    "t": "Drittifisering",
     "en": "enshitification",
     "l": 1,
     "f": [
@@ -56,7 +56,7 @@ window.AUTO_TERMS = [
   },
   {
     "id": "flyttallsoperasjoner-per-sekund",
-    "t": "flyttallsoperasjoner per sekund",
+    "t": "Flyttallsoperasjoner per sekund",
     "en": "floating point operations per second (FLOPS)",
     "l": 4,
     "f": [
@@ -73,7 +73,7 @@ window.AUTO_TERMS = [
   },
   {
     "id": "forhandstrening",
-    "t": "forhåndstrening",
+    "t": "Forhåndstrening",
     "en": "pre-training",
     "l": 3,
     "f": [
@@ -91,7 +91,7 @@ window.AUTO_TERMS = [
   },
   {
     "id": "fritert-hjerne",
-    "t": "fritert hjerne",
+    "t": "Fritert hjerne",
     "en": "brain fry",
     "l": 1,
     "f": [
@@ -109,7 +109,7 @@ window.AUTO_TERMS = [
   },
   {
     "id": "hjernerate",
-    "t": "hjerneråte",
+    "t": "Hjerneråte",
     "en": "brainrot",
     "l": 1,
     "f": [
@@ -200,7 +200,7 @@ window.AUTO_TERMS = [
   },
   {
     "id": "kunstig-naerhet",
-    "t": "kunstig nærhet",
+    "t": "Kunstig nærhet",
     "en": "artificial intimacy",
     "l": 1,
     "f": [
@@ -218,7 +218,7 @@ window.AUTO_TERMS = [
   },
   {
     "id": "oppmerksomhetsutvinning",
-    "t": "oppmerksomhetsutvinning",
+    "t": "Oppmerksomhetsutvinning",
     "en": "attention extraction",
     "l": 2,
     "f": [
@@ -236,7 +236,7 @@ window.AUTO_TERMS = [
   },
   {
     "id": "samsvarsproblemet",
-    "t": "samsvarsproblemet",
+    "t": "Samsvarsproblemet",
     "en": "alignment problem",
     "l": 3,
     "f": [
@@ -254,7 +254,7 @@ window.AUTO_TERMS = [
   },
   {
     "id": "sperrer",
-    "t": "sperrer",
+    "t": "Sperrer",
     "en": "guardrails",
     "l": 2,
     "f": [
@@ -272,7 +272,7 @@ window.AUTO_TERMS = [
   },
   {
     "id": "sprakteknologi",
-    "t": "språkteknologi",
+    "t": "Språkteknologi",
     "en": "language technology",
     "l": 2,
     "f": [
@@ -290,7 +290,7 @@ window.AUTO_TERMS = [
   },
   {
     "id": "strategisk-underprestasjon",
-    "t": "strategisk underprestasjon",
+    "t": "Strategisk underprestasjon",
     "en": "sandbagging",
     "l": 3,
     "f": [
@@ -308,7 +308,7 @@ window.AUTO_TERMS = [
   },
   {
     "id": "tekoligark",
-    "t": "tekoligark",
+    "t": "Tekoligark",
     "en": "tech oligarch",
     "l": 1,
     "f": [
@@ -326,7 +326,7 @@ window.AUTO_TERMS = [
   },
   {
     "id": "teorien-om-det-dode-internettet",
-    "t": "teorien om det døde internettet",
+    "t": "Teorien om det døde internettet",
     "en": "dead internet theory",
     "l": 1,
     "f": [
@@ -344,7 +344,7 @@ window.AUTO_TERMS = [
   },
   {
     "id": "vibbekoding",
-    "t": "vibbekoding",
+    "t": "Vibbekoding",
     "en": "vibe coding",
     "l": 2,
     "f": [

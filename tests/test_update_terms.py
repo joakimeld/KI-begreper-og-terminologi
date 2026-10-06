@@ -216,7 +216,7 @@ class RepositoryIntegrationTests(unittest.TestCase):
 
     def test_gemini_interactions_request_uses_secret_and_json_schema(self):
         returned_term = {
-            "term": "Nytt begrep",
+            "term": "nytt begrep",
             "english": "new term",
             "level": 2,
             "subjects": ["genai"],
@@ -260,6 +260,7 @@ class RepositoryIntegrationTests(unittest.TestCase):
         self.assertEqual(body["generation_config"]["max_output_tokens"], 8192)
         self.assertIn("english", body["response_format"]["schema"]["properties"]["terms"]["items"]["properties"])
         self.assertEqual(terms[0]["id"], "nytt-begrep")
+        self.assertEqual(terms[0]["t"], "Nytt begrep")
 
     def test_gemini_retries_transient_server_errors(self):
         returned_term = {

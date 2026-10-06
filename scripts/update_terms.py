@@ -327,6 +327,8 @@ def normalize_generated_terms(value: object) -> object:
                 f"Gemini term must use descriptive output fields; received keys: {sorted(term.keys())}"
             )
         norwegian_term = term["term"]
+        if isinstance(norwegian_term, str) and norwegian_term:
+            norwegian_term = norwegian_term[:1].upper() + norwegian_term[1:]
         normalized.append(
             {
                 "id": slug(norwegian_term) if isinstance(norwegian_term, str) else "",
