@@ -165,7 +165,7 @@ def validate_terms(
 ) -> list[dict]:
     if not isinstance(terms, list):
         raise ValueError("Gemini response must contain a terms array")
-    if len(terms) > MAX_TERMS_PER_RUN:
+    if not allow_published and len(terms) > MAX_TERMS_PER_RUN:
         raise ValueError(f"Gemini returned more than {MAX_TERMS_PER_RUN} terms in one run")
     clean: list[dict] = []
     seen = set(existing_ids)

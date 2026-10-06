@@ -88,6 +88,26 @@ class TermValidationTests(unittest.TestCase):
         self.assertEqual(len(limited), 20)
         self.assertEqual(limited, terms[:20])
 
+    def test_allows_published_glossary_to_exceed_twenty_terms(self):
+        terms = [
+            {
+                **self.term,
+                "id": f"begrep-{number}",
+                "t": f"Begrep {number}",
+                "nytt": True,
+            }
+            for number in range(21)
+        ]
+        validated = update_terms.validate_terms(
+            terms,
+            set(),
+            self.sources,
+            self.subjects,
+            self.tools,
+            allow_published=True,
+        )
+        self.assertEqual(len(validated), 21)
+
     def test_ignores_existing_and_repeated_suggestions(self):
         terms = [
             {"id": "grunnmodell", "t": "Grunnmodell"},
