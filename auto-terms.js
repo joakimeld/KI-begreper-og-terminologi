@@ -1,4 +1,4 @@
-window.AUTO_TERMS_UPDATED = "2026-10-05";
+window.AUTO_TERMS_UPDATED = "2026-10-06";
 window.AUTO_TERMS = [
   {
     "id": "digital-forestillingsevne",
@@ -359,5 +359,117 @@ window.AUTO_TERMS = [
     ],
     "nytt": true,
     "d": "En uformell tilnærming til programmering der utviklere skriver kode basert på en intuitiv følelse eller 'vibe' for hvordan systemet skal fungere, snarere enn å følge strenge spesifikasjoner eller formelle metoder."
+  },
+  {
+    "id": "modellkontekstprotokoll",
+    "t": "Modellkontekstprotokoll",
+    "en": "Model Context Protocol",
+    "l": 3,
+    "f": [
+      "utvikling",
+      "agentic"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "mcp",
+      "a2a"
+    ],
+    "nytt": true,
+    "d": "En åpen protokoll som standardiserer hvordan store språkmodeller (LLM-er) og KI-applikasjoner kan integreres sømløst med eksterne datakilder og verktøy. Den muliggjør deling av kontekstuell informasjon, eksponering av funksjonalitet og bygging av sammensatte arbeidsflyter."
+  },
+  {
+    "id": "agent-til-agent-protokoll",
+    "t": "Agent-til-agent-protokoll",
+    "en": "Agent-to-Agent Protocol",
+    "l": 3,
+    "f": [
+      "agentic",
+      "utvikling",
+      "sikkerhet"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "a2a"
+    ],
+    "nytt": true,
+    "d": "En åpen standard som gjør det mulig for KI-agenter å oppdage, kommunisere og utføre transaksjoner med hverandre på tvers av ulike rammeverk, leverandører og plattformer. Den sikrer interoperabilitet og koordinering i multi-agentsystemer."
+  },
+  {
+    "id": "agentferdigheter",
+    "t": "Agentferdigheter",
+    "en": "Agent Skills",
+    "l": 2,
+    "f": [
+      "agentic",
+      "utvikling"
+    ],
+    "v": [
+      "claude",
+      "generelt"
+    ],
+    "k": [
+      "agentskills"
+    ],
+    "nytt": true,
+    "d": "Et lettvektig, åpent format for å utvide KI-agenters evner med spesialisert kunnskap og arbeidsflyter. En ferdighet er typisk en mappe som inneholder en SKILL.md-fil med metadata og instruksjoner for hvordan en agent skal utføre en spesifikk oppgave, og kan inkludere skript og referansemateriale."
+  },
+  {
+    "id": "konstitusjonell-ki",
+    "t": "Konstitusjonell KI",
+    "en": "Constitutional AI",
+    "l": 3,
+    "f": [
+      "etikk",
+      "sikkerhet",
+      "genai"
+    ],
+    "v": [
+      "claude"
+    ],
+    "k": [
+      "anthropic"
+    ],
+    "nytt": true,
+    "d": "En metode for å trene KI-modeller til å følge et sett med prinsipper eller verdier, ofte uttrykt i et 'konstitusjonsdokument'. Dette dokumentet beskriver modellens ønskede atferd, etiske retningslinjer og prioriteringer, og brukes til å forme modellens respons og beslutninger, spesielt i tilfeller av usikkerhet eller konflikt."
+  },
+  {
+    "id": "offentlige-ki-tiltak",
+    "t": "Offentlige KI-tiltak",
+    "en": "Public AI initiatives",
+    "l": 1,
+    "f": [
+      "etikk",
+      "grunnleggende"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "kinorge"
+    ],
+    "nytt": true,
+    "d": "Prosjekter og initiativer der offentlige virksomheter tar i bruk kunstig intelligens for å forbedre tjenester, effektivisere prosesser eller løse samfunnsutfordringer. Disse tiltakene kan omfatte alt fra chatbots til avansert dataanalyse."
+  },
+  {
+    "id": "regulatorisk-sandkasse",
+    "t": "Regulatorisk sandkasse",
+    "en": "Regulatory sandbox",
+    "l": 2,
+    "f": [
+      "etikk",
+      "sikkerhet"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "kinorge"
+    ],
+    "nytt": true,
+    "d": "Et rammeverk som gir virksomheter mulighet til å utvikle og teste innovative, ofte risikofylte, KI-prosjekter i et kontrollert miljø, med veiledning fra tilsynsmyndigheter. Dette bidrar til å utforske nye løsninger samtidig som man sikrer overholdelse av regelverk."
   }
 ];
