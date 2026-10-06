@@ -88,6 +88,27 @@ class TermValidationTests(unittest.TestCase):
         self.assertEqual(len(limited), 20)
         self.assertEqual(limited, terms[:20])
 
+    def test_ignores_existing_and_repeated_suggestions(self):
+        terms = [
+            {"id": "grunnmodell", "t": "Grunnmodell"},
+            {"id": "nytt-begrep", "t": "Nytt begrep"},
+            {"id": "nytt-begrep", "t": "Nytt begrep"},
+            {"id": "annet-begrep", "t": "Annet begrep"},
+        ]
+        with patch("builtins.print") as warning:
+            unique = update_terms.exclude_known_and_duplicate_terms(
+                terms, {"grunnmodell"}
+            )
+        self.assertEqual(
+            unique,
+            [
+                {"id": "nytt-begrep", "t": "Nytt begrep"},
+                {"id": "annet-begrep", "t": "Annet begrep"},
+            ],
+        )
+        self.assertEqual(warning.call_count, 2)
+        self.assertIn("ignoring that suggestion", warning.call_args_list[0].args[0])
+
 
 class RepositoryIntegrationTests(unittest.TestCase):
     def test_discovers_documented_sources_and_taxonomies(self):
