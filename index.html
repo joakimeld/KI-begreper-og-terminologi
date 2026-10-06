@@ -8,9 +8,8 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <style>
   :root{
-    --paper:#FAF7F0;
+    --paper:#F9EAD4;
     --surface:#FFFFFF;
-    --card-bg:#F9EAD4;
     --block:#F1EEE5;
     --ink:#101014;
     --ink-soft:#4F5158;
@@ -32,7 +31,7 @@
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
-      --paper:#0F1116; --surface:#171A21; --card-bg:#171A21; --block:#1E222B;
+      --paper:#0F1116; --surface:#171A21; --block:#1E222B;
       --ink:#EEF0F4; --ink-soft:#AAB1BD; --line:#2C313B; --control:#8A93A3;
       --navy:#C6C9FF; --navbar-bg:#1C2039; --navbar-fg:#FFFFFF; --navbar-fg-dim:#B9BCD4;
       --coral:#F0A06A; --focus:#FFFFFF;
@@ -44,7 +43,7 @@
     }
   }
   :root[data-theme="dark"]{
-    --paper:#0F1116; --surface:#171A21; --card-bg:#171A21; --block:#1E222B;
+    --paper:#0F1116; --surface:#171A21; --block:#1E222B;
     --ink:#EEF0F4; --ink-soft:#AAB1BD; --line:#2C313B; --control:#8A93A3;
     --navy:#C6C9FF; --navbar-bg:#1C2039; --navbar-fg:#FFFFFF; --navbar-fg-dim:#B9BCD4;
     --coral:#F0A06A; --focus:#FFFFFF;
@@ -167,7 +166,7 @@
     gap:1px; background:var(--line); border:1px solid var(--line);
     list-style:none; margin:0; padding:0;
   }
-  .card{background:var(--card-bg); padding:20px 20px 22px; display:flex; flex-direction:column; gap:10px;}
+  .card{background:var(--surface); padding:20px 20px 22px; display:flex; flex-direction:column; gap:10px;}
   .lvl{
     align-self:flex-start; font-size:0.68rem; font-weight:700; letter-spacing:0.06em;
     text-transform:uppercase; padding:4px 9px; margin:0;
