@@ -1,4 +1,4 @@
-window.AUTO_TERMS_UPDATED = "2026-10-06";
+window.AUTO_TERMS_UPDATED = "2026-10-07";
 window.AUTO_TERMS = [
   {
     "id": "digital-forestillingsevne",
@@ -471,5 +471,113 @@ window.AUTO_TERMS = [
     ],
     "nytt": true,
     "d": "Et rammeverk som gir virksomheter mulighet til å utvikle og teste innovative, ofte risikofylte, KI-prosjekter i et kontrollert miljø, med veiledning fra tilsynsmyndigheter. Dette bidrar til å utforske nye løsninger samtidig som man sikrer overholdelse av regelverk."
+  },
+  {
+    "id": "ki-tiltak",
+    "t": "KI-tiltak",
+    "en": "AI initiative",
+    "l": 1,
+    "f": [
+      "genai",
+      "etikk"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "kinorge"
+    ],
+    "nytt": true,
+    "d": "Et prosjekt eller en aktivitet der kunstig intelligens tas i bruk, spesielt i offentlig sektor, for å løse oppgaver eller forbedre tjenester. Disse tiltakene kan registreres og overvåkes for å gi oversikt over KI-bruken."
+  },
+  {
+    "id": "chain-of-thought-prompting",
+    "t": "Chain-of-Thought Prompting",
+    "en": "Chain-of-Thought Prompting",
+    "l": 3,
+    "f": [
+      "prompting",
+      "genai"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "cot"
+    ],
+    "nytt": true,
+    "d": "En teknikk der man ber en stor språkmodell om å generere en serie med mellomliggende resonneringstrinn før den gir et endelig svar. Dette forbedrer modellens evne til å løse komplekse oppgaver innen aritmetikk, sunn fornuft og symbolsk resonnering."
+  },
+  {
+    "id": "retrieval-augmented-generation-rag",
+    "t": "Retrieval-Augmented Generation (RAG)",
+    "en": "Retrieval-Augmented Generation (RAG)",
+    "l": 3,
+    "f": [
+      "genai",
+      "utvikling"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "ragpaper"
+    ],
+    "nytt": true,
+    "d": "En metode som kombinerer store språkmodeller med et eksternt informasjonshentingssystem. Modellen henter relevant informasjon fra en kunnskapsbase (f.eks. Wikipedia) før den genererer et svar, noe som forbedrer nøyaktigheten og reduserer hallusinasjoner."
+  },
+  {
+    "id": "instructgpt",
+    "t": "InstructGPT",
+    "en": "InstructGPT",
+    "l": 3,
+    "f": [
+      "genai",
+      "utvikling"
+    ],
+    "v": [
+      "chatgpt"
+    ],
+    "k": [
+      "instructgpt"
+    ],
+    "nytt": true,
+    "d": "En type språkmodell som er finjustert med menneskelig tilbakemelding (RLHF) for bedre å følge brukerens intensjoner. Dette fører til mer hjelpsomme, sannferdige og mindre giftige utdata, selv med færre parametere enn større, ujusterte modeller."
+  },
+  {
+    "id": "mixture-of-experts-moe",
+    "t": "Mixture-of-Experts (MoE)",
+    "en": "Mixture-of-Experts (MoE)",
+    "l": 4,
+    "f": [
+      "ml",
+      "utvikling"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "moe"
+    ],
+    "nytt": true,
+    "d": "En arkitektur for nevrale nettverk der inndata behandles av flere 'ekspert'-nettverk, og et 'gating'-nettverk bestemmer hvilke eksperter som skal aktiveres for hver spesifikke inndata. Dette øker modellens kapasitet betydelig uten en proporsjonal økning i beregningskostnad."
+  },
+  {
+    "id": "low-rank-adaptation-lora",
+    "t": "Low-Rank Adaptation (LoRA)",
+    "en": "Low-Rank Adaptation (LoRA)",
+    "l": 4,
+    "f": [
+      "ml",
+      "utvikling"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "lora"
+    ],
+    "nytt": true,
+    "d": "En effektiv finjusteringsteknikk for store språkmodeller der man fryser de forhåndstrente modellvektene og injiserer små, trenbare lavrangsmatriser i hver Transformer-lag. Dette reduserer antallet trenbare parametere og GPU-minnekravet betydelig, samtidig som ytelsen opprettholdes eller forbedres."
   }
 ];
