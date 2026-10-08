@@ -323,7 +323,7 @@
     return words ? words.length : 0;
   }
 
-  function questionTimeLimit(question){
+  function questionBonusWindow(question){
     var optionWords = question.options.map(function(option){ return wordCount(option.value); });
     var averageOptionWords = optionWords.reduce(function(total, count){ return total + count; }, 0) / optionWords.length;
     var readingSeconds = Math.ceil((wordCount(question.prompt) + averageOptionWords) / 3);
@@ -340,35 +340,36 @@
   }
 
   function updateQuestionTimer(){
-    if(!game || !game.questionDeadline) return;
-    var remaining = Math.max(0, game.questionDeadline - Date.now());
-    var fraction = remaining / game.questionLimit;
+    if(!game || !game.bonusDeadline) return;
+    var remaining = Math.max(0, game.bonusDeadline - Date.now());
+    var fraction = remaining / game.bonusWindow;
     var displayedSeconds = Math.ceil(remaining / 1000);
     els.timerValue.textContent = displayedSeconds + " s";
     els.timerValue.setAttribute("aria-label", displayedSeconds + " sekunder");
     els.timerFill.style.transform = "scaleX(" + fraction + ")";
-    els.questionTimer.dataset.state = remaining <= 5000 ? "urgent" : "ready";
-    if(remaining === 0) expireQuestion();
+    els.questionTimer.dataset.state = remaining === 0 ? "bonus-ended" : remaining <= 5000 ? "urgent" : "ready";
+    if(remaining === 0) stopQuestionTimer();
   }
 
   function startQuestionTimer(question){
     stopQuestionTimer();
-    game.questionLimit = questionTimeLimit(question) * 1000;
+    game.bonusWindow = questionBonusWindow(question) * 1000;
     game.questionStarted = Date.now();
-    game.questionDeadline = game.questionStarted + game.questionLimit;
-    els.questionTimer.dataset.limit = String(game.questionLimit / 1000);
+    game.bonusDeadline = game.questionStarted + game.bonusWindow;
+    els.questionTimer.dataset.limit = String(game.bonusWindow / 1000);
     updateQuestionTimer();
-    questionTimerInterval = window.setInterval(updateQuestionTimer, 100);
+    if(questionTimerInterval === null) questionTimerInterval = window.setInterval(updateQuestionTimer, 100);
   }
 
   function stopAndMeasureQuestion(){
     stopQuestionTimer();
-    var elapsed = Math.min(game.questionLimit, Math.max(0, Date.now() - game.questionStarted));
+    var elapsed = Math.max(0, Date.now() - game.questionStarted);
+    var bonusTimeRemaining = Math.max(0, game.bonusWindow - elapsed);
     game.elapsed += elapsed;
     return {
       elapsed:elapsed,
-      limit:game.questionLimit,
-      timeBonus:Math.floor(MAX_TIME_BONUS * (game.questionLimit - elapsed) / game.questionLimit)
+      limit:game.bonusWindow,
+      timeBonus:Math.floor(MAX_TIME_BONUS * bonusTimeRemaining / game.bonusWindow)
     };
   }
 
@@ -450,10 +451,6 @@
 
   function answer(selected){
     if(!game || els.next.hidden === false) return;
-    if(Date.now() >= game.questionDeadline){
-      expireQuestion();
-      return;
-    }
     var question = game.questions[game.index];
     var timing = stopAndMeasureQuestion();
     if(selected.correct){
@@ -479,7 +476,9 @@
     var correct = question.options.filter(function(option){ return option.correct; })[0];
     els.feedback.className = "feedback " + (selected.correct ? "" : "incorrect");
     var response = selected.correct
-      ? (currentStreak >= 3 ? "Riktig — " + currentStreak + " på rad! +" + (ANSWER_POINTS + timing.timeBonus) + " poeng" : "Riktig! +" + (ANSWER_POINTS + timing.timeBonus) + " poeng")
+      ? (currentStreak >= 3 ? "Riktig — " + currentStreak + " på rad! " : "Riktig! ") +
+        "+" + (ANSWER_POINTS + timing.timeBonus) + " poeng" +
+        (timing.timeBonus === 0 ? " · tidsbonusvinduet er brukt opp" : "")
       : "Ikke helt. Riktig svar: " + correct.value;
     els.feedback.appendChild(text("strong", response));
     els.feedback.appendChild(text("p", question.term.d));
@@ -487,37 +486,6 @@
     els.next.hidden = false;
     var percentage = Math.round((game.index + 1) / game.questions.length * 100);
     els.progress.setAttribute("aria-valuenow", String(percentage));
-    els.next.focus();
-  }
-
-  function expireQuestion(){
-    if(!game || els.next.hidden === false) return;
-    stopQuestionTimer();
-    game.elapsed += game.questionLimit;
-    var question = game.questions[game.index];
-    currentStreak = 0;
-    game.wrongs.push(question.term);
-    var correct = question.options.filter(function(option){ return option.correct; })[0];
-    Array.from(els.options.children).forEach(function(button, index){
-      var option = question.options[index];
-      button.disabled = true;
-      button.setAttribute("aria-pressed", String(option.correct));
-      if(option.correct) button.dataset.correct = "true";
-    });
-    els.progress.children[game.index].className = "incorrect";
-    var percentage = Math.round((game.index + 1) / game.questions.length * 100);
-    els.progress.setAttribute("aria-valuenow", String(percentage));
-    els.streak.textContent = "";
-    els.streak.classList.remove("on");
-    mood(els.mascotQuiz, "sad", 1000);
-    els.feedback.className = "feedback incorrect";
-    els.feedback.appendChild(text("strong", "Tiden er ute! Riktig svar: " + correct.value));
-    els.feedback.appendChild(text("p", question.term.d));
-    els.feedback.hidden = false;
-    els.timerValue.textContent = "0 s";
-    els.timerValue.setAttribute("aria-label", "0 sekunder");
-    els.timerFill.style.transform = "scaleX(0)";
-    els.next.hidden = false;
     els.next.focus();
   }
 

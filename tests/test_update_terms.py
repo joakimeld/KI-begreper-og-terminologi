@@ -184,6 +184,8 @@ class RepositoryIntegrationTests(unittest.TestCase):
         self.assertIn('id="scope-search"', quiz)
         self.assertIn('id="question-timer"', quiz)
         self.assertIn('id="timer-value"', quiz)
+        self.assertIn('class="name-input-wrap"', quiz)
+        self.assertIn("align-items:stretch", quiz)
         self.assertIn("window.KI_TERMS = [", terms_source)
         self.assertIn("window.KI_SUBJECTS = {", terms_source)
         self.assertIn("window.KI_ROLES = {", terms_source)
@@ -194,9 +196,10 @@ class RepositoryIntegrationTests(unittest.TestCase):
         self.assertIn("quiz.js", workflow)
         self.assertLess(workflow.index("python -m unittest"), workflow.index("python scripts/update_terms.py"))
         quiz_script = (update_terms.ROOT / "quiz.js").read_text(encoding="utf-8")
-        self.assertIn("function questionTimeLimit(question)", quiz_script)
-        self.assertIn("function expireQuestion()", quiz_script)
-        self.assertIn("MAX_TIME_BONUS * (game.questionLimit - elapsed)", quiz_script)
+        self.assertIn("function questionBonusWindow(question)", quiz_script)
+        self.assertNotIn("function expireQuestion()", quiz_script)
+        self.assertIn("bonusTimeRemaining", quiz_script)
+        self.assertIn("[data-state=bonus-ended]", quiz)
         self.assertIn("timedRecords.slice(0, 10).concat(historicRecords)", quiz_script)
 
     def test_published_terms_have_no_duplicate_normalized_names(self):
