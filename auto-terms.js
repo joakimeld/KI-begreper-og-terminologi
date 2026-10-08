@@ -253,24 +253,6 @@ window.AUTO_TERMS = [
     "d": "Utfordringen med å sikre at KI-systemers mål og atferd er i tråd med menneskelige verdier, intensjoner og etiske prinsipper. Dette er spesielt viktig for avanserte KI-systemer som kan handle autonomt."
   },
   {
-    "id": "sperrer",
-    "t": "Sperrer",
-    "en": "guardrails",
-    "l": 2,
-    "f": [
-      "sikkerhet",
-      "etikk"
-    ],
-    "v": [
-      "generelt"
-    ],
-    "k": [
-      "teknologiradet"
-    ],
-    "nytt": true,
-    "d": "Mekanismer eller retningslinjer som implementeres i KI-systemer for å begrense deres atferd og sikre at de opererer innenfor ønskede grenser, for eksempel for å unngå generering av skadelig eller upassende innhold."
-  },
-  {
     "id": "sprakteknologi",
     "t": "Språkteknologi",
     "en": "language technology",
@@ -287,24 +269,6 @@ window.AUTO_TERMS = [
     ],
     "nytt": true,
     "d": "Et bredt fagfelt som omfatter utvikling av systemer og metoder for å behandle, analysere og generere menneskelig språk. Dette inkluderer blant annet maskinoversettelse, talesyntese og språkmodeller."
-  },
-  {
-    "id": "strategisk-underprestasjon",
-    "t": "Strategisk underprestasjon",
-    "en": "sandbagging",
-    "l": 3,
-    "f": [
-      "sikkerhet",
-      "etikk"
-    ],
-    "v": [
-      "generelt"
-    ],
-    "k": [
-      "teknologiradet"
-    ],
-    "nytt": true,
-    "d": "En taktikk der et KI-system bevisst underpresterer under testing eller evaluering for å oppnå en fordel senere, for eksempel ved å få en belønning for å overgå forventningene."
   },
   {
     "id": "tekoligark",
@@ -343,43 +307,6 @@ window.AUTO_TERMS = [
     "d": "En konspirasjonsteori som hevder at internett i stor grad er fylt med KI-generert innhold og boter, og at ekte menneskelig aktivitet er minimal eller manipulert."
   },
   {
-    "id": "vibbekoding",
-    "t": "Vibbekoding",
-    "en": "vibe coding",
-    "l": 2,
-    "f": [
-      "utvikling"
-    ],
-    "v": [
-      "generelt"
-    ],
-    "k": [
-      "teknologiradet",
-      "teknologiradetny"
-    ],
-    "nytt": true,
-    "d": "En uformell tilnærming til programmering der utviklere skriver kode basert på en intuitiv følelse eller 'vibe' for hvordan systemet skal fungere, snarere enn å følge strenge spesifikasjoner eller formelle metoder."
-  },
-  {
-    "id": "modellkontekstprotokoll",
-    "t": "Modellkontekstprotokoll",
-    "en": "Model Context Protocol",
-    "l": 3,
-    "f": [
-      "utvikling",
-      "agentic"
-    ],
-    "v": [
-      "generelt"
-    ],
-    "k": [
-      "mcp",
-      "a2a"
-    ],
-    "nytt": true,
-    "d": "En åpen protokoll som standardiserer hvordan store språkmodeller (LLM-er) og KI-applikasjoner kan integreres sømløst med eksterne datakilder og verktøy. Den muliggjør deling av kontekstuell informasjon, eksponering av funksjonalitet og bygging av sammensatte arbeidsflyter."
-  },
-  {
     "id": "agent-til-agent-protokoll",
     "t": "Agent-til-agent-protokoll",
     "en": "Agent-to-Agent Protocol",
@@ -416,25 +343,6 @@ window.AUTO_TERMS = [
     ],
     "nytt": true,
     "d": "Et lettvektig, åpent format for å utvide KI-agenters evner med spesialisert kunnskap og arbeidsflyter. En ferdighet er typisk en mappe som inneholder en SKILL.md-fil med metadata og instruksjoner for hvordan en agent skal utføre en spesifikk oppgave, og kan inkludere skript og referansemateriale."
-  },
-  {
-    "id": "konstitusjonell-ki",
-    "t": "Konstitusjonell KI",
-    "en": "Constitutional AI",
-    "l": 3,
-    "f": [
-      "etikk",
-      "sikkerhet",
-      "genai"
-    ],
-    "v": [
-      "claude"
-    ],
-    "k": [
-      "anthropic"
-    ],
-    "nytt": true,
-    "d": "En metode for å trene KI-modeller til å følge et sett med prinsipper eller verdier, ofte uttrykt i et 'konstitusjonsdokument'. Dette dokumentet beskriver modellens ønskede atferd, etiske retningslinjer og prioriteringer, og brukes til å forme modellens respons og beslutninger, spesielt i tilfeller av usikkerhet eller konflikt."
   },
   {
     "id": "offentlige-ki-tiltak",
@@ -545,24 +453,6 @@ window.AUTO_TERMS = [
     "d": "En type språkmodell som er finjustert med menneskelig tilbakemelding (RLHF) for bedre å følge brukerens intensjoner. Dette fører til mer hjelpsomme, sannferdige og mindre giftige utdata, selv med færre parametere enn større, ujusterte modeller."
   },
   {
-    "id": "mixture-of-experts-moe",
-    "t": "Mixture-of-Experts (MoE)",
-    "en": "Mixture-of-Experts (MoE)",
-    "l": 4,
-    "f": [
-      "ml",
-      "utvikling"
-    ],
-    "v": [
-      "generelt"
-    ],
-    "k": [
-      "moe"
-    ],
-    "nytt": true,
-    "d": "En arkitektur for nevrale nettverk der inndata behandles av flere 'ekspert'-nettverk, og et 'gating'-nettverk bestemmer hvilke eksperter som skal aktiveres for hver spesifikke inndata. Dette øker modellens kapasitet betydelig uten en proporsjonal økning i beregningskostnad."
-  },
-  {
     "id": "low-rank-adaptation-lora",
     "t": "Low-Rank Adaptation (LoRA)",
     "en": "Low-Rank Adaptation (LoRA)",
@@ -579,23 +469,5 @@ window.AUTO_TERMS = [
     ],
     "nytt": true,
     "d": "En effektiv finjusteringsteknikk for store språkmodeller der man fryser de forhåndstrente modellvektene og injiserer små, trenbare lavrangsmatriser i hver Transformer-lag. Dette reduserer antallet trenbare parametere og GPU-minnekravet betydelig, samtidig som ytelsen opprettholdes eller forbedres."
-  },
-  {
-    "id": "merking-av-ki-innhold",
-    "t": "Merking av KI-innhold",
-    "en": "AI content labeling",
-    "l": 1,
-    "f": [
-      "etikk",
-      "sikkerhet"
-    ],
-    "v": [
-      "generelt"
-    ],
-    "k": [
-      "kinorge"
-    ],
-    "nytt": true,
-    "d": "Krav eller praksis for å tydelig identifisere innhold som er generert eller modifisert av kunstig intelligens, for å sikre åpenhet og motvirke misinformasjon."
   }
 ];

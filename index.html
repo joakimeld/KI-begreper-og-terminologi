@@ -239,6 +239,7 @@
       <div>
         <h1>KI-begreper og terminologi</h1>
         <p class="meta" id="meta-line"></p>
+        <p class="meta"><a href="quiz.html">Prøv begrepsquizen →</a></p>
       </div>
       <div class="search-block">
         <label for="search">Søk i begrepene på norsk eller engelsk</label>
@@ -333,27 +334,19 @@
   </footer>
 </div>
 
+<script src="terms.js"></script>
 <script src="auto-terms.js?v=401ebdf"></script>
 <script>
 (function(){
   "use strict";
 
   /* ---------- Taksonomier ---------- */
-  var FAGOMRADER = {
-    grunnleggende:"Grunnleggende KI", ml:"Maskinlæring", genai:"Generativ KI",
-    prompting:"Prompting og bruk", agentic:"KI-agenter", data:"Data og MLOps",
-    etikk:"Etikk, styring og regelverk", sikkerhet:"Sikkerhet og personvern", utvikling:"Utvikling og kode"
-  };
+  var FAGOMRADER = window.KI_SUBJECTS;
   var VERKTOY = {
     claude:"Claude", chatgpt:"ChatGPT", copilot:"GitHub Copilot", m365:"M365 Copilot",
     figma:"Figma Make", lovable:"Lovable", generelt:"Verktøyuavhengig"
   };
-  var ROLLER = {
-    ux:"UX-designer", tjeneste:"Tjenestedesigner", forrdesign:"Forretningsdesigner", grafisk:"Grafisk designer",
-    frontend:"Frontend-utvikler", backend:"Backend-utvikler", fullstack:"Fullstack-utvikler", dotnet:".NET-utvikler",
-    dataing:"Dataingeniør", datasci:"Dataforsker", sky:"Skyarkitekt", losning:"Løsningsarkitekt",
-    sikkerhetsradgiver:"Sikkerhetsrådgiver", pm:"Prosjektleder", forrradgiver:"Forretningsrådgiver", tester:"Tester / QA"
-  };
+  var ROLLER = window.KI_ROLES;
   var ALL_ROLES = Object.keys(ROLLER);
   var LEVELS = {1:"Nybegynner", 2:"Viderekommende", 3:"Avansert", 4:"Ekspert"};
   var LEVEL_DESC = {
@@ -363,32 +356,6 @@
     3:"Nivå 3: du designer, bygger eller styrer KI-løsninger i leveranse.",
     4:"Nivå 4: du går inn i modellenes indre virkemåte og forskningsfronten."
   };
-  var ROLES_BY_FAG = {
-    grunnleggende: ALL_ROLES.slice(),
-    ml: ["datasci","dataing","backend","fullstack","dotnet","losning","sky"],
-    genai: ["ux","tjeneste","forrdesign","frontend","backend","fullstack","dotnet","datasci","forrradgiver","pm"],
-    prompting: ALL_ROLES.slice(),
-    agentic: ["backend","fullstack","dotnet","losning","sky","dataing","forrdesign","pm"],
-    data: ["dataing","datasci","backend","sky","losning"],
-    etikk: ["forrradgiver","forrdesign","sikkerhetsradgiver","pm","ux","tjeneste","losning"],
-    sikkerhet: ["sikkerhetsradgiver","losning","sky","backend","dotnet","fullstack","forrradgiver"],
-    utvikling: ["frontend","backend","fullstack","dotnet","losning","tester"]
-  };
-  var ROLE_OVERRIDES = {
-    "design-til-kode":["frontend","backend","fullstack","dotnet","losning","tester","ux","grafisk","tjeneste"],
-    "vibe-coding":["frontend","backend","fullstack","dotnet","losning","tester","ux"],
-    "kompetansetrapp":["pm","forrradgiver","forrdesign","losning","ux"],
-    "strukturkapital":["pm","forrradgiver","losning","dataing"],
-    "modellkort":["datasci","dataing","losning","pm","sikkerhetsradgiver","forrradgiver"],
-    "evaluering":["datasci","dataing","tester","backend","fullstack","dotnet","losning","ux"],
-    "stiloverforing":["ux","grafisk","tjeneste","forrdesign","frontend"],
-    "jobbskvip":ALL_ROLES.slice(),
-    "kognitiv-latskap":ALL_ROLES.slice(),
-    "smiskende-ki":ALL_ROLES.slice(),
-    "merking-ki-innhold":["ux","tjeneste","grafisk","forrdesign","frontend","pm","forrradgiver","sikkerhetsradgiver","losning"],
-    "agent-skill":["frontend","backend","fullstack","dotnet","losning","dataing","datasci","pm","ux","tester"]
-  };
-
   /* ---------- Kilder ---------- */
   var KILDER = {
     teknologiradet:{s:"Teknologirådet", n:"Teknologirådet – Ordliste for kunstig intelligens", u:"https://teknologiradet.no/ordliste-for-kunstig-intelligens/", d:"Norsk ordliste på bokmål og nynorsk, gjennomgått av Språkrådet. Beste kilde for norske termvalg.", g:"norsk"},
@@ -440,221 +407,10 @@
   ];
 
   /* ---------- Begreper ---------- */
-  var TERMS = [
-    /* --- Nivå 1 --- */
-    {id:"ki", t:"Kunstig intelligens (KI)", en:"artificial intelligence", l:1, f:["grunnleggende"], v:["generelt"], k:["teknologiradet","oecd"],
-      d:"Maskinbaserte systemer som utleder svar, anbefalinger eller handlinger ut fra data, for oppgaver som ellers krever menneskelig intelligens."},
-    {id:"maskinlaering", t:"Maskinlæring", en:"machine learning", l:1, f:["grunnleggende","ml"], v:["generelt"], k:["teknologiradet","iso22989"],
-      d:"Fagfelt innen KI der systemer lærer mønstre fra data i stedet for å bli programmert med eksplisitte regler."},
-    {id:"generativ-ki", t:"Generativ KI", en:"generative AI", l:1, f:["grunnleggende","genai"], v:["generelt"], k:["teknologiradet"],
-      d:"Modeller som lager nytt innhold – tekst, bilder, kode eller lyd – ut fra mønstre lært fra treningsdata."},
-    {id:"sprakmodell", t:"Språkmodell (LLM)", en:"large language model", l:1, f:["genai"], v:["generelt"], k:["teknologiradet"],
-      d:"Modell trent på store mengder tekst for å forstå og generere språk. Claude, GPT og Gemini er språkmodeller."},
-    {id:"ki-assistent", t:"KI-assistent", en:"AI assistant", l:1, f:["grunnleggende"], v:["generelt"], k:["mslearn","teknologiradet"],
-      d:"KI-drevet verktøy som hjelper med oppgaver som skriving, research eller koding gjennom dialog."},
-    {id:"chatbot", t:"Chatbot", en:"chatbot", l:1, f:["grunnleggende","prompting"], v:["chatgpt","claude"], k:["teknologiradet"],
-      d:"Program som fører samtale med brukeren, i dag oftest drevet av en språkmodell."},
-    {id:"prompt", t:"Prompt", en:"prompt", l:1, f:["prompting"], v:["generelt"], k:["teknologiradet"],
-      d:"Instruksjonen eller spørsmålet du gir modellen for å få et ønsket svar."},
-    {id:"modell", t:"Modell", en:"model", l:1, f:["grunnleggende","ml"], v:["generelt"], k:["iso22989","teknologiradet"],
-      d:"Det trente systemet som tar imot input og produserer output – selve motoren i en KI-løsning."},
-    {id:"treningsdata", t:"Treningsdata", en:"training data", l:1, f:["ml","data"], v:["generelt"], k:["teknologiradet","iso22989"],
-      d:"Datagrunnlaget modellen lærer fra. Kvaliteten på disse dataene setter taket for hva modellen kan gjøre."},
-    {id:"nevralt-nettverk", t:"Nevralt nettverk", en:"neural network", l:1, f:["ml"], v:["generelt"], k:["teknologiradet"],
-      d:"Modellarkitektur bygget av lag med enkle regneenheter som gradvis lærer mer sammensatte mønstre."},
-    {id:"token", t:"Token", en:"token", l:1, f:["genai"], v:["generelt"], k:["teknologiradet"],
-      d:"Den minste tekstbiten – ofte en orddel – som en språkmodell leser og genererer om gangen. Pris og kapasitet måles i tokens."},
-    {id:"hallusinasjon", t:"Hallusinasjon", en:"hallucination", l:1, f:["genai","etikk"], v:["generelt"], k:["teknologiradet","nist"],
-      d:"Når modellen presenterer feilaktig eller oppdiktet informasjon som om den var sann. Kan ikke fjernes helt, bare reduseres og kontrolleres."},
-    {id:"ansvarlig-ki", t:"Ansvarlig KI", en:"responsible AI", l:1, f:["etikk"], v:["generelt"], k:["nist","kinorge"],
-      d:"Prinsipper og praksis for å utvikle og bruke KI trygt, rettferdig og etterprøvbart gjennom hele livsløpet."},
-    {id:"ki-kompetanse", t:"KI-kompetanse", en:"AI literacy", l:1, f:["etikk","grunnleggende"], v:["generelt"], k:["aiact","kinorge"],
-      d:"Tilstrekkelig kunnskap til å bruke og vurdere KI-systemer forsvarlig. KI-forordningen gjør dette til en plikt for både leverandør og ibruktaker."},
-    {id:"menneskelig-kontroll", t:"Menneskelig kontroll", en:"human oversight", l:1, f:["etikk"], v:["generelt"], k:["aiact","iso22989"],
-      d:"At mennesker kan følge, gripe inn i og overstyre et KI-system i drift. Kravet er strengere jo høyere risiko systemet har."},
-    {id:"copilot-begrep", t:"Copilot", en:"Copilot", l:1, f:["grunnleggende","utvikling"], v:["m365","copilot"], k:["mslearn"],
-      d:"Microsofts fellesnavn på KI-assistenter integrert i blant annet Microsoft 365, Windows og utviklerverktøy."},
-    {id:"dypforfalskning", t:"Dypforfalskning (deepfake)", en:"deepfake", l:1, f:["etikk","sikkerhet","genai"], v:["generelt"], k:["aiact","teknologiradet"], nytt:true,
-      d:"KI-generert eller KI-manipulert bilde, lyd eller video som fremstår som ekte og kan forveksles med virkelige personer eller hendelser. KI-forordningen krever at slikt innhold merkes."},
-    {id:"ki-skvip", t:"KI-skvip", en:"AI slop", l:1, f:["genai","etikk"], v:["generelt"], k:["teknologiradetny"], nytt:true,
-      d:"KI-generert innhold av lav kvalitet som spres på nett. Omtales også som KI-søppel."},
-    {id:"jobbskvip", t:"KI-generert jobbskvip", en:"AI workslop", l:1, f:["prompting","etikk"], v:["generelt"], k:["teknologiradetny"], nytt:true,
-      d:"KI-generert arbeidsinnhold som ser profesjonelt ut, men holder lav kvalitet og flytter jobben over på mottakeren som må rette det opp."},
-    {id:"kognitiv-latskap", t:"Kognitiv latskap", en:"cognitive surrender", l:1, f:["grunnleggende","etikk"], v:["generelt"], k:["teknologiradetny"], nytt:true,
-      d:"Å overlate krevende tankearbeid til KI i stedet for å gjøre det selv. Gir raske svar, men kan svekke læring, forståelse og egen dømmekraft."},
-
-    /* --- Nivå 2 --- */
-    {id:"prompt-engineering", t:"Prompt engineering", en:"prompt engineering", l:2, f:["prompting"], v:["generelt"], k:["teknologiradet"],
-      d:"Å utforme og justere prompter systematisk for å få mer presise, relevante eller kreative svar."},
-    {id:"kontekstdesign", t:"Kontekstdesign", en:"context engineering", l:2, f:["prompting","agentic"], v:["claude","generelt"], k:["anthropic"],
-      d:"Å designe hvilken informasjon, verktøy og historikk modellen får i kontekstvinduet. Utvidelsen av prompt engineering når løsninger blir sammensatte."},
-    {id:"system-prompt", t:"System prompt", en:"system prompt", l:2, f:["prompting"], v:["claude","chatgpt"], k:["anthropic","mslearn"],
-      d:"Instruksjon lagt i forkant som styrer modellens rolle, tone og rammer gjennom hele samtalen, uten å vises for sluttbrukeren."},
-    {id:"context-window", t:"Kontekstvindu", en:"context window", l:2, f:["genai"], v:["generelt"], k:["teknologiradet","anthropic"],
-      d:"Hvor mye tekst, målt i tokens, modellen kan forholde seg til samtidig. Alt utenfor vinduet finnes ikke for modellen."},
-    {id:"few-shot", t:"Few-shot prompting", en:"few-shot prompting", l:2, f:["prompting","ml"], v:["generelt"], k:["teknologiradet","gpt3"],
-      d:"Å legge noen få eksempler i prompten for å vise ønsket format eller stil. Modellen lærer ikke av eksemplene – de gjelder bare i denne samtalen."},
-    {id:"grunnmodell", t:"Grunnmodell", en:"foundation model", l:2, f:["genai","ml"], v:["generelt"], k:["teknologiradet","aiact"],
-      d:"Stor, forhåndstrent modell som kan tilpasses mange ulike oppgaver, og som andre KI-tjenester bygges oppå."},
-    {id:"fine-tuning", t:"Finjustering", en:"fine-tuning", l:2, f:["ml"], v:["generelt"], k:["teknologiradet","nist"],
-      d:"Videretrening av en ferdig modell på et smalere datasett for å spesialisere den til en oppgave eller et domene."},
-    {id:"embeddings", t:"Embeddings", en:"embeddings", l:2, f:["ml","data"], v:["generelt"], k:["teknologiradet"],
-      d:"Numeriske representasjoner av innhold som fanger betydning, slik at likt innhold havner nær hverandre matematisk."},
-    {id:"vektordatabase", t:"Vektordatabase", en:"vector database", l:2, f:["data"], v:["generelt"], k:["bransje"],
-      d:"Database optimalisert for å lagre og søke i embeddings. Ryggraden i de fleste RAG-løsninger."},
-    {id:"rag", t:"RAG", en:"retrieval-augmented generation", l:2, f:["genai","data"], v:["generelt"], k:["teknologiradet","ragpaper"],
-      d:"Modellen henter relevant informasjon fra en ekstern kilde før den svarer. Gir ferskere og mer etterprøvbare svar enn modellen alene."},
-    {id:"temperature", t:"Temperatur", en:"temperature", l:2, f:["genai"], v:["generelt"], k:["anthropic"],
-      d:"Innstilling som styrer hvor forutsigbart modellen svarer. Lav verdi gir stabile svar, høy verdi gir mer variasjon."},
-    {id:"multimodal", t:"Multimodal", en:"multimodal", l:2, f:["genai"], v:["claude","chatgpt"], k:["teknologiradet"],
-      d:"Modell som forstår og kombinerer flere typer input, som tekst, bilder, lyd og video."},
-    {id:"api", t:"API", en:"API", l:2, f:["utvikling","data"], v:["copilot","generelt"], k:["mslearn"],
-      d:"Programmeringsgrensesnitt som lar egne systemer snakke direkte med en modell, uten å gå via en chatteflate."},
-    {id:"evaluering", t:"Evaluering", en:"evaluation, eval", l:2, f:["data","utvikling"], v:["generelt"], k:["nist"],
-      d:"Systematisk og gjentakbar måling av en KI-løsning mot definerte testsett og kriterier. Uten evaluering vet man ikke om endringer gjør løsningen bedre."},
-    {id:"modellkort", t:"Modellkort", en:"model card", l:2, f:["etikk","data"], v:["generelt"], k:["nist"],
-      d:"Strukturert dokumentasjon av en modells formål, datagrunnlag, begrensninger og målte ytelse."},
-    {id:"ki-klare-data", t:"KI-klare data", en:"AI-ready data", l:2, f:["data"], v:["generelt"], k:["kinorge"],
-      d:"Data med avklart eierskap, kvalitet, tilgang og dokumentasjon, slik at de faktisk kan brukes i KI-løsninger."},
-    {id:"syntetiske-data", t:"Syntetiske data", en:"synthetic data", l:2, f:["data","ml"], v:["generelt"], k:["teknologiradet"],
-      d:"Kunstig genererte data som etterligner mønstre i virkelige data. Brukes til trening og testing der ekte data er sensitive eller mangler."},
-    {id:"bias", t:"Skjevhet (bias)", en:"bias", l:2, f:["etikk","ml"], v:["generelt"], k:["teknologiradet","nist"],
-      d:"Systematisk skjevhet i modellens svar, ofte arvet fra skjevheter i treningsdataen eller i hvordan oppgaven er formulert."},
-    {id:"personvern-ki", t:"Personvern i KI", en:"privacy in AI", l:2, f:["sikkerhet","etikk"], v:["generelt"], k:["datatilsynet"],
-      d:"Hvordan persondata behandles, lagres og beskyttes ved bruk av KI. Krever behandlingsgrunnlag, ikke bare et godt formål."},
-    {id:"hoyrisiko", t:"Høyrisiko-KI-system", en:"high-risk AI system", l:2, f:["etikk","sikkerhet"], v:["generelt"], k:["aiact"],
-      d:"KI-system i bruksområder med betydelig risiko for helse, sikkerhet eller grunnleggende rettigheter. Utløser krav til risikostyring, datakvalitet og dokumentasjon.",
-      e:"Fristene er utsatt i EU: 2. desember 2027 for bruksområdene i vedlegg III (som rekruttering og kredittvurdering) og 2. august 2028 for produkter i vedlegg I."},
-    {id:"jailbreak", t:"Jailbreak", en:"jailbreak", l:2, f:["sikkerhet"], v:["generelt"], k:["owasp","teknologiradet"],
-      d:"Angrep som omgår modellens sikkerhetsbegrensninger for å få frem blokkert innhold eller atferd."},
-    {id:"agentisk-arbeidsflyt", t:"Agentisk arbeidsflyt", en:"agentic workflow", l:2, f:["agentic"], v:["claude","copilot","generelt"], k:["mcp","teknologiradet"],
-      d:"Arbeidsflyt der KI planlegger og utfører flere steg med verktøybruk, med mennesket i kontroll over rammene fremfor hvert steg."},
-    {id:"digital-arbeidsflate", t:"Digital arbeidsflate", en:"surface", l:2, f:["utvikling","agentic"], v:["m365","copilot"], k:["mslearn","bouvet"],
-      d:"Verktøyet eller miljøet der modellen faktisk brukes, for eksempel M365 Copilot-appen, VS Code eller en egen løsning."},
-    {id:"design-til-kode", t:"Design-til-kode", en:"design-to-code", l:2, f:["utvikling","genai"], v:["figma","lovable"], k:["bransje"],
-      d:"KI som omformer visuelle design eller prompter direkte til fungerende kode, som i Figma Make og Lovable."},
-    {id:"vibe-coding", t:"Vibbekoding", en:"vibe coding", l:2, f:["utvikling"], v:["lovable","copilot","claude"], k:["teknologiradetny"],
-      d:"Å bygge programvare gjennom dialog i naturlig språk, med rask iterasjon fremfor manuell koding linje for linje. Krever fortsatt gjennomgang av koden."},
-    {id:"smiskende-ki", t:"Smiskende KI", en:"sycophantic AI", l:2, f:["genai","etikk"], v:["generelt"], k:["teknologiradetny"], nytt:true,
-      d:"Når modellen tilpasser svaret til det brukeren vil høre, og bekrefter i stedet for å vurdere nøkternt. Viktig å kjenne til når KI brukes til å kvalitetssikre egne ideer."},
-    {id:"merking-ki-innhold", t:"Merking av KI-innhold", en:"AI content labelling", l:2, f:["etikk","genai"], v:["generelt"], k:["aiact","kinorge"], nytt:true,
-      d:"Krav om at KI-generert eller KI-manipulert innhold skal kunne gjenkjennes, for eksempel med vannmerker, metadata eller synlig merking.",
-      e:"Åpenhetspliktene i artikkel 50 gjelder i EU fra august 2026, med egen frist for maskinlesbar merking. En EU-praksiskodeks beskriver hvordan merkingen kan gjøres."},
-    {id:"agent-skill", t:"Ferdighet (agent skill)", en:"agent skill", l:2, f:["agentic","prompting"], v:["claude","copilot","chatgpt"], k:["agentskills"], nytt:true,
-      d:"En mappe med instruksjoner (SKILL.md), og eventuelt skript og maler, som en KI-agent laster inn bare når oppgaven krever det. Gjør faglig praksis gjenbrukbar på tvers av verktøy."},
-    {id:"noktern-ki", t:"Nøktern KI", en:"frugal AI", l:2, f:["etikk","ml"], v:["generelt"], k:["teknologiradetny"], nytt:true,
-      d:"Å utvikle og bruke KI med minst mulig energi, data og beregningskraft, uten å gå unødig på bekostning av ytelse. For eksempel å velge en mindre modell når den er god nok."},
-    {id:"stiloverforing", t:"Stiloverføring", en:"style transfer", l:2, f:["genai"], v:["generelt"], k:["teknologiradetny"], nytt:true,
-      d:"Å bruke generativ KI til å overføre stil eller uttrykk fra én kilde til annet innhold, som å gi et bilde preg av en kunstretning eller skrive om en tekst til en annen tone."},
-    {id:"superintelligens", t:"Superintelligens", en:"superintelligence", l:2, f:["grunnleggende","etikk"], v:["generelt"], k:["teknologiradetny"], nytt:true,
-      d:"Teoretisk idé om maskinintelligens som overgår mennesker på alle eller de fleste områder. Det er stor faglig uenighet om hva det innebærer, og om og når det kan oppstå."},
-
-    /* --- Nivå 3 --- */
-    {id:"ki-agent", t:"KI-agent", en:"AI agent", l:3, f:["agentic"], v:["claude","generelt"], k:["teknologiradetny","mcp"],
-      d:"System som selvstendig planlegger og utfører flere steg mot et mål, og bruker verktøy underveis."},
-    {id:"tool-use", t:"Verktøybruk", en:"tool use, function calling", l:3, f:["agentic","utvikling"], v:["claude","chatgpt"], k:["anthropic","mcp"],
-      d:"Modellens evne til å kalle funksjoner og tjenester – søk, beregning, kodekjøring – som del av å løse oppgaven."},
-    {id:"mcp", t:"MCP (Model Context Protocol)", en:"Model Context Protocol", l:3, f:["agentic","utvikling"], v:["claude"], k:["mcp"],
-      d:"Åpen protokoll for å koble KI-modeller til verktøy, data og tjenester på en enhetlig måte. Opprinnelig fra Anthropic, forvaltet av Agentic AI Foundation under Linux Foundation siden desember 2025.",
-      e:"Gjeldende spesifikasjon (2026-07-28) gjør protokollen tilstandsløs og flytter blant annet oppgaver (Tasks) ut i valgfrie utvidelser."},
-    {id:"orkestrering", t:"Orkestrering", en:"orchestration", l:3, f:["agentic","data"], v:["generelt"], k:["mslearn","bransje"],
-      d:"Koordinering av flere modeller, agenter eller verktøy som sammen løser en sammensatt oppgave."},
-    {id:"modellruting", t:"Modellruting", en:"model routing", l:3, f:["agentic","ml"], v:["m365","generelt"], k:["mslearn","bransje"],
-      d:"Å velge modell automatisk ut fra oppgavens kompleksitet, krav og kostnad.",
-      e:"Eksempel: M365 Copilot veksler mellom «Think deeper» og «Quick response» avhengig av oppgaven."},
-    {id:"resonneringsmodell", t:"Resonneringsmodell", en:"reasoning model", l:3, f:["genai","ml"], v:["chatgpt","claude","m365"], k:["anthropic","mslearn"],
-      d:"Modell som bruker ekstra beregning under svargenerering til å resonnere stegvis. Gir bedre svar på sammensatte oppgaver, men koster mer tid og penger."},
-    {id:"chain-of-thought", t:"Chain-of-thought", en:"chain-of-thought", l:3, f:["genai","ml"], v:["generelt"], k:["cot"],
-      d:"Teknikk der modellen resonnerer i flere steg før endelig svar. Gir ofte mer korrekte resultater på komplekse oppgaver."},
-    {id:"grounding", t:"Grounding", en:"grounding", l:3, f:["genai","data"], v:["generelt"], k:["mslearn","nist"],
-      d:"Å forankre svaret i konkrete, verifiserbare kilder eller data i stedet for modellens eget minne."},
-    {id:"llm-dommer", t:"LLM som dommer", en:"LLM-as-a-judge", l:3, f:["data","utvikling"], v:["generelt"], k:["nist"],
-      d:"Å bruke en språkmodell til å score andre modellers svar i automatisert evaluering. Raskt og skalerbart, men arver dommermodellens skjevheter."},
-    {id:"forklarbarhet", t:"Forklarbarhet (XAI)", en:"explainability", l:3, f:["etikk","ml"], v:["generelt"], k:["nist","iso22989"],
-      d:"I hvilken grad mennesker kan forstå og etterprøve hvordan modellen kom fram til et svar."},
-    {id:"gpai", t:"KI-modell med generelt formål (GPAI)", en:"general-purpose AI model", l:3, f:["etikk","genai"], v:["generelt"], k:["aiact"],
-      d:"Modell trent på store datamengder som kan utføre et bredt spekter av oppgaver. Egen reguleringskategori med egne plikter i KI-forordningen."},
-    {id:"roller-aiact", t:"Leverandør og ibruktaker", en:"provider and deployer", l:3, f:["etikk"], v:["generelt"], k:["aiact"],
-      d:"De to hovedrollene KI-forordningen legger plikter på: den som utvikler og tilbyr systemet, og den som tar det i bruk i egen virksomhet. Bouvet kan være begge i samme leveranse."},
-    {id:"ai-act", t:"KI-forordningen (EU AI Act)", en:"EU AI Act", l:3, f:["etikk","sikkerhet"], v:["generelt"], k:["aiact","regjeringen"],
-      d:"EUs regelverk som klassifiserer KI-systemer etter risiko og stiller krav til blant annet risikostyring, dokumentasjon og transparens.",
-      e:"Status per oktober 2026: Digital Omnibus om KI trådte i kraft i EU 27. juli 2026 og utsatte høyrisikokravene til desember 2027 og august 2028. Åpenhetspliktene i artikkel 50 gjelder i EU fra august 2026. Forordningen er ennå ikke innlemmet i EØS-avtalen. Regjeringen sender endringene på ny høring høsten 2026 og tar sikte på lovproposisjon våren 2027. Den gjelder likevel norske virksomheter som tilbyr KI i EU-markedet."},
-    {id:"ki-styringssystem", t:"KI-styringssystem (AIMS)", en:"AI management system", l:3, f:["etikk"], v:["generelt"], k:["iso42001"],
-      d:"Ledelsessystem for ansvarlig utvikling og bruk av KI, med roller, risikostyring og kontinuerlig forbedring. Sertifiserbart etter ISO/IEC 42001."},
-    {id:"digital-suverenitet", t:"Digital suverenitet", en:"digital sovereignty", l:3, f:["sikkerhet","etikk"], v:["generelt"], k:["bouvet","nsm"],
-      d:"I hvilken grad virksomheten har reell kontroll over egne data, systemer og leverandøravhengigheter i KI-løsninger."},
-    {id:"prompt-injection", t:"Prompt injection", en:"prompt injection", l:3, f:["sikkerhet","agentic"], v:["generelt"], k:["owasp"],
-      d:"Angrep der skjulte instruksjoner i innhold modellen leser, kaprer eller vrir oppførselen. Den mest undervurderte risikoen i agentløsninger."},
-    {id:"guardrails", t:"Sperrer (guardrails)", en:"guardrails", l:3, f:["sikkerhet","etikk"], v:["generelt"], k:["owasp","nist"],
-      d:"Tekniske og prosessuelle sperrer som hindrer modellen i å gi skadelig, feil eller uønsket output."},
-    {id:"dataforgiftning", t:"Dataforgiftning", en:"data poisoning", l:3, f:["sikkerhet","data","ml"], v:["generelt"], k:["owasp","teknologiradetny"],
-      d:"Manipulering av trenings- eller kunnskapsdata slik at modellen lærer feil eller får innebygde sårbarheter."},
-    {id:"utdata-handtering", t:"Usikker håndtering av utdata", en:"improper output handling", l:3, f:["sikkerhet","utvikling"], v:["generelt"], k:["owasp"],
-      d:"Å sende modellens output videre uten validering, slik at den kan utføre kode, spørringer eller kommandoer nedstrøms."},
-    {id:"overdrevet-handlingsrom", t:"Overdrevet handlingsrom", en:"excessive agency", l:3, f:["sikkerhet","agentic"], v:["generelt"], k:["owasp"],
-      d:"En agent får flere rettigheter eller verktøy enn oppgaven krever, og kan dermed gjøre skade utilsiktet."},
-    {id:"ubegrenset-ressursbruk", t:"Ubegrenset ressursbruk", en:"unbounded consumption", l:3, f:["sikkerhet","data"], v:["generelt"], k:["owasp"],
-      d:"Manglende tak på kall og forbruk, som gir kostnadssprekk eller tjenestenekt."},
-    {id:"ki-leverandorkjede", t:"KI-leverandørkjede", en:"AI supply chain", l:3, f:["sikkerhet","data"], v:["generelt"], k:["owasp","nsm"],
-      d:"Risiko knyttet til tredjeparts modeller, modellvekter, datasett og MCP-servere som inngår i løsningen."},
-    {id:"kompetansetrapp", t:"Kompetansetrapp for KI", en:"AI capability ladder", l:3, f:["grunnleggende","etikk"], v:["generelt"], k:["bouvet"],
-      d:"Modell for å beskrive og utvikle KI-modenhet, fra grunnleggende bruk til strategisk og systemisk mestring."},
-    {id:"strukturkapital", t:"Strukturkapital", en:"structural capital", l:3, f:["grunnleggende","data"], v:["generelt"], k:["bouvet"],
-      d:"Metoder, maler og ressurser virksomheten bygger opp for å gjenbruke og skalere KI-kompetanse."},
-    {id:"a2a", t:"A2A (Agent2Agent)", en:"Agent2Agent protocol", l:3, f:["agentic","utvikling"], v:["generelt"], k:["a2a"], nytt:true,
-      d:"Åpen protokoll som lar KI-agenter fra ulike leverandører finne hverandre, utveksle oppgaver og samarbeide. Utfyller MCP, som kobler en agent til verktøy og data."},
-    {id:"ki-svermer", t:"KI-svermer", en:"AI swarms", l:3, f:["agentic","sikkerhet"], v:["generelt"], k:["teknologiradetny"], nytt:true,
-      d:"Nettverk av KI-agenter som koordinerer seg og opptrer samlet mot et felles mål. Forbindes ofte med avanserte cyberangrep og påvirkningsoperasjoner."},
-    {id:"malkapring", t:"Målkapring for agenter", en:"agent goal hijack", l:3, f:["sikkerhet","agentic"], v:["generelt"], k:["owaspagentic"], nytt:true,
-      d:"Angrep der skjulte instruksjoner i innhold agenten leser, endrer hva agenten prøver å oppnå. Øverst på OWASPs risikoliste for agenter (ASI01)."},
-    {id:"minneforgiftning", t:"Minneforgiftning", en:"memory poisoning", l:3, f:["sikkerhet","agentic"], v:["generelt"], k:["owaspagentic"], nytt:true,
-      d:"Manipulering av agentens lagrede minne eller kontekst, slik at senere beslutninger bygger på falsk informasjon (ASI06)."},
-    {id:"kaskadefeil", t:"Kaskadefeil", en:"cascading failures", l:3, f:["sikkerhet","agentic"], v:["generelt"], k:["owaspagentic"], nytt:true,
-      d:"Når en feil hos én agent eller i ett steg forplanter seg videre gjennom sammenkoblede agenter og systemer, og forsterkes underveis (ASI08)."},
-
-    /* --- Nivå 4 --- */
-    {id:"transformer", t:"Transformer-arkitektur", en:"transformer", l:4, f:["ml","genai"], v:["generelt"], k:["vaswani"],
-      d:"Arkitekturen moderne språkmodeller bygger på, der attention veier sammenhengen mellom alle deler av inndataen samtidig."},
-    {id:"attention", t:"Attention-mekanisme", en:"attention", l:4, f:["ml"], v:["generelt"], k:["vaswani"],
-      d:"Beregningen som avgjør hvor mye vekt hver del av inndataen får når modellen genererer neste token."},
-    {id:"rlhf", t:"RLHF", en:"reinforcement learning from human feedback", l:4, f:["ml","etikk"], v:["generelt"], k:["instructgpt","nist"],
-      d:"Trening der menneskelige preferanser mellom modellsvar brukes til å forsterke ønsket atferd og dempe uønsket."},
-    {id:"constitutional-ai", t:"Constitutional AI", en:"constitutional AI", l:4, f:["etikk","ml"], v:["claude"], k:["anthropic","cai"],
-      d:"Metode i to faser: modellen kritiserer og reviderer egne svar mot skrevne prinsipper, og trenes deretter på KI-genererte preferanser (RLAIF) i stedet for menneskelige vurderinger."},
-    {id:"alignment", t:"Alignment", en:"alignment", l:4, f:["etikk","ml"], v:["generelt"], k:["nist","anthropic"],
-      d:"Fagfeltet som arbeider for at en modells mål og atferd samsvarer med menneskelige verdier og intensjoner."},
-    {id:"moe", t:"Mixture of Experts (MoE)", en:"mixture of experts", l:4, f:["ml"], v:["generelt"], k:["moe"],
-      d:"Arkitektur der bare et utvalg spesialiserte deler av modellen aktiveres per forespørsel, for bedre ytelse til lavere beregningskostnad."},
-    {id:"lora-peft", t:"LoRA og PEFT", en:"LoRA, parameter-efficient fine-tuning", l:4, f:["ml","utvikling"], v:["generelt"], k:["lora"],
-      d:"Finjustering der bare et lite sett tilleggsparametere trenes, i stedet for hele modellen."},
-    {id:"kvantisering", t:"Kvantisering", en:"quantization", l:4, f:["ml","utvikling"], v:["generelt"], k:["bransje"],
-      d:"Å redusere presisjonen på modellens tallverdier for å gjøre den mindre og raskere, mot et lite tap i nøyaktighet."},
-    {id:"distillasjon", t:"Modelldistillasjon", en:"model distillation", l:4, f:["ml"], v:["generelt"], k:["distill"],
-      d:"Å trene en liten studentmodell til å etterligne en større lærermodell, for raskere og billigere drift."},
-    {id:"speculative-decoding", t:"Speculative decoding", en:"speculative decoding", l:4, f:["ml","utvikling"], v:["generelt"], k:["specdec"],
-      d:"En liten, rask modell foreslår tekst som en større modell verifiserer, for høyere hastighet uten tap av kvalitet."},
-    {id:"emergente-evner", t:"Emergente evner", en:"emergent abilities", l:4, f:["ml","genai"], v:["generelt"], k:["emergent"],
-      d:"Evner som først dukker opp ved stor skala, uten å være trent inn eksplisitt, og som mangler i mindre versjoner av samme modell."},
-    {id:"skaleringslov", t:"Skaleringslov", en:"scaling law", l:4, f:["ml"], v:["generelt"], k:["scaling"],
-      d:"Empirisk sammenheng mellom modellstørrelse, datamengde, beregningskraft og ytelse."},
-    {id:"katastrofal-glemsel", t:"Katastrofal glemsel", en:"catastrophic forgetting", l:4, f:["ml"], v:["generelt"], k:["ewc"],
-      d:"Når en modell mister tidligere lært kunnskap som følge av videre trening på nye data."},
-    {id:"red-teaming", t:"Red teaming", en:"red teaming", l:4, f:["sikkerhet"], v:["generelt"], k:["owasp","nist"],
-      d:"Systematisk angrepstesting av en KI-løsning for å avdekke sårbarheter, skjevheter og misbruksmuligheter før den settes i drift."},
-    {id:"fria", t:"Konsekvensvurdering for grunnleggende rettigheter (FRIA)", en:"fundamental rights impact assessment", l:4, f:["etikk"], v:["generelt"], k:["aiact"],
-      d:"Vurdering av hvordan et høyrisikosystem påvirker grunnleggende rettigheter, gjennomført før systemet tas i bruk."},
-    {id:"sandbagging", t:"Strategisk underprestasjon", en:"sandbagging", l:4, f:["etikk","ml"], v:["generelt"], k:["teknologiradetny"], nytt:true,
-      d:"Når et KI-system presterer dårligere enn det kan under testing og evaluering, og dermed skjuler egne evner. Utfordrer påliteligheten i sikkerhetsevalueringer."},
-    {id:"ki-bloff", t:"KI-bløff", en:"AI bluffing", l:4, f:["etikk","ml"], v:["generelt"], k:["teknologiradetny"], nytt:true,
-      d:"Når et KI-system fremstiller egne evner som bedre enn de er. Det motsatte av strategisk underprestasjon."}
-  ];
-  TERMS = TERMS.concat(window.AUTO_TERMS || []);
+  var TERMS = window.KI_TERMS.concat(window.AUTO_TERMS || []);
 
   TERMS.forEach(function(term){
-    var set = new Set();
-    term.f.forEach(function(fag){ (ROLES_BY_FAG[fag]||[]).forEach(function(r){ set.add(r); }); });
-    if(ROLE_OVERRIDES[term.id]) set = new Set(ROLE_OVERRIDES[term.id]);
-    term.r = ALL_ROLES.filter(function(r){ return set.has(r); });
+    term.r = window.kiRolesForTerm(term);
   });
 
   /* ---------- Tilstand ---------- */

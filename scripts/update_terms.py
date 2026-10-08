@@ -21,6 +21,7 @@ from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parent.parent
 INDEX = ROOT / "index.html"
+BASE_TERMS = ROOT / "terms.js"
 STATE = ROOT / ".github" / "term-source-state.json"
 TERMS_FILE = ROOT / "auto-terms.js"
 MODEL = "gemini-2.5-flash"
@@ -65,7 +66,15 @@ def extract_object(index: str, declaration: str) -> str:
 
 
 def parse_taxonomy(index: str, name: str) -> set[str]:
-    body = extract_object(index, name)
+    if name in {"FAGOMRADER", "ROLLER"}:
+        source = BASE_TERMS.read_text(encoding="utf-8")
+        property_name = "KI_SUBJECTS" if name == "FAGOMRADER" else "KI_ROLES"
+        match = re.search(rf"\bwindow\.{property_name}\s*=\s*\{{(.*?)\n\}};", source, re.S)
+        if not match:
+            raise ValueError(f"Could not find {property_name} in terms.js")
+        body = match.group(1)
+    else:
+        body = extract_object(index, name)
     return set(re.findall(r"(?<![\w\"'])\b([a-zA-Z][\w-]*)\s*:", body))
 
 
@@ -93,11 +102,26 @@ def parse_sources(index: str) -> list[dict[str, str]]:
     return sources
 
 
-def parse_existing_term_ids(index: str) -> set[str]:
-    match = re.search(r"\bvar\s+TERMS\s*=\s*\[(.*?)\n\s*\];", index, re.S)
+def parse_existing_term_ids(terms_source: str) -> set[str]:
+    match = re.search(r"\bwindow\.KI_TERMS\s*=\s*\[(.*?)\n\s*\];", terms_source, re.S)
     if not match:
-        raise ValueError("Could not find TERMS in index.html")
+        raise ValueError("Could not find KI_TERMS in terms.js")
     return set(re.findall(r'\{id:"([a-z0-9-]+)"', match.group(1)))
+
+
+def parse_existing_terms(terms_source: str) -> list[dict[str, str]]:
+    match = re.search(r"\bwindow\.KI_TERMS\s*=\s*\[(.*?)\n\s*\];", terms_source, re.S)
+    if not match:
+        raise ValueError("Could not find KI_TERMS in terms.js")
+    terms = []
+    pattern = re.compile(
+        r'\{id:"([a-z0-9-]+)",\s*t:("(?:\\.|[^"\\])*"),\s*en:("(?:\\.|[^"\\])*")'
+    )
+    for term_id, title, english in pattern.findall(match.group(1)):
+        terms.append({"id": term_id, "t": json.loads(title), "en": json.loads(english)})
+    if not terms:
+        raise ValueError("Could not parse terms from KI_TERMS in terms.js")
+    return terms
 
 
 def read_auto_terms() -> tuple[str | None, list[dict]]:
@@ -355,25 +379,48 @@ def limit_generated_terms(value: object) -> object:
     return value
 
 
+def normalize_term_label(value: object) -> str:
+    if not isinstance(value, str):
+        return ""
+    normalized = unicodedata.normalize("NFKC", value).casefold()
+    return "".join(
+        character for character in normalized if character.isalnum() or character in "+#"
+    )
+
+
 def exclude_known_and_duplicate_terms(
-    terms: object, existing_ids: set[str]
+    terms: object,
+    existing_ids: set[str],
+    existing_terms: list[dict] | None = None,
 ) -> object:
     if not isinstance(terms, list):
         return terms
     seen = set(existing_ids)
+    seen_labels = {
+        label
+        for term in existing_terms or []
+        for label in (normalize_term_label(term.get("t")), normalize_term_label(term.get("en")))
+        if label
+    }
     unique = []
     for term in terms:
         if not isinstance(term, dict) or not isinstance(term.get("id"), str):
             unique.append(term)
             continue
         term_id = term["id"]
-        if term_id in seen:
+        labels = {
+            label
+            for label in (normalize_term_label(term.get("t")), normalize_term_label(term.get("en")))
+            if label
+        }
+        if term_id in seen or labels & seen_labels:
             print(
-                f"::warning::Gemini suggested duplicate term id {term_id}; "
+                f"::warning::Gemini suggested duplicate term {term_id}; "
                 "ignoring that suggestion."
             )
             continue
         seen.add(term_id)
+        seen_labels.update(labels)
         unique.append(term)
     return unique
 
@@ -386,7 +433,9 @@ def generate_terms(
         raise ValueError("GEMINI_API_KEY is missing; add it as a repository Actions secret")
     index = INDEX.read_text(encoding="utf-8")
     known_sources = parse_sources(index)
-    existing_ids = parse_existing_term_ids(index) | (published_ids or set())
+    base_terms = parse_existing_terms(BASE_TERMS.read_text(encoding="utf-8"))
+    _, published_terms = read_auto_terms()
+    existing_ids = {term["id"] for term in base_terms + published_terms} | (published_ids or set())
     source_names = {source["id"]: source["name"] for source in known_sources}
     levels = parse_level_descriptions(index)
     context = [
@@ -488,7 +537,9 @@ def generate_terms(
         answer.get("terms") if isinstance(answer, dict) else None
     )
     generated = limit_generated_terms(generated)
-    generated = exclude_known_and_duplicate_terms(generated, existing_ids)
+    generated = exclude_known_and_duplicate_terms(
+        generated, existing_ids, base_terms + published_terms
+    )
     terms = validate_terms(
         generated,
         existing_ids,
@@ -553,7 +604,7 @@ def run() -> None:
         generated = generate_terms(changed, published_ids)
         combined = validate_terms(
             existing + generated,
-            parse_existing_term_ids(index),
+            parse_existing_term_ids(BASE_TERMS.read_text(encoding="utf-8")),
             {source["id"] for source in sources},
             parse_taxonomy(index, "FAGOMRADER"),
             parse_taxonomy(index, "VERKTOY"),

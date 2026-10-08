@@ -16,15 +16,15 @@ Definisjonene er kortet ned og skrevet om på egne ord. De er ikke direkte sitat
 
 ## Innhold
 
-- 97 begreper fordelt på fire nivåer og ni fagområder
+- Begreper fordelt på fire nivåer og ni fagområder
 - 33 kilder, gruppert i kildelisten nederst på siden
 - Sist oppdatert: datoen vises automatisk og endres når nye begreper publiseres
 
 ## Kjør lokalt
 
-Siden er statisk og har ingen byggesteg eller avhengigheter. Åpne `index.html` i en nettleser. De daglig oppdagede begrepene ligger i `auto-terms.js`.
+Siden er statisk og har ingen byggesteg eller avhengigheter. Åpne `index.html` i en nettleser. Quizen er en egen side i `quiz.html`. Begrepene deles mellom sidene fra `terms.js`; de daglig oppdagede begrepene ligger i `auto-terms.js`.
 
-For GitHub Pages: gå til *Settings → Pages* og velg **GitHub Actions** som build and deployment source. Den daglige workflowen publiserer `index.html` og `auto-terms.js` direkte med Pages-deployhandlingen.
+For GitHub Pages: gå til *Settings → Pages* og velg **GitHub Actions** som build and deployment source. Workflowen publiserer oppslagsverket, quizen og de delte datafilene med Pages-deployhandlingen.
 
 ## Automatisk oppdatering med Gemini API
 
@@ -40,12 +40,16 @@ Kildeinnhold behandles som ubetrodd data. Kildene uten offentlig URL (interne el
 
 ## Manuell oppdatering
 
-Eksisterende begreper, roller, fagområder og kilder ligger i `<script>`-blokken i `index.html`:
+Eksisterende begreper og fagområder ligger i `terms.js`, som lastes av både `index.html` og `quiz.html`:
 
-- `TERMS`: begrepene (navn, engelsk term, nivå, fagområder, verktøy, kilder og definisjon)
+- `KI_TERMS`: begrepene (navn, engelsk term, nivå, fagområder, verktøy, kilder og definisjon)
+- `KI_SUBJECTS`: fagområdene som brukes til quizfiltrering
+- `KI_ROLES` og rollefordelingen: rollene og begrepstilknytningen som brukes av begge sidene
 - `KILDER`: kildelisten
-- `ROLLER`, `FAGOMRADER`, `VERKTOY`: filterverdiene
+- `ROLLER`, `VERKTOY`: filterverdiene i oppslagsverket
 - `auto-terms.js`: nye, automatisk oppdagede begreper (genereres av GitHub Actions)
+
+Quizen har alltid ti blandede spørsmål. Hver quiz avgrenses til generell quiz, ett fagområde eller én rolle, og et valgfritt nivå. Når en avgrensning har færre enn ti relevante begreper, brukes noen begreper i mer enn én spørsmålsform for å fylle quizen. Resultatlistene er separate for hver fagområde-/rolle- og nivå-kombinasjon; resultatvisningen viser listen for den valgte quiztypen, og «Velg en annen quiz» lar deltakeren bytte kategori. Deltakeren velger kallenavn; ikke bruk fullt navn eller e-postadresse. Resultater lagres bare i den lokale nettleseren, kan slås av og kan slettes derfra. Det finnes foreløpig ingen delt toppliste eller konto-/backendløsning.
 
 ## Videre ideer
 

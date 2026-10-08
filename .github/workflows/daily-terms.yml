@@ -7,6 +7,11 @@ on:
     paths:
       - index.html
       - auto-terms.js
+      - terms.js
+      - quiz.html
+      - quiz.js
+      - scripts/update_terms.py
+      - tests/**
       - .github/workflows/daily-terms.yml
   schedule:
     - cron: "0 6 * * *"
@@ -37,6 +42,8 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
+      - name: Run tests
+        run: python -m unittest discover -s tests -v
       - name: Require Gemini API key
         if: github.event_name != 'push'
         env:
@@ -73,7 +80,7 @@ jobs:
         if: steps.publish.outputs.changed == 'true' || github.event_name == 'push'
         run: |
           mkdir -p _site
-          cp index.html auto-terms.js _site/
+          cp index.html quiz.html terms.js quiz.js auto-terms.js _site/
       - name: Upload site artifact
         if: steps.publish.outputs.changed == 'true' || github.event_name == 'push'
         uses: actions/upload-pages-artifact@v3

@@ -129,16 +129,37 @@ class TermValidationTests(unittest.TestCase):
         self.assertEqual(warning.call_count, 2)
         self.assertIn("ignoring that suggestion", warning.call_args_list[0].args[0])
 
+    def test_ignores_terms_with_duplicate_normalized_names(self):
+        terms = [
+            {"id": "nytt-begrep", "t": "Nytt begrep", "en": "MODEL-context protocol"},
+            {"id": "annet-begrep", "t": "Annet begrep", "en": "Completely novel"},
+            {"id": "enda-et-begrep", "t": "Enda et begrep", "en": "completely novel"},
+        ]
+        existing = [{"id": "mcp", "t": "Model Context Protocol", "en": "MCP"}]
+        with patch("builtins.print") as warning:
+            unique = update_terms.exclude_known_and_duplicate_terms(
+                terms, set(), existing
+            )
+        self.assertEqual(unique, terms[1:2])
+        self.assertEqual(warning.call_count, 2)
+        self.assertNotEqual(
+            update_terms.normalize_term_label("C++"),
+            update_terms.normalize_term_label("C"),
+        )
+
 
 class RepositoryIntegrationTests(unittest.TestCase):
     def test_discovers_documented_sources_and_taxonomies(self):
         index = update_terms.INDEX.read_text(encoding="utf-8")
+        terms_source = update_terms.BASE_TERMS.read_text(encoding="utf-8")
         sources = update_terms.parse_sources(index)
         self.assertEqual(len(sources), 31)
         self.assertIn("teknologiradet", {source["id"] for source in sources})
         self.assertEqual(len(update_terms.parse_taxonomy(index, "FAGOMRADER")), 9)
+        self.assertEqual(len(update_terms.parse_taxonomy(index, "ROLLER")), 16)
         self.assertEqual(len(update_terms.parse_taxonomy(index, "VERKTOY")), 7)
-        self.assertEqual(len(update_terms.parse_existing_term_ids(index)), 97)
+        self.assertEqual(len(update_terms.parse_existing_term_ids(terms_source)), 97)
+        self.assertEqual(len(update_terms.parse_existing_terms(terms_source)), 97)
         self.assertEqual(
             update_terms.parse_level_descriptions(index),
             {
@@ -148,6 +169,46 @@ class RepositoryIntegrationTests(unittest.TestCase):
                 4: "Nivå 4: du går inn i modellenes indre virkemåte og forskningsfronten.",
             },
         )
+
+    def test_glossary_and_quiz_load_one_shared_term_source(self):
+        index = update_terms.INDEX.read_text(encoding="utf-8")
+        quiz = (update_terms.ROOT / "quiz.html").read_text(encoding="utf-8")
+        terms_source = update_terms.BASE_TERMS.read_text(encoding="utf-8")
+        self.assertIn('<script src="terms.js"></script>', index)
+        self.assertIn('<script src="terms.js"></script>', quiz)
+        self.assertIn('id="mascot-main"', quiz)
+        self.assertIn("Hva vil du kalle deg?", quiz)
+        self.assertIn('class="btn btn-primary btn-start" id="start"', quiz)
+        self.assertIn("Endre oppsett", quiz)
+        self.assertIn('id="level-4"', quiz)
+        self.assertIn('id="scope-search"', quiz)
+        self.assertIn("window.KI_TERMS = [", terms_source)
+        self.assertIn("window.KI_SUBJECTS = {", terms_source)
+        self.assertIn("window.KI_ROLES = {", terms_source)
+        self.assertIn("window.kiRolesForTerm = function(term)", terms_source)
+        self.assertNotIn("var TERMS = [", index)
+        self.assertNotIn("window.KI_TERMS = [", quiz)
+        workflow = (update_terms.ROOT / ".github" / "workflows" / "daily-terms.yml").read_text(encoding="utf-8")
+        self.assertIn("quiz.js", workflow)
+        self.assertLess(workflow.index("python -m unittest"), workflow.index("python scripts/update_terms.py"))
+
+    def test_published_terms_have_no_duplicate_normalized_names(self):
+        base_terms = update_terms.parse_existing_terms(
+            update_terms.BASE_TERMS.read_text(encoding="utf-8")
+        )
+        auto_terms = update_terms.read_auto_terms()[1]
+        labels = {}
+        duplicates = []
+        for term in base_terms + auto_terms:
+            for field in ("t", "en"):
+                label = update_terms.normalize_term_label(term.get(field))
+                if not label:
+                    continue
+                previous_id = labels.get(label)
+                if previous_id and previous_id != term["id"]:
+                    duplicates.append((label, previous_id, term["id"]))
+                labels[label] = term["id"]
+        self.assertEqual(duplicates, [])
 
     def test_missing_api_key_stops_before_source_fetch(self):
         with (
@@ -224,11 +285,16 @@ class RepositoryIntegrationTests(unittest.TestCase):
             "sources": ["teknologiradet"],
             "definition": "En kort forklaring.",
         }
+        duplicate_term = {
+            **returned_term,
+            "term": "Vibbekoding",
+            "english": "VIBE-CODING",
+        }
         api_response = {
             "output": [
                 {
                     "type": "text",
-                    "text": f"```json\n{json.dumps({'terms': [returned_term]})}\n```",
+                    "text": f"```json\n{json.dumps({'terms': [returned_term, duplicate_term]})}\n```",
                 }
             ]
         }
@@ -259,6 +325,7 @@ class RepositoryIntegrationTests(unittest.TestCase):
         self.assertEqual(body["generation_config"]["thinking_level"], "low")
         self.assertEqual(body["generation_config"]["max_output_tokens"], 8192)
         self.assertIn("english", body["response_format"]["schema"]["properties"]["terms"]["items"]["properties"])
+        self.assertEqual(len(terms), 1)
         self.assertEqual(terms[0]["id"], "nytt-begrep")
         self.assertEqual(terms[0]["t"], "Nytt begrep")
 
