@@ -6,6 +6,7 @@
   var ROLES = window.KI_ROLES || {};
   var SCORE_KEY = "ki-begrepsquiz-scores-v1";
   var SAVE_KEY = "ki-begrepsquiz-save-v1";
+  var NICKNAME_KEY = "ki-begrepsquiz-nickname-v1";
   var QUESTION_COUNT = 10;
   var MIN_QUESTION_SECONDS = 10;
   var MAX_QUESTION_SECONDS = 30;
@@ -110,6 +111,12 @@
     var nickname = els.nickname.value.trim().replace(/\s+/g, " ");
     var looksLikeEmail = /@/.test(nickname);
     var looksLikeFullName = /^[A-ZÆØÅ][a-zæøå]+\s+[A-ZÆØÅ][a-zæøå]+(?:\s+[A-ZÆØÅ][a-zæøå]+)*$/.test(nickname);
+    try{
+      if(nickname && !looksLikeEmail && !looksLikeFullName) localStorage.setItem(NICKNAME_KEY, JSON.stringify(nickname));
+      else localStorage.removeItem(NICKNAME_KEY);
+    }catch(error){
+      storageAvailable = false;
+    }
     if(looksLikeEmail || looksLikeFullName){
       els.nicknameHelp.textContent = looksLikeEmail
         ? "Det ser ut som en e-postadresse — prøv et kallenavn i stedet."
@@ -703,6 +710,8 @@
   }catch(error){
     storageAvailable = false;
   }
+  var savedNickname = readStore(NICKNAME_KEY, "");
+  if(typeof savedNickname === "string") els.nickname.value = savedNickname;
   els.save.checked = saveEnabled;
   els.scopeSearch.addEventListener("focus", function(){
     if(els.scopeList.hidden) openScopeOptions();
@@ -823,6 +832,7 @@
     els.poolInfo.textContent = "Begrepslisten kunne ikke lastes. Gå tilbake til oppslagsverket, og prøv igjen.";
     els.start.disabled = true;
   }else{
-    refreshSetup();
+    if(els.nickname.value) updateNickname();
+    else refreshSetup();
   }
 })();

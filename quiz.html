@@ -197,7 +197,7 @@
   .feedback.incorrect{border-left-color:var(--red);background:var(--red-bg)}
   .feedback strong{display:block;margin-bottom:3px}
   .feedback p{margin:0;color:var(--ink);font-size:.9rem}
-  .facts-result{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}
+  .facts-result{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:18px}
   .fact{min-width:120px;padding:12px 15px;border-radius:3px;background:var(--soft)}
   .fact span{display:block;color:var(--muted);font-size:.77rem}
   .fact strong{display:block;font-size:1.3rem}
@@ -264,7 +264,7 @@
         <div class="badge" aria-hidden="true"><span class="n">1</span><svg width="16" height="16" viewBox="0 0 16 16"><path d="m3 8.5 3 3 7-7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <div>
           <h3>Hva vil du kalle deg?</h3>
-          <p class="desc">Gjerne noe gøy — bare ikke fullt navn eller e-postadresse.</p>
+          <p class="desc">Gjerne noe gøy — bare ikke fullt navn eller e-postadresse. Kallenavnet huskes på denne enheten.</p>
           <div class="name-field" id="name-field">
             <label class="field-label" for="nickname">Kallenavn</label>
             <div class="name-input-wrap">
@@ -396,6 +396,6 @@
 </footer>
 <script src="terms.js"></script>
 <script src="auto-terms.js"></script>
-<script src="quiz.js?v=cta-params-v1"></script>
+<script src="quiz.js?v=profile-v1"></script>
 </body>
 </html>
