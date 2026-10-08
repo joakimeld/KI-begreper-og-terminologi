@@ -58,6 +58,15 @@ class TermValidationTests(unittest.TestCase):
             [published],
         )
 
+    def test_normalizes_title_before_slug_validation(self):
+        for title, expected in (
+            ("  nytt begrep", "Nytt begrep"),
+            (" (nytt begrep)", "(Nytt begrep)"),
+        ):
+            with self.subTest(title=title):
+                term = self.validate({**self.term, "t": title})[0]
+                self.assertEqual(term["t"], expected)
+
     def test_rejects_duplicate_unknown_taxonomy_and_markup(self):
         cases = [
             ({**self.term, "id": "existing"}, {"existing"}, self.sources, self.subjects, self.tools),
@@ -160,6 +169,10 @@ class RepositoryIntegrationTests(unittest.TestCase):
         self.assertEqual(len(update_terms.parse_taxonomy(index, "VERKTOY")), 7)
         self.assertEqual(len(update_terms.parse_existing_term_ids(terms_source)), 97)
         self.assertEqual(len(update_terms.parse_existing_terms(terms_source)), 97)
+        auto_terms = update_terms.read_auto_terms()[1]
+        for term in update_terms.parse_existing_terms(terms_source) + auto_terms:
+            first_letter = next((character for character in term["t"] if character.isalpha()), "")
+            self.assertTrue(first_letter.isupper(), f"{term['id']} starts with lowercase: {term['t']!r}")
         self.assertEqual(
             update_terms.parse_level_descriptions(index),
             {
@@ -271,6 +284,38 @@ class RepositoryIntegrationTests(unittest.TestCase):
         self.assertEqual([term["id"] for term in published], ["gammelt-auto", "nytt-begrep"])
         self.assertEqual(stored_state[source["id"]], update_terms.hashlib.sha256(b"full source text").hexdigest())
 
+    def test_run_repairs_lowercase_published_titles_without_new_terms(self):
+        source = update_terms.parse_sources(
+            update_terms.INDEX.read_text(encoding="utf-8")
+        )[0]
+        old_term = {
+            **VALID_TERM,
+            "id": "gammelt-auto",
+            "t": "  gammelt auto",
+            "nytt": True,
+        }
+        source_text = "full source text"
+        source_hash = update_terms.hashlib.sha256(source_text.encode("utf-8")).hexdigest()
+        with tempfile.TemporaryDirectory() as directory:
+            state_path = Path(directory) / "state.json"
+            terms_path = Path(directory) / "terms.js"
+            state_path.write_text(json.dumps({source["id"]: source_hash}), encoding="utf-8")
+            with (
+                patch.dict(os.environ, {"GEMINI_API_KEY": "test-secret"}),
+                patch.object(update_terms, "STATE", state_path),
+                patch.object(update_terms, "TERMS_FILE", terms_path),
+                patch.object(update_terms, "parse_sources", return_value=[source]),
+                patch.object(update_terms, "fetch_source", return_value=("excerpt", source_text)),
+                patch.object(update_terms, "generate_terms") as generate,
+            ):
+                update_terms.write_terms("2026-10-04", [old_term])
+                update_terms.run()
+                updated, published = update_terms.read_auto_terms()
+
+        generate.assert_not_called()
+        self.assertEqual(updated, "2026-10-04")
+        self.assertEqual(published[0]["t"], "Gammelt auto")
+
     def test_auto_terms_file_round_trips_generated_json(self):
         term = {
             **VALID_TERM,
@@ -287,7 +332,7 @@ class RepositoryIntegrationTests(unittest.TestCase):
 
     def test_gemini_interactions_request_uses_secret_and_json_schema(self):
         returned_term = {
-            "term": "nytt begrep",
+            "term": "  nytt begrep",
             "english": "new term",
             "level": 2,
             "subjects": ["genai"],

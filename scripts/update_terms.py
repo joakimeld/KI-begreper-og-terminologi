@@ -166,6 +166,14 @@ def slug(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", value).strip("-")
 
 
+def normalize_term_title(value: str) -> str:
+    title = value.strip()
+    for index, character in enumerate(title):
+        if character.isalpha():
+            return title[:index] + character.upper() + title[index + 1 :]
+    return title
+
+
 def _string_list(value: object, allowed: set[str], field: str, term_id: str) -> list[str]:
     if (
         not isinstance(value, list)
@@ -227,12 +235,13 @@ def validate_terms(
                 raise ValueError(f"{term_id}: {field} must be plain text of at most {maximum} characters")
         if type(term["l"]) is not int or term["l"] not in LEVEL_IDS:
             raise ValueError(f"{term_id}: l must be one of 1, 2, 3 or 4")
-        if slug(term["t"]) != term_id:
-            raise ValueError(f"{term_id}: id must match title slug {slug(term['t'])!r}")
+        title = normalize_term_title(term["t"])
+        if slug(title) != term_id:
+            raise ValueError(f"{term_id}: id must match title slug {slug(title)!r}")
 
         clean_term = {
             "id": term_id,
-            "t": term["t"].strip(),
+            "t": title,
             "en": term["en"].strip(),
             "l": term["l"],
             "f": _string_list(term["f"], subjects, "f", term_id),
@@ -351,8 +360,8 @@ def normalize_generated_terms(value: object) -> object:
                 f"Gemini term must use descriptive output fields; received keys: {sorted(term.keys())}"
             )
         norwegian_term = term["term"]
-        if isinstance(norwegian_term, str) and norwegian_term:
-            norwegian_term = norwegian_term[:1].upper() + norwegian_term[1:]
+        if isinstance(norwegian_term, str):
+            norwegian_term = normalize_term_title(norwegian_term)
         normalized.append(
             {
                 "id": slug(norwegian_term) if isinstance(norwegian_term, str) else "",
@@ -570,6 +579,7 @@ def run() -> None:
     index = INDEX.read_text(encoding="utf-8")
     sources = parse_sources(index)
     state = json.loads(STATE.read_text(encoding="utf-8"))
+    updated, existing = read_auto_terms()
     successful_hashes: dict[str, str] = {}
     changed: list[dict[str, str]] = []
     failures = 0
@@ -598,26 +608,29 @@ def run() -> None:
             break
         time.sleep(0.2)
 
+    generated = []
     if changed:
-        _, existing = read_auto_terms()
         published_ids = {term["id"] for term in existing}
         generated = generate_terms(changed, published_ids)
-        combined = validate_terms(
-            existing + generated,
-            parse_existing_term_ids(BASE_TERMS.read_text(encoding="utf-8")),
-            {source["id"] for source in sources},
-            parse_taxonomy(index, "FAGOMRADER"),
-            parse_taxonomy(index, "VERKTOY"),
-            allow_published=True,
-        )
-        if generated:
-            date = datetime.now(timezone.utc).date().isoformat()
-            write_terms(date, combined)
-            print(f"Added {len(generated)} new term(s) from {len(changed)} changed source(s).")
-        else:
-            print(f"No new terms found in {len(changed)} changed source(s).")
-    else:
+    combined = validate_terms(
+        existing + generated,
+        parse_existing_term_ids(BASE_TERMS.read_text(encoding="utf-8")),
+        {source["id"] for source in sources},
+        parse_taxonomy(index, "FAGOMRADER"),
+        parse_taxonomy(index, "VERKTOY"),
+        allow_published=True,
+    )
+    if generated:
+        date = datetime.now(timezone.utc).date().isoformat()
+        write_terms(date, combined)
+        print(f"Added {len(generated)} new term(s) from {len(changed)} changed source(s).")
+    elif combined != existing:
+        write_terms(updated, combined)
+        print("Normalized existing glossary term names.")
+    elif not changed:
         print("No source changes detected.")
+    else:
+        print(f"No new terms found in {len(changed)} changed source(s).")
 
     state.update(successful_hashes)
     STATE.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
