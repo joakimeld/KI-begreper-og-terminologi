@@ -678,6 +678,24 @@
     scopeOptions.push({value:"role:" + id, label:ROLES[id], group:"Rolle"});
   });
   els.scopeSearch.value = scopeOptions[0].label;
+  var params = new URLSearchParams(window.location.search);
+  var initialScope = params.get("scope");
+  var scopeOption = scopeOptions.filter(function(option){ return option.value === initialScope; })[0];
+  if(scopeOption){
+    selectedScope = scopeOption.value;
+    scopeConfirmed = true;
+    els.scopeSearch.value = scopeOption.label;
+    els.scopeStep.classList.add("done");
+  }
+  var initialLevel = params.get("level");
+  if(["all","1","2","3","4"].indexOf(initialLevel) !== -1){
+    var levelOption = document.querySelector('input[name="quiz-level"][value="' + initialLevel + '"]');
+    if(levelOption){
+      levelOption.checked = true;
+      els.level.value = initialLevel;
+      els.levelStep.classList.add("done");
+    }
+  }
 
   try{
     localStorage.setItem(SAVE_KEY, localStorage.getItem(SAVE_KEY) || "1");

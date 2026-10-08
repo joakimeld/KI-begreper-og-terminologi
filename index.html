@@ -20,6 +20,7 @@
     --navbar-fg:#FFFFFF;
     --navbar-fg-dim:#C3C5DA;
     --coral:#C75A22;
+    --cta-glow:#E6E6EF; --cta-hover:#24275C;
     --focus:#11133C;
 
     --lvl1-bg:#E6E6EF; --lvl1-fg:#11133C;
@@ -34,7 +35,7 @@
       --paper:#0F1116; --surface:#171A21; --block:#1E222B;
       --ink:#EEF0F4; --ink-soft:#AAB1BD; --line:#2C313B; --control:#8A93A3;
       --navy:#C6C9FF; --navbar-bg:#1C2039; --navbar-fg:#FFFFFF; --navbar-fg-dim:#B9BCD4;
-      --coral:#F0A06A; --focus:#FFFFFF;
+      --coral:#F0A06A; --focus:#FFFFFF; --cta-glow:#252A3C; --cta-hover:#2A2F52;
       --lvl1-bg:#252A3C; --lvl1-fg:#C6C9FF;
       --lvl2-bg:#343A57; --lvl2-fg:#DDDEFF;
       --lvl3-bg:#4B4E86; --lvl3-fg:#F2F3FF;
@@ -46,7 +47,7 @@
     --paper:#0F1116; --surface:#171A21; --block:#1E222B;
     --ink:#EEF0F4; --ink-soft:#AAB1BD; --line:#2C313B; --control:#8A93A3;
     --navy:#C6C9FF; --navbar-bg:#1C2039; --navbar-fg:#FFFFFF; --navbar-fg-dim:#B9BCD4;
-    --coral:#F0A06A; --focus:#FFFFFF;
+    --coral:#F0A06A; --focus:#FFFFFF; --cta-glow:#252A3C; --cta-hover:#2A2F52;
     --lvl1-bg:#252A3C; --lvl1-fg:#C6C9FF;
     --lvl2-bg:#343A57; --lvl2-fg:#DDDEFF;
     --lvl3-bg:#4B4E86; --lvl3-fg:#F2F3FF;
@@ -212,6 +213,65 @@
     .srclist li{grid-template-columns:1fr;}
     .masthead-main{padding-block:20px 22px;}
   }
+
+  /* ---- Quiz-CTA ---- */
+  .quiz-cta{
+    position:relative; display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:center;
+    gap:14px 28px; margin-top:18px; padding:16px 24px 16px 16px; overflow:hidden;
+    background:var(--surface); border:1px solid var(--line); border-left:4px solid var(--coral);
+  }
+  .quiz-cta::after{
+    content:""; position:absolute; left:-34px; top:50%; width:150px; height:150px; transform:translateY(-50%);
+    border-radius:50%; background:var(--cta-glow); z-index:0;
+  }
+  .quiz-cta > *{position:relative; z-index:1;}
+  .cta-bot{width:92px; height:auto; display:block; overflow:visible;}
+  .cta-bubble{
+    position:relative; display:inline-block; margin:0 0 8px 8px; padding:4px 10px; border-radius:10px;
+    background:var(--navbar-bg); color:var(--navbar-fg); font-size:0.74rem; font-weight:700;
+  }
+  .cta-bubble::before{
+    content:""; position:absolute; left:-6px; bottom:6px; width:12px; height:12px; transform:rotate(45deg);
+    background:var(--navbar-bg); border-radius:0;
+  }
+  .cta-text h2{font-size:clamp(1.25rem,2.4vw,1.6rem); font-weight:800; letter-spacing:-0.02em; line-height:1.15;}
+  .cta-text p{margin:6px 0 0; color:var(--ink-soft); font-size:0.92rem; max-width:58ch;}
+  .cta-chips{display:flex; flex-wrap:wrap; gap:6px; margin-top:10px;}
+  .cta-chips span{font-size:0.72rem; font-weight:700; letter-spacing:0.04em; padding:3px 8px; background:var(--block); color:var(--ink-soft);}
+  .cta-btn{
+    display:inline-flex; align-items:center; gap:10px; min-height:52px; padding:12px 22px;
+    background:var(--navbar-bg); color:var(--navbar-fg); border:1px solid var(--navy);
+    font-weight:700; text-decoration:none; white-space:nowrap;
+  }
+  .cta-btn:hover{text-decoration:none; background:var(--cta-hover);}
+  .cta-btn .arrow{display:inline-block;}
+  .cta-bot .eyes{transform-box:fill-box; transform-origin:center;}
+  .cta-bot .happy{display:none;}
+  .quiz-cta:hover .cta-bot .eyes, .quiz-cta:focus-within .cta-bot .eyes{display:none;}
+  .quiz-cta:hover .cta-bot .happy, .quiz-cta:focus-within .cta-bot .happy{display:inline;}
+  @media (prefers-reduced-motion:no-preference){
+    .cta-bot .body{transform-box:fill-box; transform-origin:50% 100%; animation:ctaFloat 3.2s ease-in-out infinite;}
+    .cta-bot .eyes{animation:ctaBlink 4.5s infinite;}
+    .cta-bot .antenna{transform-box:fill-box; transform-origin:50% 100%;}
+    .cta-bot .led{animation:ctaLed 2.4s ease-in-out infinite;}
+    .quiz-cta:hover .cta-bot .body, .quiz-cta:focus-within .cta-bot .body{animation:ctaHop .6s cubic-bezier(.34,1.56,.64,1);}
+    .quiz-cta:hover .cta-bot .antenna, .quiz-cta:focus-within .cta-bot .antenna{animation:ctaWiggle .6s;}
+    .cta-bubble{animation:ctaPop .5s cubic-bezier(.34,1.56,.64,1) .4s both;}
+    .cta-btn .arrow{transition:transform .2s ease;}
+    .cta-btn:hover .arrow{transform:translateX(4px);}
+    @keyframes ctaFloat{50%{transform:translateY(-4px);}}
+    @keyframes ctaBlink{0%,94%,100%{transform:scaleY(1);}96%{transform:scaleY(.1);}}
+    @keyframes ctaLed{50%{opacity:.35;}}
+    @keyframes ctaHop{30%{transform:translateY(-12px) scaleY(1.04);}65%{transform:translateY(0) scaleY(.95);}}
+    @keyframes ctaWiggle{25%{transform:rotate(-15deg);}75%{transform:rotate(15deg);}}
+    @keyframes ctaPop{from{opacity:0; transform:scale(.6) translateY(6px);}}
+  }
+  @media (max-width:720px){
+    .quiz-cta{grid-template-columns:auto minmax(0,1fr); align-items:start; padding:16px;}
+    .quiz-cta::after{top:70px;}
+    .cta-btn{grid-column:1/-1; justify-content:center;}
+    .cta-bot{width:72px;}
+  }
   @media (prefers-reduced-motion:no-preference){
     .card, .pill, .opt{transition:background-color 0.12s ease;}
   }
@@ -262,6 +322,29 @@
     </div>
   </div>
   <div class="wrap"><p class="level-desc" id="level-desc"></p></div>
+
+  <div class="wrap">
+    <aside class="quiz-cta" aria-labelledby="cta-title">
+      <svg class="cta-bot" viewBox="0 0 80 92" aria-hidden="true" focusable="false">
+        <g class="body">
+          <g class="antenna"><line x1="40" y1="12" x2="40" y2="22" stroke="#9fb3c2" stroke-width="2" stroke-linecap="round"/><circle class="led" cx="40" cy="8" r="3.5" fill="#5FD683"/></g>
+          <clipPath id="cta-bot-clip"><circle cx="40" cy="56" r="34"/></clipPath>
+          <g clip-path="url(#cta-bot-clip)">
+            <rect width="80" height="56" fill="#C8D6E1"/><rect y="56" width="40" height="40" fill="#F4A06A"/><rect x="40" y="56" width="40" height="40" fill="#FBE4CF"/><rect y="55" width="80" height="2" fill="#fff"/>
+          </g>
+          <g class="eyes"><circle cx="31" cy="46" r="3.8" fill="#5FD683"/><circle cx="49" cy="46" r="3.8" fill="#5FD683"/></g>
+          <g class="happy" fill="none" stroke="#5FD683" stroke-width="3" stroke-linecap="round"><path d="M27 48q4-6 8 0"/><path d="M45 48q4-6 8 0"/></g>
+        </g>
+      </svg>
+      <div class="cta-text">
+        <span class="cta-bubble" aria-hidden="true">Hvor mange klarer du?</span>
+        <h2 id="cta-title">Test din kunnskap!</h2>
+        <p id="cta-sub">Ti raske spørsmål om begrepene her – med tidtaker, poeng og en robot som heier på deg.</p>
+        <div class="cta-chips" aria-hidden="true"><span>10 spørsmål</span><span>6 spørsmålstyper</span><span>ca. 3 min</span></div>
+      </div>
+      <a class="cta-btn" id="cta-link" href="quiz.html"><span id="cta-label">Start quizen</span> <span class="arrow" aria-hidden="true">→</span></a>
+    </aside>
+  </div>
 
   <section class="wrap filters" aria-labelledby="filter-heading">
     <h2 id="filter-heading">Filtrer</h2>
@@ -698,10 +781,40 @@
     }).join("");
   }
 
+  function updateQuizCta(){
+    var params = [], what = "";
+    var scope = state.role.size === 1 && state.fag.size === 0 ? "role:" + Array.from(state.role)[0]
+              : state.fag.size === 1 && state.role.size === 0 ? "subject:" + Array.from(state.fag)[0] : "all";
+    function poolSize(selectedScope, level){
+      return TERMS.filter(function(term){
+        if(level !== "all" && term.l !== Number(level)) return false;
+        if(selectedScope.indexOf("role:") === 0) return term.r.indexOf(selectedScope.slice(5)) !== -1;
+        if(selectedScope.indexOf("subject:") === 0) return term.f.indexOf(selectedScope.slice(8)) !== -1;
+        return true;
+      }).length;
+    }
+    var level = state.level;
+    if(poolSize(scope, level) < 3) scope = "all";
+    if(poolSize(scope, level) < 3) level = "all";
+    if(scope !== "all") params.push("scope=" + encodeURIComponent(scope));
+    if(level !== "all") params.push("level=" + level);
+    var scopeName = scope.indexOf("role:") === 0 ? ROLLER[scope.slice(5)]
+                  : scope.indexOf("subject:") === 0 ? FAGOMRADER[scope.slice(8)] : "";
+    if(level !== "all" && scopeName) what = "nivå " + level + " · " + scopeName;
+    else if(level !== "all") what = "nivå " + level + " – " + LEVELS[level].toLowerCase();
+    else if(scopeName) what = scopeName;
+    document.getElementById("cta-link").href = "quiz.html" + (params.length ? "?" + params.join("&") : "");
+    document.getElementById("cta-label").textContent = what ? "Ta quizen: " + what : "Start quizen";
+    document.getElementById("cta-sub").textContent = what
+      ? "Ti raske spørsmål om begrepene du ser på nå – med tidtaker, poeng og en robot som heier på deg."
+      : "Ti raske spørsmål om begrepene her – med tidtaker, poeng og en robot som heier på deg.";
+  }
+
   function update(){
     updateCounts();
     updatePills();
     renderGrid();
+    updateQuizCta();
   }
 
   function resetAll(){
