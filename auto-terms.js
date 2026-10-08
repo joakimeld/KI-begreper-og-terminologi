@@ -1,4 +1,4 @@
-window.AUTO_TERMS_UPDATED = "2026-10-07";
+window.AUTO_TERMS_UPDATED = "2026-10-08";
 window.AUTO_TERMS = [
   {
     "id": "digital-forestillingsevne",
@@ -579,5 +579,23 @@ window.AUTO_TERMS = [
     ],
     "nytt": true,
     "d": "En effektiv finjusteringsteknikk for store språkmodeller der man fryser de forhåndstrente modellvektene og injiserer små, trenbare lavrangsmatriser i hver Transformer-lag. Dette reduserer antallet trenbare parametere og GPU-minnekravet betydelig, samtidig som ytelsen opprettholdes eller forbedres."
+  },
+  {
+    "id": "merking-av-ki-innhold",
+    "t": "Merking av KI-innhold",
+    "en": "AI content labeling",
+    "l": 1,
+    "f": [
+      "etikk",
+      "sikkerhet"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "kinorge"
+    ],
+    "nytt": true,
+    "d": "Krav eller praksis for å tydelig identifisere innhold som er generert eller modifisert av kunstig intelligens, for å sikre åpenhet og motvirke misinformasjon."
   }
 ];
