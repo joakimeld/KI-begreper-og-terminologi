@@ -140,6 +140,7 @@
   @keyframes readyPulse{0%{box-shadow:0 0 0 0 var(--focus)}100%{box-shadow:0 0 0 14px transparent}}
   .start-hint{min-height:21px;margin:9px 0 0;color:var(--muted);font-size:.85rem}
   .board-title{margin-bottom:4px!important;font-size:1.2rem!important}
+  .historic-title{margin:18px 0 5px;font-size:.9rem}
   .board-caption{margin:4px 0 12px;color:var(--muted);font-size:.83rem}
   .board-empty{display:flex;align-items:center;gap:12px;padding:14px;border:1px dashed var(--line);border-radius:4px;background:var(--soft);color:var(--muted);font-size:.87rem}
   .board-empty svg{flex:none;color:var(--orange)}
@@ -161,6 +162,18 @@
   .q-counter{color:var(--muted);font-size:.9rem;font-variant-numeric:tabular-nums}
   .streak{padding:4px 11px;border-radius:20px;background:#FBE4CF;color:#9A3B12;font-size:.82rem;font-weight:700;opacity:0;transform:scale(.7);transition:opacity .2s,transform .3s var(--spring)}
   .streak.on{opacity:1;transform:none}
+  .question-timer{display:flex;align-items:center;gap:12px;margin-top:18px;padding:11px 14px;border:1px solid var(--line);border-radius:5px;background:var(--soft);transition:background .2s,border-color .2s}
+  .timer-icon{font-size:1.4rem;line-height:1}
+  .timer-body{flex:1;min-width:0}
+  .timer-label{display:flex;align-items:baseline;justify-content:space-between;gap:10px;font-size:.78rem;font-weight:700}
+  .timer-label strong{color:var(--ink);font-size:1rem;font-variant-numeric:tabular-nums}
+  .timer-track{height:7px;margin-top:6px;overflow:hidden;border-radius:9px;background:var(--line)}
+  .timer-fill{display:block;width:100%;height:100%;transform:scaleX(1);transform-origin:left center;border-radius:inherit;background:var(--green);transition:transform .12s linear,background .2s}
+  .question-timer[data-state=urgent]{border-color:var(--red);background:var(--red-bg)}
+  .question-timer[data-state=urgent] .timer-label strong{color:var(--red)}
+  .question-timer[data-state=urgent] .timer-fill{background:var(--red)}
+  .question-timer[data-state=urgent] .timer-icon{animation:timer-wiggle .3s ease-in-out infinite alternate}
+  @keyframes timer-wiggle{to{transform:rotate(18deg) scale(1.12)}}
   .progress{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;margin:18px 0 26px}
   .progress span{height:8px;border-radius:4px;background:var(--line);transition:background .25s}
   .progress span.current{background:var(--navy)}
@@ -218,6 +231,7 @@
     .side{grid-template-columns:1fr}
     .card{padding:20px}
   }
+  @media(prefers-reduced-motion:reduce){.question-timer[data-state=urgent] .timer-icon{animation:none}}
   @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
 </style>
 </head>
@@ -307,7 +321,7 @@
         <dl class="facts">
           <div><dt>Begreper</dt><dd id="fact-count">0</dd></div>
           <div><dt>Spørsmål</dt><dd>10</dd></div>
-          <div><dt>Rekord</dt><dd id="fact-best">–</dd></div>
+          <div><dt>Poengrekord</dt><dd id="fact-best">–</dd></div>
         </dl>
         <button class="btn btn-primary btn-start" id="start" type="button" disabled>Start quiz <span aria-hidden="true">→</span></button>
         <p class="start-hint" id="start-hint">Velg et kallenavn først, så er du i gang.</p>
@@ -330,6 +344,13 @@
       <span class="q-counter" id="round-name"></span>
       <span class="q-counter" id="round-progress">Spørsmål 1 av 10</span>
       <span class="streak" id="streak" aria-live="polite"></span>
+    </div>
+    <div class="question-timer" id="question-timer" data-state="ready" role="timer" aria-label="Tid igjen på spørsmålet" aria-live="off">
+      <span class="timer-icon" aria-hidden="true">⏳</span>
+      <div class="timer-body">
+        <div class="timer-label"><span>Tid igjen på spørsmålet</span><strong id="timer-value">—</strong></div>
+        <div class="timer-track" aria-hidden="true"><span class="timer-fill" id="timer-fill"></span></div>
+      </div>
     </div>
     <div class="progress" role="progressbar" aria-label="Fremdrift" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="progress-fill"></span></div>
     <div class="q-head">
@@ -367,10 +388,10 @@
   </section>
 </main>
 <footer class="wrap">
-  <p>Quizen bruker samme begrepsliste, fagområder og roller som oppslagsverket. Hver runde har 10 blandede spørsmål. Resultater lagres bare i denne nettleseren; dette er ikke en delt toppliste.</p>
+  <p>Quizen bruker samme begrepsliste, fagområder og roller som oppslagsverket. Hver runde har 10 blandede spørsmål med individuell, tekst- og nivåtilpasset nedtelling på 10–30 sekunder. Riktige svar gir 100 grunnpoeng og opptil 100 tidsbonuspoeng. Resultater lagres bare i denne nettleseren; dette er ikke en delt toppliste.</p>
 </footer>
 <script src="terms.js"></script>
 <script src="auto-terms.js"></script>
-<script src="quiz.js"></script>
+<script src="quiz.js?v=timer-v1"></script>
 </body>
 </html>

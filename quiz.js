@@ -7,6 +7,10 @@
   var SCORE_KEY = "ki-begrepsquiz-scores-v1";
   var SAVE_KEY = "ki-begrepsquiz-save-v1";
   var QUESTION_COUNT = 10;
+  var MIN_QUESTION_SECONDS = 10;
+  var MAX_QUESTION_SECONDS = 30;
+  var ANSWER_POINTS = 100;
+  var MAX_TIME_BONUS = 100;
   var storageAvailable = true;
   var saveEnabled = true;
   var game = null;
@@ -15,6 +19,7 @@
   var scopeConfirmed = true;
   var activeOption = -1;
   var scopeOptions = [];
+  var questionTimerInterval = null;
 
   var els = {
     scopeSearch:document.getElementById("scope-search"),
@@ -46,6 +51,9 @@
     round:document.getElementById("round"),
     roundName:document.getElementById("round-name"),
     roundProgress:document.getElementById("round-progress"),
+    questionTimer:document.getElementById("question-timer"),
+    timerValue:document.getElementById("timer-value"),
+    timerFill:document.getElementById("timer-fill"),
     progress:document.querySelector('[role="progressbar"]'),
     progressbar:document.querySelector('[role="progressbar"]'),
     label:document.getElementById("prompt-label"),
@@ -197,7 +205,7 @@
     els.factCount.textContent = String(pool.length);
     els.scopeLine.textContent = scopeName(selectedScope) + " · " + levelName(selectedLevel());
     els.readyTitle.textContent = nickname && !invalidNickname ? "Klar, " + nickname + "?" : "Klar for en runde?";
-    els.startHint.textContent = nickname && !invalidNickname ? "10 spørsmål · tar rundt 3 minutter" : "Velg et kallenavn først, så er du i gang.";
+    els.startHint.textContent = nickname && !invalidNickname ? "10 spørsmål · tiden tilpasses hvert spørsmål" : "Velg et kallenavn først, så er du i gang.";
     if(nickname && !invalidNickname) els.nicknameStep.classList.add("done");
     renderBoard();
   }
@@ -310,6 +318,60 @@
     return {term:term, kind:kind, prompt:prompt, options:shuffle(options)};
   }
 
+  function wordCount(value){
+    var words = String(value || "").match(/[\p{L}\p{N}]+/gu);
+    return words ? words.length : 0;
+  }
+
+  function questionTimeLimit(question){
+    var optionWords = question.options.map(function(option){ return wordCount(option.value); });
+    var averageOptionWords = optionWords.reduce(function(total, count){ return total + count; }, 0) / optionWords.length;
+    var readingSeconds = Math.ceil((wordCount(question.prompt) + averageOptionWords) / 3);
+    var thinkingSeconds = 5 + question.term.l +
+      (question.kind === "english" ? 2 : question.kind === "definition" ? 1 : 0);
+    return Math.max(MIN_QUESTION_SECONDS, Math.min(MAX_QUESTION_SECONDS, readingSeconds + thinkingSeconds));
+  }
+
+  function stopQuestionTimer(){
+    if(questionTimerInterval !== null){
+      window.clearInterval(questionTimerInterval);
+      questionTimerInterval = null;
+    }
+  }
+
+  function updateQuestionTimer(){
+    if(!game || !game.questionDeadline) return;
+    var remaining = Math.max(0, game.questionDeadline - Date.now());
+    var fraction = remaining / game.questionLimit;
+    var displayedSeconds = Math.ceil(remaining / 1000);
+    els.timerValue.textContent = displayedSeconds + " s";
+    els.timerValue.setAttribute("aria-label", displayedSeconds + " sekunder");
+    els.timerFill.style.transform = "scaleX(" + fraction + ")";
+    els.questionTimer.dataset.state = remaining <= 5000 ? "urgent" : "ready";
+    if(remaining === 0) expireQuestion();
+  }
+
+  function startQuestionTimer(question){
+    stopQuestionTimer();
+    game.questionLimit = questionTimeLimit(question) * 1000;
+    game.questionStarted = Date.now();
+    game.questionDeadline = game.questionStarted + game.questionLimit;
+    els.questionTimer.dataset.limit = String(game.questionLimit / 1000);
+    updateQuestionTimer();
+    questionTimerInterval = window.setInterval(updateQuestionTimer, 100);
+  }
+
+  function stopAndMeasureQuestion(){
+    stopQuestionTimer();
+    var elapsed = Math.min(game.questionLimit, Math.max(0, Date.now() - game.questionStarted));
+    game.elapsed += elapsed;
+    return {
+      elapsed:elapsed,
+      limit:game.questionLimit,
+      timeBonus:Math.floor(MAX_TIME_BONUS * (game.questionLimit - elapsed) / game.questionLimit)
+    };
+  }
+
   function beginRound(){
     var config = variant();
     var pool = getPool();
@@ -331,8 +393,10 @@
       }),
       index:0,
       correct:0,
-      wrongs:[],
-      started:Date.now()
+      points:0,
+      timeBonus:0,
+      elapsed:0,
+      wrongs:[]
     };
     els.progress.replaceChildren();
     game.questions.forEach(function(){
@@ -380,13 +444,23 @@
     els.streak.textContent = currentStreak >= 2 ? "🔥 " + currentStreak + " på rad" : "";
     els.streak.classList.toggle("on", currentStreak >= 2);
     mood(els.mascotQuiz, "think");
+    startQuestionTimer(question);
     els.question.focus();
   }
 
   function answer(selected){
     if(!game || els.next.hidden === false) return;
+    if(Date.now() >= game.questionDeadline){
+      expireQuestion();
+      return;
+    }
     var question = game.questions[game.index];
-    if(selected.correct) game.correct++;
+    var timing = stopAndMeasureQuestion();
+    if(selected.correct){
+      game.correct++;
+      game.timeBonus += timing.timeBonus;
+      game.points += ANSWER_POINTS + timing.timeBonus;
+    }
     Array.from(els.options.children).forEach(function(optionButton, index){
       var option = question.options[index];
       optionButton.disabled = true;
@@ -404,12 +478,46 @@
     els.progress.children[game.index].className = selected.correct ? "complete" : "incorrect";
     var correct = question.options.filter(function(option){ return option.correct; })[0];
     els.feedback.className = "feedback " + (selected.correct ? "" : "incorrect");
-    els.feedback.appendChild(text("strong", selected.correct ? (currentStreak >= 3 ? "Riktig — " + currentStreak + " på rad!" : "Riktig!") : "Ikke helt. Riktig svar: " + correct.value));
+    var response = selected.correct
+      ? (currentStreak >= 3 ? "Riktig — " + currentStreak + " på rad! +" + (ANSWER_POINTS + timing.timeBonus) + " poeng" : "Riktig! +" + (ANSWER_POINTS + timing.timeBonus) + " poeng")
+      : "Ikke helt. Riktig svar: " + correct.value;
+    els.feedback.appendChild(text("strong", response));
     els.feedback.appendChild(text("p", question.term.d));
     els.feedback.hidden = false;
     els.next.hidden = false;
     var percentage = Math.round((game.index + 1) / game.questions.length * 100);
     els.progress.setAttribute("aria-valuenow", String(percentage));
+    els.next.focus();
+  }
+
+  function expireQuestion(){
+    if(!game || els.next.hidden === false) return;
+    stopQuestionTimer();
+    game.elapsed += game.questionLimit;
+    var question = game.questions[game.index];
+    currentStreak = 0;
+    game.wrongs.push(question.term);
+    var correct = question.options.filter(function(option){ return option.correct; })[0];
+    Array.from(els.options.children).forEach(function(button, index){
+      var option = question.options[index];
+      button.disabled = true;
+      button.setAttribute("aria-pressed", String(option.correct));
+      if(option.correct) button.dataset.correct = "true";
+    });
+    els.progress.children[game.index].className = "incorrect";
+    var percentage = Math.round((game.index + 1) / game.questions.length * 100);
+    els.progress.setAttribute("aria-valuenow", String(percentage));
+    els.streak.textContent = "";
+    els.streak.classList.remove("on");
+    mood(els.mascotQuiz, "sad", 1000);
+    els.feedback.className = "feedback incorrect";
+    els.feedback.appendChild(text("strong", "Tiden er ute! Riktig svar: " + correct.value));
+    els.feedback.appendChild(text("p", question.term.d));
+    els.feedback.hidden = false;
+    els.timerValue.textContent = "0 s";
+    els.timerValue.setAttribute("aria-label", "0 sekunder");
+    els.timerFill.style.transform = "scaleX(0)";
+    els.next.hidden = false;
     els.next.focus();
   }
 
@@ -428,11 +536,13 @@
       var key = variantKey(record.config);
       var records = Array.isArray(scores[key]) ? scores[key] : [];
       records.push(record);
-      records.sort(function(a, b){
-        return ((b.correct / b.total) - (a.correct / a.total)) ||
-          (b.correct - a.correct) || (a.duration - b.duration) || (b.date.localeCompare(a.date));
+      var timedRecords = records.filter(function(item){ return Number.isInteger(item.points); });
+      var historicRecords = records.filter(function(item){ return !Number.isInteger(item.points); });
+      timedRecords.sort(function(a, b){
+        return (b.points - a.points) || (b.correct - a.correct) ||
+          (a.duration - b.duration) || (b.date.localeCompare(a.date));
       });
-      scores[key] = records.slice(0, 10);
+      scores[key] = timedRecords.slice(0, 10).concat(historicRecords);
       localStorage.setItem(SCORE_KEY, JSON.stringify(scores));
       return true;
     }catch(error){
@@ -442,10 +552,13 @@
   }
 
   function finishRound(){
-    var duration = Date.now() - game.started;
+    stopQuestionTimer();
+    var duration = game.elapsed;
     var record = {
       correct:game.correct,
       total:game.questions.length,
+      points:game.points,
+      timeBonus:game.timeBonus,
       duration:duration,
       date:new Date().toISOString(),
       nickname:game.config.nickname,
@@ -469,7 +582,8 @@
     els.scoreRing.style.strokeDashoffset = String(490.1 * (1 - game.correct / game.questions.length));
     els.scoreRingLabel.setAttribute("aria-label", game.correct + " av " + game.questions.length + " riktige");
     els.facts.replaceChildren();
-    addFact("Treffsikkerhet", Math.round(game.correct / game.questions.length * 100) + "%");
+    addFact("Poeng", String(game.points));
+    addFact("Tidsbonus", String(game.timeBonus));
     addFact("Riktige svar", game.correct + " / " + game.questions.length);
     addFact("Tid", Math.round(duration / 1000) + " s");
     els.resultReview.replaceChildren();
@@ -506,7 +620,9 @@
     els.scoreboard.replaceChildren();
     els.boardActions.replaceChildren();
     els.resultScoreboard.replaceChildren();
-    els.factBest.textContent = Array.isArray(records) && records.length ? String(records[0].correct) : "–";
+    var timedRecords = Array.isArray(records) ? records.filter(function(record){ return Number.isInteger(record.points); }) : [];
+    var historicRecords = Array.isArray(records) ? records.filter(function(record){ return !Number.isInteger(record.points); }) : [];
+    els.factBest.textContent = timedRecords.length ? String(timedRecords[0].points) : "–";
     if(!Array.isArray(records) || !records.length){
       var empty = document.createElement("div");
       empty.className = "board-empty";
@@ -518,29 +634,45 @@
       els.scoreboard.appendChild(empty);
       els.resultScoreboard.appendChild(empty.cloneNode(true));
     }else{
-      var table = document.createElement("table");
-      var head = document.createElement("thead");
-      var headingRow = document.createElement("tr");
-      ["#", "Kallenavn", "Riktige", "Tid", "Dato"].forEach(function(label){ headingRow.appendChild(text("th", label)); });
-      head.appendChild(headingRow);
-      table.appendChild(head);
-      var body = document.createElement("tbody");
-      records.forEach(function(record, index){
-        if(!record || !Number.isInteger(record.correct) || !Number.isInteger(record.total)) return;
-        var row = document.createElement("tr");
-        var date = new Date(record.date);
-        [
-          String(index + 1),
-          typeof record.nickname === "string" ? record.nickname : "Anonym",
-          record.correct + " / " + record.total,
-          Math.round(Number(record.duration || 0) / 1000) + " s",
-          Number.isNaN(date.getTime()) ? "–" : new Intl.DateTimeFormat("nb-NO", {day:"numeric", month:"short", year:"numeric"}).format(date)
-        ].forEach(function(value){ row.appendChild(text("td", value)); });
-        body.appendChild(row);
-      });
-      table.appendChild(body);
-      els.scoreboard.appendChild(table);
-      els.resultScoreboard.appendChild(table.cloneNode(true));
+      function appendTable(target, items, historic){
+        if(!items.length) return;
+        var table = document.createElement("table");
+        var head = document.createElement("thead");
+        var headingRow = document.createElement("tr");
+        (historic ? ["#", "Kallenavn", "Riktige", "Tid", "Dato"] : ["#", "Kallenavn", "Poeng", "Riktige", "Tid", "Dato"])
+          .forEach(function(label){ headingRow.appendChild(text("th", label)); });
+        head.appendChild(headingRow);
+        table.appendChild(head);
+        var body = document.createElement("tbody");
+        items.forEach(function(record, index){
+          if(!record || !Number.isInteger(record.correct) || !Number.isInteger(record.total)) return;
+          var row = document.createElement("tr");
+          var date = new Date(record.date);
+          var values = [
+            String(index + 1),
+            typeof record.nickname === "string" ? record.nickname : "Anonym"
+          ];
+          if(!historic) values.push(String(record.points));
+          values.push(
+            record.correct + " / " + record.total,
+            Math.round(Number(record.duration || 0) / 1000) + " s",
+            Number.isNaN(date.getTime()) ? "–" : new Intl.DateTimeFormat("nb-NO", {day:"numeric", month:"short", year:"numeric"}).format(date)
+          );
+          values.forEach(function(value){ row.appendChild(text("td", value)); });
+          body.appendChild(row);
+        });
+        table.appendChild(body);
+        target.appendChild(table);
+      }
+      function renderBoardContents(target){
+        appendTable(target, timedRecords, false);
+        if(historicRecords.length){
+          target.appendChild(text("h4", "Tidligere runder uten tidsbonus", "historic-title"));
+          appendTable(target, historicRecords, true);
+        }
+      }
+      renderBoardContents(els.scoreboard);
+      renderBoardContents(els.resultScoreboard);
     }
     var hasScores = Object.keys(all).some(function(key){
       return Array.isArray(all[key]) && all[key].length > 0;
@@ -681,6 +813,7 @@
 
   els.quit.addEventListener("click", function(){
     if(els.quit.classList.contains("confirm")){
+      stopQuestionTimer();
       els.quit.classList.remove("confirm");
       els.quitLabel.textContent = "Avslutt";
       els.round.hidden = true;

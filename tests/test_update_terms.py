@@ -182,6 +182,8 @@ class RepositoryIntegrationTests(unittest.TestCase):
         self.assertIn("Endre oppsett", quiz)
         self.assertIn('id="level-4"', quiz)
         self.assertIn('id="scope-search"', quiz)
+        self.assertIn('id="question-timer"', quiz)
+        self.assertIn('id="timer-value"', quiz)
         self.assertIn("window.KI_TERMS = [", terms_source)
         self.assertIn("window.KI_SUBJECTS = {", terms_source)
         self.assertIn("window.KI_ROLES = {", terms_source)
@@ -191,6 +193,11 @@ class RepositoryIntegrationTests(unittest.TestCase):
         workflow = (update_terms.ROOT / ".github" / "workflows" / "daily-terms.yml").read_text(encoding="utf-8")
         self.assertIn("quiz.js", workflow)
         self.assertLess(workflow.index("python -m unittest"), workflow.index("python scripts/update_terms.py"))
+        quiz_script = (update_terms.ROOT / "quiz.js").read_text(encoding="utf-8")
+        self.assertIn("function questionTimeLimit(question)", quiz_script)
+        self.assertIn("function expireQuestion()", quiz_script)
+        self.assertIn("MAX_TIME_BONUS * (game.questionLimit - elapsed)", quiz_script)
+        self.assertIn("timedRecords.slice(0, 10).concat(historicRecords)", quiz_script)
 
     def test_published_terms_have_no_duplicate_normalized_names(self):
         base_terms = update_terms.parse_existing_terms(
