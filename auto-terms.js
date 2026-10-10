@@ -1,4 +1,4 @@
-window.AUTO_TERMS_UPDATED = "2026-10-08";
+window.AUTO_TERMS_UPDATED = "2026-10-10";
 window.AUTO_TERMS = [
   {
     "id": "digital-forestillingsevne",
@@ -469,5 +469,23 @@ window.AUTO_TERMS = [
     ],
     "nytt": true,
     "d": "En effektiv finjusteringsteknikk for store språkmodeller der man fryser de forhåndstrente modellvektene og injiserer små, trenbare lavrangsmatriser i hver Transformer-lag. Dette reduserer antallet trenbare parametere og GPU-minnekravet betydelig, samtidig som ytelsen opprettholdes eller forbedres."
+  },
+  {
+    "id": "claudes-konstitusjon",
+    "t": "Claudes konstitusjon",
+    "en": "Claude's Constitution",
+    "l": 2,
+    "f": [
+      "etikk",
+      "sikkerhet"
+    ],
+    "v": [
+      "claude"
+    ],
+    "k": [
+      "anthropic"
+    ],
+    "nytt": true,
+    "d": "Et sett med detaljerte retningslinjer og verdier som definerer hvordan Anthropic ønsker at deres KI-modell, Claude, skal oppføre seg. Den fungerer som en veiledning for modellens trening og adferd, med fokus på sikkerhet, etikk, hjelpsomhet og overholdelse av spesifikke instruksjoner."
   }
 ];
