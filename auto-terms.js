@@ -1,4 +1,4 @@
-window.AUTO_TERMS_UPDATED = "2026-10-10";
+window.AUTO_TERMS_UPDATED = "2026-10-12";
 window.AUTO_TERMS = [
   {
     "id": "digital-forestillingsevne",
@@ -487,5 +487,43 @@ window.AUTO_TERMS = [
     ],
     "nytt": true,
     "d": "Et sett med detaljerte retningslinjer og verdier som definerer hvordan Anthropic ønsker at deres KI-modell, Claude, skal oppføre seg. Den fungerer som en veiledning for modellens trening og adferd, med fokus på sikkerhet, etikk, hjelpsomhet og overholdelse av spesifikke instruksjoner."
+  },
+  {
+    "id": "agent-payments-protocol",
+    "t": "Agent Payments Protocol",
+    "en": "Agent Payments Protocol",
+    "l": 3,
+    "f": [
+      "agentic",
+      "sikkerhet",
+      "utvikling"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "a2a"
+    ],
+    "nytt": true,
+    "d": "En protokoll som muliggjør sikre, agentdrevne transaksjoner, og utvider funksjonaliteten til Agent-to-Agent (A2A) protokollen til å inkludere økonomisk koordinering."
+  },
+  {
+    "id": "signed-agent-cards",
+    "t": "Signed Agent Cards",
+    "en": "Signed Agent Cards",
+    "l": 3,
+    "f": [
+      "agentic",
+      "sikkerhet",
+      "utvikling"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "a2a"
+    ],
+    "nytt": true,
+    "d": "En funksjon i A2A-protokollen som bruker kryptografisk identitetsverifisering for å sikre at agenter kan bekrefte hverandres identitet på en pålitelig måte."
   }
 ];
