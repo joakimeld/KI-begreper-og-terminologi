@@ -1,4 +1,4 @@
-window.AUTO_TERMS_UPDATED = "2026-10-12";
+window.AUTO_TERMS_UPDATED = "2026-10-17";
 window.AUTO_TERMS = [
   {
     "id": "digital-forestillingsevne",
@@ -525,5 +525,42 @@ window.AUTO_TERMS = [
     ],
     "nytt": true,
     "d": "En funksjon i A2A-protokollen som bruker kryptografisk identitetsverifisering for å sikre at agenter kan bekrefte hverandres identitet på en pålitelig måte."
+  },
+  {
+    "id": "agent-payments-protocol-ap2",
+    "t": "Agent Payments Protocol (AP2)",
+    "en": "Agent Payments Protocol (AP2)",
+    "l": 3,
+    "f": [
+      "agentic",
+      "utvikling"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "a2a"
+    ],
+    "nytt": true,
+    "d": "En utvidelse av A2A-protokollen som muliggjør sikre, agentdrevne transaksjoner. Den er designet for å håndtere økonomisk koordinering mellom KI-agenter, spesielt i miljøer som krever høy tillit og transaksjonsintegritet."
+  },
+  {
+    "id": "model-context-protocol-mcp",
+    "t": "Model Context Protocol (MCP)",
+    "en": "Model Context Protocol (MCP)",
+    "l": 3,
+    "f": [
+      "agentic",
+      "utvikling",
+      "data"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "a2a"
+    ],
+    "nytt": true,
+    "d": "En protokoll som definerer hvordan KI-agenter kobler seg til interne verktøy og datakilder. Den utfyller A2A-protokollen ved å håndtere agenters tilgang til og bruk av kontekstuell informasjon og ressurser."
   }
 ];
