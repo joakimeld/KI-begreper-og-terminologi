@@ -231,8 +231,8 @@
     background:var(--navbar-bg); color:var(--navbar-fg); font-size:0.74rem; font-weight:700;
   }
   .cta-bubble::before{
-    content:""; position:absolute; left:-6px; bottom:6px; width:12px; height:12px; transform:rotate(45deg);
-    background:var(--navbar-bg); border-radius:0;
+    content:""; position:absolute; left:-8px; bottom:4px; width:9px; height:12px;
+    background:var(--navbar-bg); clip-path:polygon(100% 0,100% 100%,0 50%);
   }
   .cta-text h2{font-size:clamp(1.25rem,2.4vw,1.6rem); font-weight:800; letter-spacing:-0.02em; line-height:1.15;}
   .cta-text p{margin:6px 0 0; color:var(--ink-soft); font-size:0.92rem; max-width:58ch;}
