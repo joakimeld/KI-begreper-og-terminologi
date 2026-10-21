@@ -1,4 +1,4 @@
-window.AUTO_TERMS_UPDATED = "2026-10-17";
+window.AUTO_TERMS_UPDATED = "2026-10-21";
 window.AUTO_TERMS = [
   {
     "id": "digital-forestillingsevne",
@@ -562,5 +562,111 @@ window.AUTO_TERMS = [
     ],
     "nytt": true,
     "d": "En protokoll som definerer hvordan KI-agenter kobler seg til interne verktøy og datakilder. Den utfyller A2A-protokollen ved å håndtere agenters tilgang til og bruk av kontekstuell informasjon og ressurser."
+  },
+  {
+    "id": "agentisk-sikkerhet",
+    "t": "Agentisk sikkerhet",
+    "en": "Agentic Security",
+    "l": 3,
+    "f": [
+      "agentic",
+      "sikkerhet"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "owaspagentic"
+    ],
+    "nytt": true,
+    "d": "Sikkerhetstiltak og prinsipper spesifikt utviklet for å beskytte autonome og agentiske KI-systemer som planlegger, handler og tar beslutninger i komplekse arbeidsflyter."
+  },
+  {
+    "id": "ki-sikkerhetsstyring",
+    "t": "KI-sikkerhetsstyring",
+    "en": "AI Security Governance",
+    "l": 3,
+    "f": [
+      "sikkerhet",
+      "etikk"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "owasp"
+    ],
+    "nytt": true,
+    "d": "Rammeverk og prosesser for å styre og overvåke sikkerheten i KI-systemer gjennom hele livssyklusen, inkludert risikostyring, samsvar og etiske retningslinjer."
+  },
+  {
+    "id": "ki-trusselintelligens-og-respons",
+    "t": "KI-trusselintelligens og respons",
+    "en": "AI Threat Intel \u0026 Resp",
+    "l": 3,
+    "f": [
+      "sikkerhet"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "owasp"
+    ],
+    "nytt": true,
+    "d": "Innsamling, analyse og anvendelse av informasjon om trusler mot KI-systemer, samt utvikling av strategier for å respondere effektivt på slike trusler."
+  },
+  {
+    "id": "ki-red-teaming",
+    "t": "KI-red teaming",
+    "en": "AI Red Teaming",
+    "l": 3,
+    "f": [
+      "sikkerhet"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "owasp",
+      "owaspagentic"
+    ],
+    "nytt": true,
+    "d": "En prosess der et team simulerer angrep på et KI-system for å identifisere sårbarheter og forbedre dets robusthet og sikkerhet."
+  },
+  {
+    "id": "agent-control-standard-acs",
+    "t": "Agent Control Standard (ACS)",
+    "en": "Agent Control Standard (ACS)",
+    "l": 4,
+    "f": [
+      "agentic",
+      "sikkerhet"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "owaspagentic"
+    ],
+    "nytt": true,
+    "d": "En standard som gir retningslinjer for kontroll og styring av autonome KI-agenter, for å sikre at de opererer trygt og i tråd med ønskede mål."
+  },
+  {
+    "id": "nsms-grunnprinsipper-for-ikt-sikkerhet",
+    "t": "NSMs grunnprinsipper for IKT-sikkerhet",
+    "en": "NSM ICT Security Principles",
+    "l": 2,
+    "f": [
+      "sikkerhet"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "nsm"
+    ],
+    "nytt": true,
+    "d": "En samling anbefalinger fra Nasjonal sikkerhetsmyndighet for å etablere et godt fundament for sikkerheten i IKT-systemer, som dekker områder som identifisering, beskyttelse, oppdagelse og håndtering av hendelser."
   }
 ];
