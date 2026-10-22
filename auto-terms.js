@@ -1,4 +1,4 @@
-window.AUTO_TERMS_UPDATED = "2026-10-21";
+window.AUTO_TERMS_UPDATED = "2026-10-22";
 window.AUTO_TERMS = [
   {
     "id": "digital-forestillingsevne",
@@ -668,5 +668,42 @@ window.AUTO_TERMS = [
     ],
     "nytt": true,
     "d": "En samling anbefalinger fra Nasjonal sikkerhetsmyndighet for å etablere et godt fundament for sikkerheten i IKT-systemer, som dekker områder som identifisering, beskyttelse, oppdagelse og håndtering av hendelser."
+  },
+  {
+    "id": "modellvelger",
+    "t": "Modellvelger",
+    "en": "Model selector",
+    "l": 2,
+    "f": [
+      "genai",
+      "prompting"
+    ],
+    "v": [
+      "copilot"
+    ],
+    "k": [
+      "mslearn"
+    ],
+    "nytt": true,
+    "d": "En funksjon i KI-applikasjoner som lar brukeren velge hvilken underliggende modell som skal brukes for å generere et svar, ofte med valg som prioriterer hastighet eller dybde i resonnementet."
+  },
+  {
+    "id": "forsterkningslaering-fra-ki-tilbakemelding-rlaif",
+    "t": "Forsterkningslæring fra KI-tilbakemelding (RLAIF)",
+    "en": "Reinforcement Learning from AI Feedback (RLAIF)",
+    "l": 4,
+    "f": [
+      "ml",
+      "etikk",
+      "utvikling"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "cai"
+    ],
+    "nytt": true,
+    "d": "En metode for å trene KI-modeller der en annen KI-modell gir tilbakemelding og rangerer utdata, i stedet for mennesker, for å forbedre modellens oppførsel og justere den mot ønskede prinsipper."
   }
 ];
