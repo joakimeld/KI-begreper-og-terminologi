@@ -1,4 +1,4 @@
-window.AUTO_TERMS_UPDATED = "2026-10-22";
+window.AUTO_TERMS_UPDATED = "2026-10-23";
 window.AUTO_TERMS = [
   {
     "id": "digital-forestillingsevne",
@@ -705,5 +705,23 @@ window.AUTO_TERMS = [
     ],
     "nytt": true,
     "d": "En metode for å trene KI-modeller der en annen KI-modell gir tilbakemelding og rangerer utdata, i stedet for mennesker, for å forbedre modellens oppførsel og justere den mot ønskede prinsipper."
+  },
+  {
+    "id": "kunnskapsdestillasjon",
+    "t": "Kunnskapsdestillasjon",
+    "en": "Knowledge Distillation",
+    "l": 3,
+    "f": [
+      "ml",
+      "utvikling"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "distill"
+    ],
+    "nytt": true,
+    "d": "En teknikk der kunnskapen fra en stor, kompleks modell (lærer) overføres til en mindre, enklere modell (student). Dette gjør studentmodellen mer effektiv og raskere, samtidig som den beholder mye av ytelsen til lærermodellen."
   }
 ];
