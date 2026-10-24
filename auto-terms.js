@@ -1,4 +1,4 @@
-window.AUTO_TERMS_UPDATED = "2026-10-23";
+window.AUTO_TERMS_UPDATED = "2026-10-24";
 window.AUTO_TERMS = [
   {
     "id": "digital-forestillingsevne",
@@ -723,5 +723,41 @@ window.AUTO_TERMS = [
     ],
     "nytt": true,
     "d": "En teknikk der kunnskapen fra en stor, kompleks modell (lærer) overføres til en mindre, enklere modell (student). Dette gjør studentmodellen mer effektiv og raskere, samtidig som den beholder mye av ytelsen til lærermodellen."
+  },
+  {
+    "id": "agent-basert-arkitektur",
+    "t": "Agent-basert arkitektur",
+    "en": "Agent-based architecture",
+    "l": 3,
+    "f": [
+      "agentic",
+      "utvikling"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "a2a"
+    ],
+    "nytt": true,
+    "d": "En programvarearkitektur der systemet er bygget opp av autonome KI-agenter som samhandler med hverandre for å løse komplekse oppgaver. Dette muliggjør koordinering av uavhengige systemer på tvers av verktøy, leverandører og miljøer."
+  },
+  {
+    "id": "agentcore-runtime",
+    "t": "AgentCore Runtime",
+    "en": "AgentCore Runtime",
+    "l": 3,
+    "f": [
+      "agentic",
+      "utvikling"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "a2a"
+    ],
+    "nytt": true,
+    "d": "En kjøretidsmiljøkomponent som støtter implementering og utførelse av KI-agenter, spesifikt nevnt i sammenheng med Amazon Bedrock for å muliggjøre agent-baserte systemer i skyen."
   }
 ];
