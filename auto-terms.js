@@ -1,4 +1,4 @@
-window.AUTO_TERMS_UPDATED = "2026-10-24";
+window.AUTO_TERMS_UPDATED = "2026-10-26";
 window.AUTO_TERMS = [
   {
     "id": "digital-forestillingsevne",
@@ -759,5 +759,23 @@ window.AUTO_TERMS = [
     ],
     "nytt": true,
     "d": "En kjøretidsmiljøkomponent som støtter implementering og utførelse av KI-agenter, spesifikt nevnt i sammenheng med Amazon Bedrock for å muliggjøre agent-baserte systemer i skyen."
+  },
+  {
+    "id": "few-shot-learning",
+    "t": "Few-shot learning",
+    "en": "Few-shot learning",
+    "l": 2,
+    "f": [
+      "genai",
+      "ml"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "gpt3"
+    ],
+    "nytt": true,
+    "d": "En metode der en språkmodell kan utføre en ny oppgave etter å ha blitt presentert for bare noen få eksempler, uten behov for omfattende finjustering. Modellen lærer å generalisere fra et begrenset antall demonstrasjoner."
   }
 ];
