@@ -1,4 +1,4 @@
-window.AUTO_TERMS_UPDATED = "2026-10-26";
+window.AUTO_TERMS_UPDATED = "2026-10-27";
 window.AUTO_TERMS = [
   {
     "id": "digital-forestillingsevne",
@@ -777,5 +777,24 @@ window.AUTO_TERMS = [
     ],
     "nytt": true,
     "d": "En metode der en språkmodell kan utføre en ny oppgave etter å ha blitt presentert for bare noen få eksempler, uten behov for omfattende finjustering. Modellen lærer å generalisere fra et begrenset antall demonstrasjoner."
+  },
+  {
+    "id": "systemkort",
+    "t": "Systemkort",
+    "en": "System cards",
+    "l": 3,
+    "f": [
+      "sikkerhet",
+      "etikk",
+      "utvikling"
+    ],
+    "v": [
+      "claude"
+    ],
+    "k": [
+      "anthropic"
+    ],
+    "nytt": true,
+    "d": "Dokumenter som beskriver en KI-modells intensjoner, verdier og atferd, samt avvik fra disse. De brukes for å øke transparens om modellens egenskaper og begrensninger."
   }
 ];
