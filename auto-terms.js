@@ -1,4 +1,4 @@
-window.AUTO_TERMS_UPDATED = "2026-10-27";
+window.AUTO_TERMS_UPDATED = "2026-10-28";
 window.AUTO_TERMS = [
   {
     "id": "digital-forestillingsevne",
@@ -796,5 +796,41 @@ window.AUTO_TERMS = [
     ],
     "nytt": true,
     "d": "Dokumenter som beskriver en KI-modells intensjoner, verdier og atferd, samt avvik fra disse. De brukes for å øke transparens om modellens egenskaper og begrensninger."
+  },
+  {
+    "id": "owasp-top-10-for-agentic-applications",
+    "t": "OWASP Top 10 for Agentic Applications",
+    "en": "OWASP Top 10 for Agentic Applications",
+    "l": 3,
+    "f": [
+      "agentic",
+      "sikkerhet"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "owaspagentic"
+    ],
+    "nytt": true,
+    "d": "En globalt anerkjent rammeverk fra OWASP som identifiserer de ti mest kritiske sikkerhetsrisikoene for autonome og agentiske KI-systemer. Rammeverket gir veiledning for å sikre KI-agenter som utfører handlinger og tar beslutninger i komplekse prosesser."
+  },
+  {
+    "id": "owasp-genai-llm-top-10",
+    "t": "OWASP GenAI LLM Top 10",
+    "en": "OWASP GenAI LLM Top 10",
+    "l": 3,
+    "f": [
+      "genai",
+      "sikkerhet"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "owasp"
+    ],
+    "nytt": true,
+    "d": "En veiledning fra OWASP som lister de ti mest kritiske sikkerhetsrisikoene for applikasjoner drevet av store språkmodeller (LLM-er) og generativ KI. Den gir praktiske forklaringer, angrepsscenarier og tiltak for utviklere og sikkerhetsteam."
   }
 ];
