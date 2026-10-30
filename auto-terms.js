@@ -1,4 +1,4 @@
-window.AUTO_TERMS_UPDATED = "2026-10-28";
+window.AUTO_TERMS_UPDATED = "2026-10-30";
 window.AUTO_TERMS = [
   {
     "id": "digital-forestillingsevne",
@@ -832,5 +832,61 @@ window.AUTO_TERMS = [
     ],
     "nytt": true,
     "d": "En veiledning fra OWASP som lister de ti mest kritiske sikkerhetsrisikoene for applikasjoner drevet av store språkmodeller (LLM-er) og generativ KI. Den gir praktiske forklaringer, angrepsscenarier og tiltak for utviklere og sikkerhetsteam."
+  },
+  {
+    "id": "innebygd-personvern",
+    "t": "Innebygd personvern",
+    "en": "Privacy by Design",
+    "l": 2,
+    "f": [
+      "etikk",
+      "sikkerhet",
+      "data"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "datatilsynet"
+    ],
+    "nytt": true,
+    "d": "Et prinsipp som innebærer at personvernhensyn skal være en integrert del av design og utvikling av systemer og prosesser, ikke en ettertanke."
+  },
+  {
+    "id": "tverrfaglig-team",
+    "t": "Tverrfaglig team",
+    "en": "Interdisciplinary Team",
+    "l": 1,
+    "f": [
+      "etikk",
+      "utvikling"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "datatilsynet"
+    ],
+    "nytt": true,
+    "d": "Et team satt sammen av personer med ulik faglig bakgrunn, for eksempel teknologi, etikk og samfunn, for å vurdere konsekvensene av KI-systemer."
+  },
+  {
+    "id": "risikostyringsrammeverk-for-ki",
+    "t": "Risikostyringsrammeverk for KI",
+    "en": "AI Risk Management Framework",
+    "l": 3,
+    "f": [
+      "sikkerhet",
+      "etikk",
+      "utvikling"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "nist"
+    ],
+    "nytt": true,
+    "d": "Et rammeverk som gir veiledning for å identifisere, vurdere og håndtere risikoer knyttet til utvikling og bruk av kunstig intelligens, med fokus på tillit og ansvarlighet."
   }
 ];
