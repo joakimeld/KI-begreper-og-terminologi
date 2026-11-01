@@ -1,4 +1,4 @@
-window.AUTO_TERMS_UPDATED = "2026-10-30";
+window.AUTO_TERMS_UPDATED = "2026-11-01";
 window.AUTO_TERMS = [
   {
     "id": "digital-forestillingsevne",
@@ -888,5 +888,41 @@ window.AUTO_TERMS = [
     ],
     "nytt": true,
     "d": "Et rammeverk som gir veiledning for å identifisere, vurdere og håndtere risikoer knyttet til utvikling og bruk av kunstig intelligens, med fokus på tillit og ansvarlighet."
+  },
+  {
+    "id": "lavrangert-tilpasning",
+    "t": "Lavrangert tilpasning",
+    "en": "Low-Rank Adaptation",
+    "l": 4,
+    "f": [
+      "ml",
+      "utvikling"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "lora"
+    ],
+    "nytt": true,
+    "d": "En teknikk for å finjustere store språkmodeller ved å fryse de forhåndstrente vektene og injisere små, trenbare lavrangerte matriser i hver Transformer-lag, noe som reduserer antall trenbare parametere betydelig."
+  },
+  {
+    "id": "skaleringslover",
+    "t": "Skaleringslover",
+    "en": "Scaling Laws",
+    "l": 4,
+    "f": [
+      "ml",
+      "genai"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "scaling"
+    ],
+    "nytt": true,
+    "d": "Empiriske forhold som beskriver hvordan ytelsen til nevrale språkmodeller endres i forhold til modellstørrelse, datasettstørrelse og mengden beregningskraft som brukes til trening."
   }
 ];
