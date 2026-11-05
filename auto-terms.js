@@ -1,4 +1,4 @@
-window.AUTO_TERMS_UPDATED = "2026-11-01";
+window.AUTO_TERMS_UPDATED = "2026-11-05";
 window.AUTO_TERMS = [
   {
     "id": "digital-forestillingsevne",
@@ -924,5 +924,41 @@ window.AUTO_TERMS = [
     ],
     "nytt": true,
     "d": "Empiriske forhold som beskriver hvordan ytelsen til nevrale språkmodeller endres i forhold til modellstørrelse, datasettstørrelse og mengden beregningskraft som brukes til trening."
+  },
+  {
+    "id": "elicitation",
+    "t": "Elicitation",
+    "en": "Elicitation",
+    "l": 3,
+    "f": [
+      "utvikling",
+      "prompting"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "mcp"
+    ],
+    "nytt": true,
+    "d": "En funksjon i Model Context Protocol der en server kan be om tilleggsinformasjon fra brukeren via en klientapplikasjon, for eksempel for å avklare en forespørsel eller samle inn nødvendige data."
+  },
+  {
+    "id": "sparsely-gated-mixture-of-experts",
+    "t": "Sparsely-Gated Mixture-of-Experts",
+    "en": "Sparsely-Gated Mixture-of-Experts",
+    "l": 4,
+    "f": [
+      "ml",
+      "grunnleggende"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "moe"
+    ],
+    "nytt": true,
+    "d": "En type nevrale nettverkslag som består av flere 'ekspert'-undernettverk. Et trenbart 'gating'-nettverk velger en sparsom kombinasjon av disse ekspertene for å behandle hvert enkelt eksempel, noe som øker modellkapasiteten uten en proporsjonal økning i beregningskostnad."
   }
 ];
