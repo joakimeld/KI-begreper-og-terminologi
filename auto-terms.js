@@ -1,4 +1,4 @@
-window.AUTO_TERMS_UPDATED = "2026-11-05";
+window.AUTO_TERMS_UPDATED = "2026-11-07";
 window.AUTO_TERMS = [
   {
     "id": "digital-forestillingsevne",
@@ -960,5 +960,22 @@ window.AUTO_TERMS = [
     ],
     "nytt": true,
     "d": "En type nevrale nettverkslag som består av flere 'ekspert'-undernettverk. Et trenbart 'gating'-nettverk velger en sparsom kombinasjon av disse ekspertene for å behandle hvert enkelt eksempel, noe som øker modellkapasiteten uten en proporsjonal økning i beregningskostnad."
+  },
+  {
+    "id": "ki-forordningen",
+    "t": "KI-forordningen",
+    "en": "AI Act",
+    "l": 1,
+    "f": [
+      "etikk"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "aiact"
+    ],
+    "nytt": true,
+    "d": "En europeisk lov som fastsetter harmoniserte regler for utvikling, markedsføring og bruk av KI-systemer i EU, med fokus på sikkerhet, grunnleggende rettigheter og innovasjon."
   }
 ];
