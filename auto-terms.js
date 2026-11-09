@@ -1,4 +1,4 @@
-window.AUTO_TERMS_UPDATED = "2026-11-07";
+window.AUTO_TERMS_UPDATED = "2026-11-09";
 window.AUTO_TERMS = [
   {
     "id": "digital-forestillingsevne",
@@ -977,5 +977,24 @@ window.AUTO_TERMS = [
     ],
     "nytt": true,
     "d": "En europeisk lov som fastsetter harmoniserte regler for utvikling, markedsføring og bruk av KI-systemer i EU, med fokus på sikkerhet, grunnleggende rettigheter og innovasjon."
+  },
+  {
+    "id": "agentisk-ki-system",
+    "t": "Agentisk KI-system",
+    "en": "Agentic AI system",
+    "l": 3,
+    "f": [
+      "agentic",
+      "sikkerhet",
+      "utvikling"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "owaspagentic"
+    ],
+    "nytt": true,
+    "d": "Et KI-system som kan planlegge, handle og ta beslutninger autonomt for å utføre komplekse oppgaver."
   }
 ];
