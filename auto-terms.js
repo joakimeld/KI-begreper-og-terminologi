@@ -1,4 +1,4 @@
-window.AUTO_TERMS_UPDATED = "2026-11-09";
+window.AUTO_TERMS_UPDATED = "2026-11-16";
 window.AUTO_TERMS = [
   {
     "id": "digital-forestillingsevne",
@@ -996,5 +996,133 @@ window.AUTO_TERMS = [
     ],
     "nytt": true,
     "d": "Et KI-system som kan planlegge, handle og ta beslutninger autonomt for å utføre komplekse oppgaver."
+  },
+  {
+    "id": "vert",
+    "t": "Vert",
+    "en": "Host",
+    "l": 3,
+    "f": [
+      "utvikling",
+      "genai"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "mcp"
+    ],
+    "nytt": true,
+    "d": "En vert er en LLM-applikasjon som initierer tilkoblinger i Model Context Protocol (MCP) for å integrere eksterne datakilder og verktøy."
+  },
+  {
+    "id": "klient-mcp",
+    "t": "Klient (MCP)",
+    "en": "Client (MCP)",
+    "l": 3,
+    "f": [
+      "utvikling",
+      "genai"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "mcp"
+    ],
+    "nytt": true,
+    "d": "En klient i Model Context Protocol (MCP) er en kobling innenfor en vertsapplikasjon som kommuniserer med servere for å hente kontekst og funksjonalitet."
+  },
+  {
+    "id": "server-mcp",
+    "t": "Server (MCP)",
+    "en": "Server (MCP)",
+    "l": 3,
+    "f": [
+      "utvikling",
+      "genai"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "mcp"
+    ],
+    "nytt": true,
+    "d": "En server i Model Context Protocol (MCP) er en tjeneste som leverer kontekst, ressurser, verktøy og funksjonalitet til klienter og verter."
+  },
+  {
+    "id": "ressurser-mcp",
+    "t": "Ressurser (MCP)",
+    "en": "Resources (MCP)",
+    "l": 3,
+    "f": [
+      "data",
+      "utvikling",
+      "genai"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "mcp"
+    ],
+    "nytt": true,
+    "d": "I Model Context Protocol (MCP) refererer ressurser til kontekstuell informasjon og data som kan deles med språkmodeller eller brukere."
+  },
+  {
+    "id": "mcp-apper",
+    "t": "MCP-apper",
+    "en": "MCP Apps",
+    "l": 3,
+    "f": [
+      "utvikling",
+      "genai"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "mcp"
+    ],
+    "nytt": true,
+    "d": "MCP-apper er interaktive brukergrensesnittelementer som diagrammer, skjemaer eller videospillere, som kan gjengis direkte i samtaler via Model Context Protocol (MCP)."
+  },
+  {
+    "id": "ferdigheter-over-mcp",
+    "t": "Ferdigheter over MCP",
+    "en": "Skills over MCP",
+    "l": 3,
+    "f": [
+      "agentic",
+      "utvikling",
+      "genai"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "mcp"
+    ],
+    "nytt": true,
+    "d": "Ferdigheter over MCP er rike, strukturerte instruksjoner for agent-arbeidsflyter som kan oppdages og brukes gjennom Model Context Protocol (MCP)."
+  },
+  {
+    "id": "oppgaver-mcp",
+    "t": "Oppgaver (MCP)",
+    "en": "Tasks (MCP)",
+    "l": 3,
+    "f": [
+      "utvikling",
+      "genai"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "mcp"
+    ],
+    "nytt": true,
+    "d": "Oppgaver i Model Context Protocol (MCP) er en utvidelse som muliggjør asynkron utførelse av langvarige operasjoner, med støtte for polling, midlertidig input og varige referanser."
   }
 ];
