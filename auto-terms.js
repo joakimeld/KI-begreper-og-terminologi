@@ -1,4 +1,4 @@
-window.AUTO_TERMS_UPDATED = "2026-11-16";
+window.AUTO_TERMS_UPDATED = "2026-11-17";
 window.AUTO_TERMS = [
   {
     "id": "digital-forestillingsevne",
@@ -1124,5 +1124,25 @@ window.AUTO_TERMS = [
     ],
     "nytt": true,
     "d": "Oppgaver i Model Context Protocol (MCP) er en utvidelse som muliggjør asynkron utførelse av langvarige operasjoner, med støtte for polling, midlertidig input og varige referanser."
+  },
+  {
+    "id": "agentiske-applikasjoner",
+    "t": "Agentiske applikasjoner",
+    "en": "Agentic Applications",
+    "l": 3,
+    "f": [
+      "agentic",
+      "sikkerhet",
+      "utvikling"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "owaspagentic"
+    ],
+    "nytt": true,
+    "d": "KI-systemer som kan planlegge, handle og ta beslutninger autonomt på tvers av komplekse arbeidsflyter.",
+    "e": "Disse applikasjonene er i stand til å utføre oppgaver selvstendig, ofte ved å interagere med andre systemer og verktøy, og krever spesifikke sikkerhetstiltak."
   }
 ];
