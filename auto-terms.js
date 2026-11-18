@@ -1,4 +1,4 @@
-window.AUTO_TERMS_UPDATED = "2026-11-17";
+window.AUTO_TERMS_UPDATED = "2026-11-18";
 window.AUTO_TERMS = [
   {
     "id": "digital-forestillingsevne",
@@ -1144,5 +1144,113 @@ window.AUTO_TERMS = [
     "nytt": true,
     "d": "KI-systemer som kan planlegge, handle og ta beslutninger autonomt på tvers av komplekse arbeidsflyter.",
     "e": "Disse applikasjonene er i stand til å utføre oppgaver selvstendig, ofte ved å interagere med andre systemer og verktøy, og krever spesifikke sikkerhetstiltak."
+  },
+  {
+    "id": "vert-mcp",
+    "t": "Vert (MCP)",
+    "en": "Host (MCP)",
+    "l": 3,
+    "f": [
+      "utvikling",
+      "genai"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "mcp"
+    ],
+    "nytt": true,
+    "d": "En vert er en LLM-applikasjon som initierer forbindelser og samhandler med eksterne tjenester for å hente kontekst og verktøy via Model Context Protocol (MCP)."
+  },
+  {
+    "id": "prompter-mcp",
+    "t": "Prompter (MCP)",
+    "en": "Prompts (MCP)",
+    "l": 3,
+    "f": [
+      "prompting",
+      "genai"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "mcp"
+    ],
+    "nytt": true,
+    "d": "I Model Context Protocol (MCP) er prompter malbaserte meldinger og arbeidsflyter som servere tilbyr til klienter for å veilede brukere eller KI-modeller."
+  },
+  {
+    "id": "verktoy-mcp",
+    "t": "Verktøy (MCP)",
+    "en": "Tools (MCP)",
+    "l": 3,
+    "f": [
+      "utvikling",
+      "genai"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "mcp"
+    ],
+    "nytt": true,
+    "d": "I Model Context Protocol (MCP) er verktøy funksjoner som servere eksponerer for KI-modeller, slik at modellene kan utføre spesifikke handlinger eller hente informasjon utenfor sin egen kunnskap."
+  },
+  {
+    "id": "progressiv-avsloring",
+    "t": "Progressiv avsløring",
+    "en": "Progressive disclosure",
+    "l": 2,
+    "f": [
+      "agentic",
+      "utvikling"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "agentskills"
+    ],
+    "nytt": true,
+    "d": "En metode der informasjon eller funksjonalitet vises gradvis, slik at brukere eller agenter kun får tilgang til detaljer når de er relevante for den aktuelle oppgaven, for å redusere kognitiv belastning og kontekstfotavtrykk."
+  },
+  {
+    "id": "agentkort",
+    "t": "Agentkort",
+    "en": "Agent Card",
+    "l": 3,
+    "f": [
+      "agentic",
+      "sikkerhet"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "a2a"
+    ],
+    "nytt": true,
+    "d": "Et digitalt kort som inneholder kryptografisk verifisert identitet for en KI-agent, brukt for sikker autentisering og tillit i agent-til-agent-kommunikasjon."
+  },
+  {
+    "id": "sparsely-gated-mixture-of-experts-moe",
+    "t": "Sparsely-Gated Mixture-of-Experts (MoE)",
+    "en": "Sparsely-Gated Mixture-of-Experts (MoE)",
+    "l": 4,
+    "f": [
+      "ml",
+      "grunnleggende"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "moe"
+    ],
+    "nytt": true,
+    "d": "En type nevralt nettverkslag som består av mange små ekspertnettverk, der et trenbart portnettverk velger en sparsom kombinasjon av disse ekspertene for å behandle hvert enkelt eksempel, noe som øker modellkapasiteten uten proporsjonal økning i beregning."
   }
 ];
