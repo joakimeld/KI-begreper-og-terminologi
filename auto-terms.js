@@ -1,4 +1,4 @@
-window.AUTO_TERMS_UPDATED = "2026-11-18";
+window.AUTO_TERMS_UPDATED = "2026-11-19";
 window.AUTO_TERMS = [
   {
     "id": "digital-forestillingsevne",
@@ -1252,5 +1252,23 @@ window.AUTO_TERMS = [
     ],
     "nytt": true,
     "d": "En type nevralt nettverkslag som består av mange små ekspertnettverk, der et trenbart portnettverk velger en sparsom kombinasjon av disse ekspertene for å behandle hvert enkelt eksempel, noe som øker modellkapasiteten uten proporsjonal økning i beregning."
+  },
+  {
+    "id": "elicitation-mcp",
+    "t": "Elicitation (MCP)",
+    "en": "Elicitation (MCP)",
+    "l": 3,
+    "f": [
+      "utvikling",
+      "genai"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "mcp"
+    ],
+    "nytt": true,
+    "d": "I Model Context Protocol (MCP) er elicitation en funksjon der serveren ber klienten om tilleggsinformasjon fra brukeren for å fullføre en oppgave."
   }
 ];
