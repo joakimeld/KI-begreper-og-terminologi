@@ -1,4 +1,4 @@
-window.AUTO_TERMS_UPDATED = "2026-11-19";
+window.AUTO_TERMS_UPDATED = "2026-11-20";
 window.AUTO_TERMS = [
   {
     "id": "digital-forestillingsevne",
@@ -1270,5 +1270,23 @@ window.AUTO_TERMS = [
     ],
     "nytt": true,
     "d": "I Model Context Protocol (MCP) er elicitation en funksjon der serveren ber klienten om tilleggsinformasjon fra brukeren for å fullføre en oppgave."
+  },
+  {
+    "id": "tillitsvekkende-ki",
+    "t": "Tillitsvekkende KI",
+    "en": "Trustworthy AI",
+    "l": 1,
+    "f": [
+      "etikk",
+      "sikkerhet"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "nist"
+    ],
+    "nytt": true,
+    "d": "KI-systemer som er utviklet og brukt på en måte som fremmer tillit, ved å være pålitelige, sikre, rettferdige, transparente og ansvarlige."
   }
 ];
