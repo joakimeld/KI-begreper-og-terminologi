@@ -1,4 +1,4 @@
-window.AUTO_TERMS_UPDATED = "2026-11-20";
+window.AUTO_TERMS_UPDATED = "2026-11-23";
 window.AUTO_TERMS = [
   {
     "id": "digital-forestillingsevne",
@@ -1288,5 +1288,59 @@ window.AUTO_TERMS = [
     ],
     "nytt": true,
     "d": "KI-systemer som er utviklet og brukt på en måte som fremmer tillit, ved å være pålitelige, sikre, rettferdige, transparente og ansvarlige."
+  },
+  {
+    "id": "ki-materialliste",
+    "t": "KI-materialliste",
+    "en": "AI Bill of Materials",
+    "l": 3,
+    "f": [
+      "sikkerhet",
+      "utvikling"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "owasp"
+    ],
+    "nytt": true,
+    "d": "En oversikt over alle komponenter, data og avhengigheter som utgjør et KI-system, brukt for å spore og håndtere sikkerhetsrisikoer og sårbarheter."
+  },
+  {
+    "id": "ki-datasecurity",
+    "t": "KI-datasecurity",
+    "en": "AI Data Security",
+    "l": 3,
+    "f": [
+      "sikkerhet",
+      "data"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "owasp"
+    ],
+    "nytt": true,
+    "d": "Praksiser og teknologier for å beskytte data som brukes av KI-systemer, inkludert treningsdata, input og output, mot uautorisert tilgang, misbruk eller kompromittering."
+  },
+  {
+    "id": "ki-sikkerhetslosninger",
+    "t": "KI-sikkerhetsløsninger",
+    "en": "AI Security Solutions",
+    "l": 3,
+    "f": [
+      "sikkerhet",
+      "utvikling"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "owasp"
+    ],
+    "nytt": true,
+    "d": "Teknologier og metoder designet for å beskytte KI-systemer mot angrep, sårbarheter og misbruk, inkludert verktøy for trusseldeteksjon og respons."
   }
 ];
