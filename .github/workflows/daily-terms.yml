@@ -86,6 +86,9 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: _site
+      - name: Allow artifact metadata to propagate
+        if: steps.publish.outputs.changed == 'true' || github.event_name == 'push'
+        run: sleep 5
       - name: Deploy GitHub Pages
         if: steps.publish.outputs.changed == 'true' || github.event_name == 'push'
         id: deployment

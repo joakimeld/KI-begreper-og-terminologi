@@ -27,6 +27,7 @@ TERMS_FILE = ROOT / "auto-terms.js"
 MODEL = "gemini-2.5-flash"
 MAX_SOURCES_PER_RUN = 8
 MAX_TERMS_PER_RUN = 20
+MAX_SOURCE_ATTEMPTS = 3
 MAX_GEMINI_ATTEMPTS = 3
 MAX_SOURCE_TEXT = 8_000
 USER_AGENT = "KI-begreper-source-check/1.0 (GitHub Actions)"
@@ -138,25 +139,51 @@ def read_auto_terms() -> tuple[str | None, list[dict]]:
 
 
 def fetch_source(source: dict[str, str]) -> tuple[str, str]:
-    request = Request(
-        source["url"],
-        headers={"User-Agent": USER_AGENT, "Accept": "text/html,application/xhtml+xml"},
-    )
-    with urlopen(request, timeout=15) as response:
-        if urlparse(response.geturl()).scheme != "https":
-            raise ValueError("Source redirected away from HTTPS")
-        content_type = response.headers.get_content_type()
-        if content_type not in {"text/html", "application/xhtml+xml", "text/plain"}:
-            raise ValueError(f"Unsupported content type {content_type}")
-        payload = response.read(2_000_000)
-        charset = response.headers.get_content_charset() or "utf-8"
-    parser = VisibleText()
-    parser.feed(payload.decode(charset, errors="replace"))
-    text = re.sub(r"[ \t]+", " ", " ".join(parser.parts))
-    text = re.sub(r"\s+", " ", text).strip()
-    if len(text) < 200:
-        raise ValueError("Page contained too little readable text")
-    return text[:MAX_SOURCE_TEXT], text
+    for attempt in range(MAX_SOURCE_ATTEMPTS):
+        request = Request(
+            source["url"],
+            headers={"User-Agent": USER_AGENT, "Accept": "text/html,application/xhtml+xml"},
+        )
+        try:
+            with urlopen(request, timeout=15) as response:
+                if urlparse(response.geturl()).scheme != "https":
+                    raise ValueError("Source redirected away from HTTPS")
+                content_type = response.headers.get_content_type()
+                if content_type not in {"text/html", "application/xhtml+xml", "text/plain"}:
+                    raise ValueError(f"Unsupported content type {content_type}")
+                payload = response.read(2_000_000)
+                charset = response.headers.get_content_charset() or "utf-8"
+            parser = VisibleText()
+            parser.feed(payload.decode(charset, errors="replace"))
+            text = re.sub(r"[ \t]+", " ", " ".join(parser.parts))
+            text = re.sub(r"\s+", " ", text).strip()
+            if len(text) < 200:
+                raise ValueError("Page contained too little readable text")
+            return text[:MAX_SOURCE_TEXT], text
+        except HTTPError as error:
+            if error.code not in {408, 425, 429, 500, 502, 503, 504}:
+                raise
+            if attempt + 1 == MAX_SOURCE_ATTEMPTS:
+                raise
+            retry_after = error.headers.get("Retry-After")
+            try:
+                delay = min(60, max(1, int(retry_after))) if retry_after else 2**attempt
+            except ValueError:
+                delay = 2**attempt
+            print(
+                f"::warning::Source {source['id']} returned HTTP {error.code}; "
+                f"retrying in {delay}s ({attempt + 2}/{MAX_SOURCE_ATTEMPTS})."
+            )
+        except (URLError, TimeoutError, OSError, HTTPException) as error:
+            if attempt + 1 == MAX_SOURCE_ATTEMPTS:
+                raise
+            delay = 2**attempt
+            print(
+                f"::warning::Source {source['id']} request failed ({error}); "
+                f"retrying in {delay}s ({attempt + 2}/{MAX_SOURCE_ATTEMPTS})."
+            )
+        time.sleep(delay)
+    raise RuntimeError(f"Could not fetch source {source['id']}")
 
 
 def slug(value: str) -> str:
@@ -343,7 +370,7 @@ def normalize_generated_terms(value: object) -> object:
     normalized = []
     for term in value:
         if not isinstance(term, dict):
-            normalized.append(term)
+            print("::warning::Gemini returned a non-object term; ignoring that suggestion.")
             continue
         expected = {
             "term",
@@ -356,9 +383,11 @@ def normalize_generated_terms(value: object) -> object:
         }
         optional = {"explanation"}
         if expected - term.keys() or term.keys() - expected - optional:
-            raise ValueError(
-                f"Gemini term must use descriptive output fields; received keys: {sorted(term.keys())}"
+            print(
+                "::warning::Gemini returned a term with unsupported fields; "
+                "ignoring that suggestion."
             )
+            continue
         norwegian_term = term["term"]
         if isinstance(norwegian_term, str):
             norwegian_term = normalize_term_title(norwegian_term)
@@ -376,6 +405,32 @@ def normalize_generated_terms(value: object) -> object:
             }
         )
     return normalized
+
+
+def validate_generated_terms(
+    terms: object,
+    existing_ids: set[str],
+    source_ids: set[str],
+    subjects: set[str],
+    tools: set[str],
+    changed_source_ids: set[str],
+) -> list[dict]:
+    if not isinstance(terms, list):
+        raise ValueError("Gemini response must contain a terms array")
+    accepted = []
+    seen = set(existing_ids)
+    for term in terms:
+        try:
+            clean_term = validate_terms([term], seen, source_ids, subjects, tools)[0]
+            if not set(clean_term["k"]) & changed_source_ids:
+                raise ValueError("term must cite at least one changed source")
+        except (TypeError, ValueError) as error:
+            term_id = term.get("id", "unknown") if isinstance(term, dict) else "unknown"
+            print(f"::warning::Ignoring invalid Gemini suggestion {term_id}: {error}")
+            continue
+        accepted.append(clean_term)
+        seen.add(clean_term["id"])
+    return accepted
 
 
 def limit_generated_terms(value: object) -> object:
@@ -509,7 +564,7 @@ def generate_terms(
             break
         except HTTPError as error:
             details = error.read(2_000).decode("utf-8", errors="replace")
-            retryable = error.code in {429, 500, 502, 503, 504}
+            retryable = error.code in {408, 425, 429, 500, 502, 503, 504}
             if not retryable or attempt + 1 == MAX_GEMINI_ATTEMPTS:
                 raise RuntimeError(f"Gemini API HTTP {error.code}: {details}") from error
             retry_after = error.headers.get("Retry-After")
@@ -519,6 +574,17 @@ def generate_terms(
                 delay = 2**attempt
             print(
                 f"::warning::Gemini API HTTP {error.code}; retrying in {delay}s "
+                f"({attempt + 2}/{MAX_GEMINI_ATTEMPTS})."
+            )
+            time.sleep(delay)
+        except (URLError, TimeoutError, OSError, HTTPException) as error:
+            if attempt + 1 == MAX_GEMINI_ATTEMPTS:
+                raise RuntimeError(
+                    f"Gemini API request failed after {MAX_GEMINI_ATTEMPTS} attempts: {error}"
+                ) from error
+            delay = 2**attempt
+            print(
+                f"::warning::Gemini API request failed ({error}); retrying in {delay}s "
                 f"({attempt + 2}/{MAX_GEMINI_ATTEMPTS})."
             )
             time.sleep(delay)
@@ -549,17 +615,14 @@ def generate_terms(
     generated = exclude_known_and_duplicate_terms(
         generated, existing_ids, base_terms + published_terms
     )
-    terms = validate_terms(
+    terms = validate_generated_terms(
         generated,
         existing_ids,
         known_ids,
         parse_taxonomy(index, "FAGOMRADER"),
         parse_taxonomy(index, "VERKTOY"),
+        {source["id"] for source in changed_sources},
     )
-    changed_ids = {source["id"] for source in changed_sources}
-    for term in terms:
-        if not set(term["k"]) & changed_ids:
-            raise ValueError(f"{term['id']}: must cite at least one changed source")
     return terms
 
 

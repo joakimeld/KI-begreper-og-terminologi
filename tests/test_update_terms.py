@@ -173,6 +173,16 @@ class RepositoryIntegrationTests(unittest.TestCase):
         for term in update_terms.parse_existing_terms(terms_source) + auto_terms:
             first_letter = next((character for character in term["t"] if character.isalpha()), "")
             self.assertTrue(first_letter.isupper(), f"{term['id']} starts with lowercase: {term['t']!r}")
+        for term in auto_terms:
+            self.assertEqual(update_terms.slug(term["t"]), term["id"])
+        self.assertIn(
+            ("KI-trusselintelligens og respons", "AI threat intelligence and response"),
+            {(term["t"], term["en"]) for term in auto_terms},
+        )
+        self.assertIn(
+            ("KI-datasikkerhet", "AI Data Security"),
+            {(term["t"], term["en"]) for term in auto_terms},
+        )
         self.assertEqual(
             update_terms.parse_level_descriptions(index),
             {
@@ -265,6 +275,64 @@ class RepositoryIntegrationTests(unittest.TestCase):
                 update_terms.fetch_source(
                     {"id": "public", "name": "Public source", "url": "https://example.org/source"}
                 )
+
+    def test_source_fetch_retries_transient_server_errors(self):
+        response = MagicMock()
+        response.__enter__.return_value = response
+        response.geturl.return_value = "https://example.org/source"
+        response.headers.get_content_type.return_value = "text/html"
+        response.headers.get_content_charset.return_value = "utf-8"
+        response.read.return_value = ("<p>" + "Readable source text. " * 20 + "</p>").encode()
+        unavailable = HTTPError(
+            "https://example.org/source",
+            503,
+            "Service Unavailable",
+            {},
+            io.BytesIO(b""),
+        )
+        source = {"id": "public", "name": "Public source", "url": "https://example.org/source"}
+        with (
+            patch.object(update_terms, "urlopen", side_effect=[unavailable, response]) as call,
+            patch.object(update_terms.time, "sleep") as sleep,
+        ):
+            excerpt, text = update_terms.fetch_source(source)
+        self.assertIn("Readable source text.", excerpt)
+        self.assertEqual(text, excerpt)
+        self.assertEqual(call.call_count, 2)
+        sleep.assert_called_once_with(1)
+
+    def test_source_fetch_does_not_retry_permanent_http_errors(self):
+        forbidden = HTTPError(
+            "https://example.org/source",
+            403,
+            "Forbidden",
+            {},
+            io.BytesIO(b""),
+        )
+        with (
+            patch.object(update_terms, "urlopen", side_effect=forbidden) as call,
+            patch.object(update_terms.time, "sleep") as sleep,
+            self.assertRaises(HTTPError),
+        ):
+            update_terms.fetch_source(
+                {"id": "private", "name": "Private source", "url": "https://example.org/source"}
+            )
+        call.assert_called_once()
+        sleep.assert_not_called()
+
+    def test_invalid_generated_terms_are_skipped_individually(self):
+        invalid = {**VALID_TERM, "id": "invalid-level", "t": "Invalid level", "l": 8}
+        with patch("builtins.print") as warning:
+            terms = update_terms.validate_generated_terms(
+                [invalid, VALID_TERM],
+                set(),
+                {"teknologiradet"},
+                {"genai"},
+                {"generelt"},
+                {"teknologiradet"},
+            )
+        self.assertEqual([term["id"] for term in terms], ["nytt-begrep"])
+        warning.assert_called_once()
 
     def test_run_publishes_new_terms_and_tracks_source_hashes(self):
         source = update_terms.parse_sources(
@@ -431,6 +499,39 @@ class RepositoryIntegrationTests(unittest.TestCase):
         with (
             patch.dict(os.environ, {"GEMINI_API_KEY": "test-secret"}),
             patch.object(update_terms, "urlopen", side_effect=[unavailable, response]) as call,
+            patch.object(update_terms.time, "sleep") as sleep,
+        ):
+            terms = update_terms.generate_terms(changed_sources)
+        self.assertEqual(len(terms), 1)
+        self.assertEqual(call.call_count, 2)
+        sleep.assert_called_once_with(1)
+
+    def test_gemini_retries_network_timeouts(self):
+        returned_term = {
+            "term": "Nytt begrep",
+            "english": "new term",
+            "level": 2,
+            "subjects": ["genai"],
+            "tools": ["generelt"],
+            "sources": ["teknologiradet"],
+            "definition": "En kort forklaring.",
+        }
+        response = MagicMock()
+        response.__enter__.return_value = response
+        response.read.return_value = json.dumps(
+            {"output": [{"type": "text", "text": json.dumps({"terms": [returned_term]})}]}
+        ).encode("utf-8")
+        changed_sources = [
+            {
+                "id": "teknologiradet",
+                "name": "Teknologirådet",
+                "url": "https://teknologiradet.no/ordliste-for-kunstig-intelligens/",
+                "text": "Public source text.",
+            }
+        ]
+        with (
+            patch.dict(os.environ, {"GEMINI_API_KEY": "test-secret"}),
+            patch.object(update_terms, "urlopen", side_effect=[TimeoutError("timed out"), response]) as call,
             patch.object(update_terms.time, "sleep") as sleep,
         ):
             terms = update_terms.generate_terms(changed_sources)

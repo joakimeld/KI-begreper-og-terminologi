@@ -602,7 +602,7 @@ window.AUTO_TERMS = [
   {
     "id": "ki-trusselintelligens-og-respons",
     "t": "KI-trusselintelligens og respons",
-    "en": "AI Threat Intel \u0026 Resp",
+    "en": "AI threat intelligence and response",
     "l": 3,
     "f": [
       "sikkerhet"
@@ -1308,8 +1308,8 @@ window.AUTO_TERMS = [
     "d": "En oversikt over alle komponenter, data og avhengigheter som utgjør et KI-system, brukt for å spore og håndtere sikkerhetsrisikoer og sårbarheter."
   },
   {
-    "id": "ki-datasecurity",
-    "t": "KI-datasecurity",
+    "id": "ki-datasikkerhet",
+    "t": "KI-datasikkerhet",
     "en": "AI Data Security",
     "l": 3,
     "f": [
