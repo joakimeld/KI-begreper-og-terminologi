@@ -1,4 +1,4 @@
-window.AUTO_TERMS_UPDATED = "2026-11-23";
+window.AUTO_TERMS_UPDATED = "2026-11-25";
 window.AUTO_TERMS = [
   {
     "id": "digital-forestillingsevne",
