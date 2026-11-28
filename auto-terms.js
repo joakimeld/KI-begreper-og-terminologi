@@ -1,4 +1,4 @@
-window.AUTO_TERMS_UPDATED = "2026-11-25";
+window.AUTO_TERMS_UPDATED = "2026-11-28";
 window.AUTO_TERMS = [
   {
     "id": "digital-forestillingsevne",
@@ -1342,5 +1342,23 @@ window.AUTO_TERMS = [
     ],
     "nytt": true,
     "d": "Teknologier og metoder designet for å beskytte KI-systemer mot angrep, sårbarheter og misbruk, inkludert verktøy for trusseldeteksjon og respons."
+  },
+  {
+    "id": "progressiv-avsloring-agent-skills",
+    "t": "Progressiv avsløring (Agent Skills)",
+    "en": "Progressive Disclosure (Agent Skills)",
+    "l": 2,
+    "f": [
+      "agentic",
+      "utvikling"
+    ],
+    "v": [
+      "generelt"
+    ],
+    "k": [
+      "agentskills"
+    ],
+    "nytt": true,
+    "d": "En metode der KI-agenter laster ferdigheter i tre stadier (oppdagelse, aktivering, utførelse) for å effektivt håndtere mange ferdigheter med minimal kontekstbelastning."
   }
 ];
